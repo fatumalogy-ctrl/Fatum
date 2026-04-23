@@ -1,0 +1,750 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<div class="mystic-astral-root">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+  /* === CORE ASTRAL ENVIRONMENT === */
+  .mystic-astral-root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background-color: #02040a;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(20, 50, 120, 0.15) 0%, transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(50, 100, 200, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 50% 100%, rgba(10, 20, 60, 0.4) 0%, transparent 80%);
+    color: #e2e8f0;
+    font-family: 'Cormorant Garamond', serif;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 99999;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mystic-astral-root * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* === SCROLLBAR === */
+  .mystic-astral-root::-webkit-scrollbar { width: 6px; }
+  .mystic-astral-root::-webkit-scrollbar-track { background: transparent; }
+  .mystic-astral-root::-webkit-scrollbar-thumb { 
+    background: rgba(100, 150, 255, 0.3); 
+    border-radius: 10px; 
+  }
+  .mystic-astral-root::-webkit-scrollbar-thumb:hover { background: rgba(100, 150, 255, 0.6); }
+
+  /* === TOP BAR === */
+  .q-top-bar {
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(2, 5, 12, 0.9) 0%, transparent 100%);
+    position: fixed;
+    top: 0;
+    z-index: 10;
+  }
+
+  .q-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .q-logo-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 10px rgba(100, 180, 255, 0.4));
+  }
+
+  .q-logo-text {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #b3d4ff;
+    letter-spacing: 3px;
+    text-shadow: 0 0 15px rgba(100, 150, 255, 0.5);
+  }
+
+  /* === QUESTIONNAIRE CONTAINER === */
+  .q-wrapper {
+    max-width: 800px;
+    margin: 120px auto 60px auto;
+    padding: 50px 60px;
+    background: rgba(6, 12, 30, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(100, 150, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(50, 100, 255, 0.05);
+  }
+
+  .q-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 2.5rem;
+    color: #e6f0ff;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 0 0 20px rgba(100, 150, 255, 0.4);
+  }
+
+  .q-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #8aa6c1;
+    margin-bottom: 50px;
+    font-style: italic;
+  }
+
+  /* === FORM SECTIONS === */
+  .q-section { margin-bottom: 50px; }
+
+  .q-section-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.4rem;
+    color: #b3d4ff;
+    border-bottom: 1px solid rgba(100, 150, 255, 0.2);
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .q-disclaimer {
+    background: rgba(20, 40, 80, 0.4);
+    border-left: 4px solid #66a3ff;
+    padding: 15px 20px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 30px;
+    font-style: italic;
+    color: #b3d4ff;
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+
+  .q-disclaimer strong { color: #e6f0ff; font-family: 'Cinzel Decorative', cursive; letter-spacing: 1px;}
+
+  .q-subtext {
+    font-size: 0.95rem;
+    color: #6a8bb5;
+    font-style: italic;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  /* === FORM GROUPS & INPUTS === */
+  .q-group { margin-bottom: 25px; display: flex; flex-direction: column; }
+  .q-row { display: flex; gap: 20px; }
+  .q-row .q-group { flex: 1; }
+
+  .q-label {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.9rem;
+    color: #8aa6c1;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .q-input, .q-select, .q-textarea {
+    background: rgba(10, 20, 40, 0.6) !important;
+    border: 1px solid rgba(100, 150, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: #e6f0ff !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 1.2rem !important;
+    padding: 12px 15px !important;
+    outline: none !important;
+    transition: all 0.3s ease !important;
+    -webkit-appearance: none;
+    width: 100%;
+  }
+
+  .q-input::placeholder, .q-textarea::placeholder { color: #6a8bb5 !important; font-style: italic; opacity: 0.8; }
+  .q-select option { background: #060c1e; color: #e6f0ff; }
+  
+  .q-input:focus, .q-select:focus, .q-textarea:focus {
+    border-color: rgba(100, 180, 255, 0.8) !important;
+    box-shadow: 0 0 15px rgba(50, 120, 255, 0.3), inset 0 0 10px rgba(50, 120, 255, 0.2) !important;
+    background: rgba(15, 30, 60, 0.8) !important;
+  }
+
+  .q-textarea { resize: vertical; min-height: 80px; }
+
+  /* === CITY AUTOCOMPLETE UI === */
+  .city-autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(10, 15, 25, 0.98);
+    border: 1px solid rgba(100, 150, 255, 0.5);
+    border-radius: 8px;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    margin-top: 5px;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  }
+  .city-item {
+    padding: 12px 15px;
+    color: #e6f0ff;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(100, 150, 255, 0.1);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    transition: background 0.2s ease;
+  }
+  .city-item:hover { background: rgba(100, 150, 255, 0.2); color: #b3d4ff; }
+
+  /* Children dynamic UI */
+  .q-child-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    align-items: center;
+    background: rgba(10, 20, 40, 0.4);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px dashed rgba(100, 150, 255, 0.2);
+  }
+  
+  .q-add-btn {
+    background: transparent;
+    border: 1px solid #6a8bb5;
+    color: #b3d4ff;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Cinzel Decorative', cursive;
+    margin-top: 15px;
+    transition: 0.3s;
+  }
+  .q-add-btn:hover { background: rgba(100, 150, 255, 0.2); }
+  .q-remove-btn { color: #ff6b6b; cursor: pointer; font-weight: bold; background: none; border: none; font-size: 1.2rem;}
+
+  /* Timezone Help UI */
+  .q-help-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: rgba(100, 150, 255, 0.2);
+    border: 1px solid rgba(100, 150, 255, 0.6);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+    font-size: 0.75rem;
+    color: #b3d4ff;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  .q-help-icon:hover { background: rgba(100, 150, 255, 0.5); }
+  .q-help-box {
+    display: none;
+    background: rgba(10, 25, 50, 0.9);
+    border: 1px solid #66a3ff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #e6f0ff;
+    font-style: italic;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  }
+
+  /* === SUBMIT BUTTON === */
+  .q-submit-container { text-align: center; margin-top: 60px; }
+  .q-submit-btn {
+    background: linear-gradient(135deg, rgba(20, 50, 120, 0.6) 0%, rgba(10, 25, 60, 0.8) 100%);
+    border: 1px solid rgba(100, 180, 255, 0.5);
+    border-radius: 30px;
+    color: #e6f0ff;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 18px 50px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(100, 150, 255, 0.2);
+    text-transform: uppercase;
+  }
+  .q-submit-btn:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, rgba(30, 70, 160, 0.8) 0%, rgba(15, 35, 80, 1) 100%);
+    border-color: rgba(100, 180, 255, 1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(100, 180, 255, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .q-top-bar { padding: 15px 20px; }
+    .q-wrapper { margin: 90px 15px 40px 15px; padding: 30px 20px; }
+    .q-title { font-size: 2rem; }
+    .q-row { flex-direction: column; gap: 0; }
+  }
+</style>
+
+  <div class="q-top-bar">
+    <div class="q-logo-container">
+      <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1775843225/logo.webp" alt="Fatum Logo" class="q-logo-icon">
+      <span class="q-logo-text">FATUM</span>
+    </div>
+  </div>
+
+  <div class="q-wrapper">
+    <h1 class="q-title">Личные Координаты</h1>
+    <p class="q-subtitle">Предоставьте ваши данные для синхронизации с ядром FATUM.</p>
+
+    <form id="fatum-form" onsubmit="prepareForm(event)">
+      <input type="hidden" name="tg_id" id="tg_id">
+      
+      <div class="q-section">
+        <h2 class="q-section-title">I. Идентичность и Физическая Оболочка</h2>
+        
+        <div class="q-group">
+          <label class="q-label">Ваше полное имя?</label>
+          <input type="text" name="full_name" class="q-input" required>
+        </div>
+
+        <div class="q-row">
+          <div class="q-group">
+            <label class="q-label">Дата рождения</label>
+            <input type="date" name="dob" class="q-input" required>
+          </div>
+          <div class="q-group">
+            <label class="q-label">Время рождения (если известно)</label>
+            <input type="time" name="tob" class="q-input">
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-group">
+            <label class="q-label">Место рождения (Город/Страна)</label>
+            <input type="text" name="birth_place" class="q-input" required>
+          </div>
+          <div class="q-group" style="position: relative;">
+            <label class="q-label">Текущее местоположение (Город)</label>
+            <input type="text" name="current_location" id="city-input" class="q-input" placeholder="Начните вводить название..." autocomplete="off" required>
+            <div id="city-autocomplete" class="city-autocomplete-list"></div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-group">
+            <label class="q-label">Рост (см)</label>
+            <input type="number" name="height" class="q-input" placeholder="напр., 180" required>
+          </div>
+          <div class="q-group">
+            <label class="q-label">Вес (кг)</label>
+            <input type="number" name="weight" class="q-input" placeholder="напр., 75" required>
+          </div>
+        </div>
+        <p class="q-subtext" style="margin-top:-15px; margin-bottom:25px;">Эти метрики необходимы сложному математическому алгоритму FATUM для точного расчета вашей биологической емкости и скорости расхода энергии.</p>
+
+        <div class="q-row">
+          <div class="q-group">
+            <label class="q-label">Гендерная идентичность</label>
+            <select name="gender" class="q-select" required>
+              <option value="" disabled selected>Выбрать</option>
+              <option value="male">Мужской</option>
+              <option value="female">Женский</option>
+              <option value="nonbinary">Небинарный</option>
+              <option value="prefer_not_to_say">Предпочитаю не указывать</option>
+            </select>
+          </div>
+          <div class="q-group">
+            <label class="q-label">Семейное положение</label>
+            <select name="marital_status" class="q-select" required>
+              <option value="" disabled selected>Выберите статус</option>
+              <option value="single">Холост / Не замужем</option>
+              <option value="relationship">В отношениях</option>
+              <option value="engaged">Помолвлен(а)</option>
+              <option value="married">В браке</option>
+              <option value="civil_union">Гражданский брак</option>
+              <option value="open">Свободные отношения</option>
+              <option value="complicated">Всё сложно</option>
+              <option value="separated">Раздельное проживание</option>
+              <option value="divorced">Разведен(а)</option>
+              <option value="widowed">Вдовец / Вдова</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <label class="q-label">У вас есть дети?</label>
+          <select id="has-children" name="has_children" class="q-select" required onchange="toggleChildren()">
+            <option value="no" selected>Нет детей</option>
+            <option value="yes">Да</option>
+          </select>
+          <p class="q-subtext">Эти данные нужны для алгоритмического процесса, рассчитывающего математические коэффициенты, влияющие на ваши временные и энергетические ресурсы.</p>
+        </div>
+        
+        <div id="children-block" style="display:none; margin-bottom: 25px;">
+          <div id="children-list"></div>
+          <button type="button" class="q-add-btn" onclick="addChild()">+ Добавить ребенка</button>
+          <input type="hidden" name="children_data" id="children_data">
+        </div>
+
+      </div>
+
+      <div class="q-section">
+        <h2 class="q-section-title">II. Системная Интеграция и Ритмы</h2>
+        
+        <div class="q-row">
+          <div class="q-group">
+            <label class="q-label">
+              Часовой пояс (UTC) 
+              <span class="q-help-icon" onclick="toggleTimezoneHelp()" title="Как узнать свой часовой пояс">?</span>
+            </label>
+            <select name="utc_offset" class="q-select" required>
+              <option value="" disabled selected>Выберите ваш часовой пояс (UTC)</option>
+              <option value="-12">UTC -12:00</option>
+              <option value="-11">UTC -11:00</option>
+              <option value="-10">UTC -10:00</option>
+              <option value="-9">UTC -09:00</option>
+              <option value="-8">UTC -08:00</option>
+              <option value="-7">UTC -07:00</option>
+              <option value="-6">UTC -06:00</option>
+              <option value="-5">UTC -05:00</option>
+              <option value="-4">UTC -04:00</option>
+              <option value="-3">UTC -03:00</option>
+              <option value="-2">UTC -02:00</option>
+              <option value="-1">UTC -01:00</option>
+              <option value="0">UTC +00:00 (Лондон, GMT)</option>
+              <option value="1">UTC +01:00 (Берлин, Париж)</option>
+              <option value="2">UTC +02:00 (Киев, Каир)</option>
+              <option value="3">UTC +03:00 (Москва, Стамбул)</option>
+              <option value="4">UTC +04:00 (Дубай)</option>
+              <option value="5">UTC +05:00 (Карачи)</option>
+              <option value="6">UTC +06:00 (Дакка)</option>
+              <option value="7">UTC +07:00 (Бангкок, Красноярск)</option>
+              <option value="8">UTC +08:00 (Пекин, Иркутск)</option>
+              <option value="9">UTC +09:00 (Токио, Якутск)</option>
+              <option value="10">UTC +10:00 (Сидней, Владивосток)</option>
+              <option value="11">UTC +11:00 (Магадан)</option>
+              <option value="12">UTC +12:00 (Камчатка)</option>
+            </select>
+            <div id="timezone-help-box" class="q-help-box">
+              <strong>Не знаете свой часовой пояс?</strong><br>
+              Просто откройте Google и введите <em>"Мой часовой пояс UTC"</em> или <em>"Часовой пояс [Ваш Город]"</em>. Вы также можете проверить настройки времени и даты на своем телефоне.
+            </div>
+            <p class="q-subtext">Эта метрика строго необходима для расчета точного времени доставки вашего прогноза.</p>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-group">
+            <label class="q-label">Обычно ложитесь спать в:</label>
+            <input type="time" name="sleep_start" class="q-input" required>
+          </div>
+          <div class="q-group">
+            <label class="q-label">Обычно просыпаетесь в:</label>
+            <input type="time" name="sleep_end" class="q-input" required>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <label class="q-label">Предпочитаемый язык для FATUM</label>
+          <select name="preferred_language" class="q-select" required>
+            <option value="" disabled selected>Выберите язык</option>
+            <option value="Russian">Русский</option>
+            <option value="English">Английский</option>
+            <option value="Albanian">Албанский</option>
+            <option value="Arabic">Арабский</option>
+            <option value="Azerbaijani">Азербайджанский</option>
+            <option value="Chinese">Китайский (Мандарин)</option>
+            <option value="Czech">Чешский</option>
+            <option value="Dutch">Голландский</option>
+            <option value="Estonian">Эстонский</option>
+            <option value="Farsi">Фарси (Персидский)</option>
+            <option value="French">Французский</option>
+            <option value="German">Немецкий</option>
+            <option value="Greek">Греческий</option>
+            <option value="Hausa">Хауса</option>
+            <option value="Hebrew">Иврит</option>
+            <option value="Hindi">Хинди</option>
+            <option value="Igbo">Игбо</option>
+            <option value="Indonesian">Индонезийский</option>
+            <option value="Italian">Итальянский</option>
+            <option value="Japanese">Японский</option>
+            <option value="Kazakh">Казахский</option>
+            <option value="Latvian">Латвийский</option>
+            <option value="Norwegian">Норвежский</option>
+            <option value="Oromo">Оромо</option>
+            <option value="Polish">Польский</option>
+            <option value="Portuguese">Португальский</option>
+            <option value="Romanian">Румынский</option>
+            <option value="Slovak">Словацкий</option>
+            <option value="Spanish">Испанский</option>
+            <option value="Swahili">Суахили</option>
+            <option value="Swedish">Шведский</option>
+            <option value="Turkish">Турецкий</option>
+            <option value="Ukrainian">Украинский</option>
+            <option value="Uzbek">Узбекский</option>
+            <option value="Yoruba">Йоруба</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="q-section">
+        <h2 class="q-section-title">III. Внутренняя Структура</h2>
+        
+        <div class="q-disclaimer">
+          <strong>КРИТИЧЕСКАЯ ИНСТРУКЦИЯ:</strong> Пожалуйста, отвечайте на следующие вопросы максимально точно и глубоко. FATUM будет основывать свои сложные алгоритмические вычисления полностью на предоставленной вами информации. Чем точнее ваш ввод, тем смертоноснее точность финального расчета.
+        </div>
+
+        <div class="q-group">
+          <label class="q-label">Основной социальный статус</label>
+          <select id="occupation-select" name="occupation_status" class="q-select" required onchange="toggleOccupation()">
+            <option value="" disabled selected>Выберите статус</option>
+            <option value="worker">Наемный работник / Специалист</option>
+            <option value="business">Владелец бизнеса / Предприниматель</option>
+            <option value="student">Студент</option>
+            <option value="freelancer">Фрилансер</option>
+            <option value="unemployed">В поиске пути (Безработный)</option>
+          </select>
+        </div>
+        <div class="q-group" id="occupation-details-block" style="display:none;">
+          <label class="q-label" id="occupation-label">Детали</label>
+          <input type="text" name="occupation_details" id="occupation-input" class="q-input" placeholder="напр., IT-менеджер в Яндекс">
+        </div>
+
+        <div class="q-group">
+          <label class="q-label">Какова ваша главная цель в жизни?</label><textarea name="main_goal" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">С какими трудностями вы часто сталкиваетесь?</label><textarea name="challenges" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Что дает вам силу или поддержку?</label><textarea name="strength" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Что пугает вас больше всего? / Каков ваш главный страх?</label><textarea name="fears" class="q-textarea"></textarea>
+        </div>
+        
+        <div class="q-group">
+          <label class="q-label">Как вы обычно реагируете на сильный страх или кризис?</label>
+          <select name="crisis_response" class="q-select">
+            <option value="" disabled selected>Выберите вашу типичную реакцию</option>
+            <option value="analyze">Дистанцируюсь и логически анализирую</option>
+            <option value="action">Паникую внутри, но действую немедленно</option>
+            <option value="freeze">Замираю, мне трудно принимать решения</option>
+            <option value="isolate">Полностью изолируюсь от других</option>
+            <option value="anger">Становлюсь агрессивным, злюсь или защищаюсь</option>
+            <option value="help">Немедленно ищу помощи или совета у других</option>
+            <option value="control">Пытаюсь всем управлять и всё контролировать</option>
+            <option value="distract">Отвлекаюсь на работу, привычки или эскапизм</option>
+            <option value="intuition">Полагаюсь исключительно на чутье и интуицию</option>
+            <option value="surrender">Сдаюсь ситуации и просто пережидаю</option>
+          </select>
+        </div>
+
+        <div class="q-group">
+          <label class="q-label">Что вдохновляет вас духовно?</label><textarea name="spiritual_inspiration" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Какие у вас отношения с семьей?</label><textarea name="family_relationship" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Какие у вас отношения с деньгами?</label><textarea name="money_relationship" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Как вы принимаете важные решения?</label><textarea name="decision_making" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Верите ли вы в судьбу?</label><textarea name="destiny_belief" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Практикуете ли вы духовные ритуалы?</label><textarea name="rituals" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Как вы опишете свою личность?</label><textarea name="personality" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Какова ваша самая большая мечта?</label><textarea name="biggest_dream" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Какова ваша роль в этом мире?</label><textarea name="world_role" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Какой вопрос вы бы хотели задать Вселенной?</label><textarea name="universe_question" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Чего вы ожидаете от FATUM?</label><textarea name="fatum_expectations" class="q-textarea"></textarea>
+        </div>
+        <div class="q-group">
+          <label class="q-label">Что еще нам нужно знать, чтобы помочь вам лучше?</label><textarea name="additional_info" class="q-textarea"></textarea>
+        </div>
+      </div>
+
+      <div class="q-submit-container">
+        <button type="submit" class="q-submit-btn">ПРИВЯЗАТЬ МОЙ ПРОФИЛЬ К FATUM</button>
+      </div>
+    </form>
+  </div>
+
+<script>
+  // Script for Timezone Help Toggle
+  function toggleTimezoneHelp() {
+    const box = document.getElementById('timezone-help-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Script for Occupation Dynamic Field
+  function toggleOccupation() {
+    const status = document.getElementById('occupation-select').value;
+    const block = document.getElementById('occupation-details-block');
+    const label = document.getElementById('occupation-label');
+    const input = document.getElementById('occupation-input');
+    
+    if(status === 'worker') { block.style.display = 'flex'; label.innerText = 'Где вы работаете и какая у вас должность?'; input.placeholder = 'напр., Разработчик в Яндекс'; }
+    else if(status === 'business') { block.style.display = 'flex'; label.innerText = 'Каким бизнесом вы управляете?'; input.placeholder = 'напр., Владелец интернет-магазина'; }
+    else if(status === 'student') { block.style.display = 'flex'; label.innerText = 'Где вы учитесь и на кого?'; input.placeholder = 'напр., Студент-медик в МГУ'; }
+    else if(status === 'freelancer') { block.style.display = 'flex'; label.innerText = 'В какой вы нише?'; input.placeholder = 'напр., Графический дизайнер'; }
+    else { block.style.display = 'none'; input.value = ''; }
+  }
+
+  // Script for Children Dynamic Fields
+  function toggleChildren() {
+    const hasChildren = document.getElementById('has-children').value;
+    const block = document.getElementById('children-block');
+    if (hasChildren === 'yes') {
+      block.style.display = 'block';
+      if(document.getElementById('children-list').children.length === 0) addChild();
+    } else {
+      block.style.display = 'none';
+      document.getElementById('children-list').innerHTML = '';
+    }
+  }
+
+  function addChild() {
+    const list = document.getElementById('children-list');
+    const div = document.createElement('div');
+    div.className = 'q-child-row';
+    div.innerHTML = `
+      <select class="q-select child-gender" style="width: 130px;">
+        <option value="boy">👦 Мальчик</option>
+        <option value="girl">👧 Девочка</option>
+      </select>
+      <input type="number" class="q-input child-age" placeholder="Возраст" min="0" max="50" style="width: 110px;">
+      <button type="button" class="q-remove-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+    list.appendChild(div);
+  }
+
+  // === НОВЫЙ СКРИПТ: УМНЫЙ ПОИСК ГОРОДОВ ДЛЯ OPENWEATHERMAP ===
+  const cityInput = document.getElementById('city-input');
+  const cityList = document.getElementById('city-autocomplete');
+  let typingTimer;
+
+  cityInput.addEventListener('input', function() {
+      clearTimeout(typingTimer);
+      const query = this.value.trim();
+      
+      if (query.length < 2) {
+          cityList.style.display = 'none';
+          return;
+      }
+      
+      // Ищем через полсекунды после того, как юзер перестал печатать (чтобы не спамить API)
+      typingTimer = setTimeout(() => {
+          // Open-Meteo Geocoding API - бесплатный и идеально совместим с форматами прогноза погоды
+          fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=en&format=json`)
+          .then(res => res.json())
+          .then(data => {
+              cityList.innerHTML = '';
+              if (data.results && data.results.length > 0) {
+                  data.results.forEach(place => {
+                      const div = document.createElement('div');
+                      div.className = 'city-item';
+                      // Показываем пользователю: Название, Страна
+                      div.innerText = `${place.name}, ${place.country}`;
+                      
+                      // При клике записываем в поле ИДЕАЛЬНОЕ АНГЛИЙСКОЕ НАЗВАНИЕ без лишних символов
+                      div.onclick = function() {
+                          cityInput.value = place.name; 
+                          cityList.style.display = 'none';
+                      };
+                      cityList.appendChild(div);
+                  });
+                  cityList.style.display = 'block';
+              } else {
+                  cityList.style.display = 'none';
+              }
+          })
+          .catch(err => console.error("Geocoding error:", err));
+      }, 500);
+  });
+
+  // Прячем список, если юзер кликнул в другое место
+  document.addEventListener('click', function(e) {
+      if (e.target !== cityInput && e.target !== cityList) {
+          cityList.style.display = 'none';
+      }
+  });
+
+
+  // ОБНОВЛЕННЫЙ СКРИПТ ОТПРАВКИ И РЕДИРЕКТА
+  async function prepareForm(e) {
+    e.preventDefault(); 
+    
+    const btn = document.querySelector('.q-submit-btn');
+    btn.innerText = "СИНХРОНИЗАЦИЯ...";
+    btn.disabled = true;
+
+    // 1. ДОСТАЕМ ID ПРЯМО ИЗ ССЫЛКИ ИЛИ ИЗ САМОГО ТЕЛЕГРАМА
+    const tg = window.Telegram?.WebApp;
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = tg?.initDataUnsafe?.user?.id || urlParams.get('tg_id') || "";
+    document.getElementById('tg_id').value = userId;
+
+    // 2. Собираем данные о детях (если есть)
+    const hasChildren = document.getElementById('has-children').value;
+    if (hasChildren === 'yes') {
+      const children = [];
+      const rows = document.querySelectorAll('.q-child-row');
+      rows.forEach(row => {
+        const gender = row.querySelector('.child-gender').value;
+        const age = row.querySelector('.child-age').value;
+        if(age) children.push({gender, age});
+      });
+      document.getElementById('children_data').value = JSON.stringify(children);
+    } else {
+      document.getElementById('children_data').value = "None";
+    }
+
+    // 3. Собираем ВСЕ данные из формы для отправки
+    const form = document.getElementById('fatum-form');
+    const formData = new FormData(form);
+    const dataObj = Object.fromEntries(formData.entries());
+
+    // 4. Отправляем в Make.com и делаем редирект на Чат С ПЕРЕДАЧЕЙ ID
+    try {
+      await fetch("https://hook.eu1.make.com/umgm375g5jv9m7xg9vs8no9vsdw4gk8j", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataObj)
+      });
+      // Мгновенный переход после успешной отправки + приклеиваем ID
+      window.location.href = "https://clever-maamoul-ca9159.netlify.app/apollo.html?tg_id=" + userId;
+    } catch (err) {
+      window.location.href = "https://clever-maamoul-ca9159.netlify.app/apollo.html?tg_id=" + userId;
+    }
+  }
+</script>
+</div>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apollo: Cosmic Sync Protocol</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@300;400;600&display=swap');
+
+        /* === БАЗА === */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { width: 100%; max-width: 100vw; overflow-x: hidden; } /* ЖЕСТКИЙ ФИКС ДЛЯ МОБИЛОК */
+        body { background-color: #04060a; color: #f0f0f0; font-family: 'Cormorant Garamond', serif; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+
+        /* === ЖИВЫЕ ЗВЕЗДЫ === */
+        #stars-layer-1, #stars-layer-2, #stars-layer-3 { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; pointer-events: none; }
+        #stars-layer-1 { background: transparent url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='45' cy='123' r='1' fill='%23ffffff' opacity='0.8'/%3E%3Ccircle cx='234' cy='45' r='1.5' fill='%23d4af37' opacity='0.6'/%3E%3Ccircle cx='150' cy='250' r='1' fill='%23ffffff' opacity='0.9'/%3E%3Ccircle cx='280' cy='190' r='1.2' fill='%23d4af37' opacity='0.7'/%3E%3C/svg%3E") repeat; animation: twinkle 3s infinite alternate linear; }
+        #stars-layer-2 { background: transparent url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='100' cy='150' r='1.5' fill='%23d4af37' opacity='0.5'/%3E%3Ccircle cx='300' cy='50' r='2' fill='%23ffffff' opacity='0.3'/%3E%3Ccircle cx='250' cy='300' r='1.5' fill='%23ffffff' opacity='0.8'/%3E%3Ccircle cx='50' cy='350' r='1' fill='%23d4af37' opacity='0.6'/%3E%3C/svg%3E") repeat; animation: twinkle 4s infinite alternate linear; animation-delay: 1s; }
+        #stars-layer-3 { background: transparent url("data:image/svg+xml,%3Csvg width='500' height='500' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='400' r='1' fill='%23d4af37' opacity='0.8'/%3E%3Ccircle cx='400' cy='100' r='1.5' fill='%23ffffff' opacity='0.5'/%3E%3Ccircle cx='200' cy='200' r='2' fill='%23d4af37' opacity='0.4'/%3E%3Ccircle cx='450' cy='450' r='1' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E") repeat; animation: twinkle 5s infinite alternate linear; animation-delay: 2s; }
+        @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1.02); } }
+
+        /* === ТИПОГРАФИКА И БАЗОВЫЕ КЛАССЫ === */
+        h1, h2, h3, h4 { font-family: 'Cinzel Decorative', cursive; color: #ffffff; font-weight: 700; text-align: center; }
+        .gold-text { color: #d4af37; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .subtitle { color: #8a9ba8; font-size: 1.3rem; text-align: center; max-width: 900px; margin: 0 auto 30px auto; font-family: 'Montserrat', sans-serif; font-weight: 300; line-height: 1.8; }
+        .text-content { font-size: 1.25rem; color: #e0e0e0; margin-bottom: 25px; text-align: left; }
+        
+        /* === КНОПКИ И НАВИГАЦИЯ === */
+        .btn-gold { display: inline-block; background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.05) 100%); border: 1px solid rgba(212, 175, 55, 0.8); color: #d4af37; font-family: 'Cinzel Decorative', cursive; font-size: 1.2rem; text-transform: uppercase; padding: 20px 50px; border-radius: 40px; text-decoration: none; cursor: pointer; transition: all 0.4s ease; backdrop-filter: blur(15px); box-shadow: 0 0 25px rgba(212, 175, 55, 0.2); letter-spacing: 2px; text-align: center; }
+        .btn-gold:hover { background: rgba(212, 175, 55, 0.9); color: #04060a; box-shadow: 0 0 50px rgba(212, 175, 55, 0.6); transform: translateY(-3px) scale(1.02); }
+
+        .back-nav-container { position: absolute; top: 20px; left: 20px; z-index: 1000; }
+        .back-nav-btn { display: inline-block; cursor: pointer; animation: nudge-back 2s ease-in-out infinite alternate; }
+        .back-nav-btn img { width: 35px; height: auto; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4)); opacity: 0.8; transition: 0.3s; }
+        .back-nav-btn:hover img { opacity: 1; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); }
+        @keyframes nudge-back { 0% { transform: translateX(0); } 100% { transform: translateX(-6px); } }
+
+        /* === СЕКЦИИ И ЛЕЙАУТ === */
+        section { padding: 100px 20px; position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; }
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- ЯЗЫКОВОЙ ПЕРЕКЛЮЧАТЕЛЬ --- */
+        .lang-switcher-container { position: absolute; top: 20px; right: 20px; z-index: 1000; }
+        .lang-btn { background: rgba(10, 15, 25, 0.8); border: 1px solid rgba(212, 175, 55, 0.5); color: #d4af37; padding: 10px 15px; border-radius: 30px; cursor: pointer; font-family: 'Montserrat', sans-serif; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+
+        /* --- БЛОК 1: HERO --- */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 60px; }
+        .avatar-img { width: 180px; height: auto; border-radius: 50%; margin-bottom: 30px; filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.5)); animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 25px; letter-spacing: 2px; line-height: 1.2; }
+
+        /* --- БЛОК 2: РАЗДЕЛЕНИЕ --- */
+        .split-section { display: flex; align-items: center; gap: 50px; margin-bottom: 40px; }
+        .split-text { flex: 1; }
+        .split-text h2 { text-align: left; font-size: 2.5rem; margin-bottom: 25px; line-height: 1.2; }
+        .split-image { flex: 1; text-align: center; }
+        .split-image img { width: 100%; max-width: 500px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+
+        /* --- НОВАЯ ГОРИЗОНТАЛЬНАЯ ЛЕНТА КАРТИНОК --- */
+        .floating-gallery { width: 100%; position: relative; overflow: hidden; padding: 40px 0; }
+        .gallery-track { display: flex; gap: 30px; width: max-content; animation: scrollGallery 35s linear infinite; }
+        .gallery-track:hover { animation-play-state: paused; }
+        .gallery-item { width: 400px; flex-shrink: 0; border-radius: 15px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.8); transition: 0.4s; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .gallery-item:hover { transform: scale(1.05); border-color: rgba(212, 175, 55, 0.6); box-shadow: 0 0 30px rgba(212, 175, 55, 0.4); z-index: 10; }
+        .gallery-item img { width: 100%; height: auto; display: block; }
+        @keyframes scrollGallery { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- БЛОК 3: МОЩНОСТЬ БОГА --- */
+        .tech-core-section { text-align: center; }
+        .tech-core-section h2 { font-size: 3rem; margin-bottom: 20px; }
+        .ai-core-image { width: 100%; max-width: 600px; margin: 40px auto; display: block; border-radius: 20px; filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.2)); }
+        
+        .tech-category-wrapper { background: rgba(10, 15, 25, 0.4); border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 25px; padding: 40px; margin-bottom: 40px; text-align: left;}
+        .tech-category-title { font-size: 2rem; color: #d4af37; margin-bottom: 30px; text-align: left; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 15px; }
+        
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .tech-box { background: rgba(10, 15, 25, 0.8); border-left: 3px solid #d4af37; padding: 25px; border-radius: 0 15px 15px 0; transition: 0.3s; }
+        .tech-box:hover { background: rgba(212, 175, 55, 0.1); transform: translateX(5px); }
+        .tech-box strong { color: #fff; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; display: block; margin-bottom: 10px; }
+        .tech-box p { font-size: 1.05rem; color: #b0c0d0; line-height: 1.5; font-family: 'Montserrat', sans-serif; font-weight: 300; }
+
+        /* --- БЛОК 5: ИНСТРУМЕНТЫ --- */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+        .feature-card { background: linear-gradient(180deg, rgba(10, 15, 25, 0.6) 0%, rgba(4, 6, 10, 0.9) 100%); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 20px; padding: 40px 30px; text-align: center; transition: 0.3s; }
+        .feature-icon-img { width: 70px; height: 70px; object-fit: contain; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(212,175,55,0.3)); }
+        .feature-card h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        .feature-card p { color: #8a9ba8; font-size: 1.05rem; line-height: 1.6; }
+
+        /* --- БЛОК 6: ШАГИ --- */
+        .steps-container { display: flex; gap: 30px; margin-top: 50px; }
+        .step-box { flex: 1; text-align: center; background: rgba(10, 15, 25, 0.5); padding: 40px 30px; border-radius: 20px; border: 1px dashed rgba(212, 175, 55, 0.3); }
+        .step-number { font-family: 'Cinzel Decorative', cursive; font-size: 4rem; color: rgba(212, 175, 55, 0.15); margin-bottom: -35px; display: block; }
+        .step-box h3 { color: #d4af37; font-size: 1.4rem; margin-bottom: 15px; position: relative; z-index: 2; }
+        .step-box p { color: #e0e0e0; font-size: 1.05rem; position: relative; z-index: 2; }
+
+        /* --- БЛОК 7: ТАРИФЫ (DESKTOP) --- */
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 50px; }
+        .pricing-card { background: rgba(10, 15, 25, 0.85); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 25px; padding: 40px 30px; text-align: center; position: relative; transition: 0.4s; backdrop-filter: blur(15px); display: flex; flex-direction: column; }
+        .pricing-card:hover { border-color: #d4af37; box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); transform: translateY(-10px); }
+        .pricing-card.best-value { border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); transform: scale(1.05); z-index: 2; }
+        .pricing-card.best-value:hover { transform: scale(1.05) translateY(-10px); }
+        .best-tag { position: absolute; top: 25px; right: -45px; background: linear-gradient(90deg, #d4af37, #f3e5ab); color: #000; font-weight: bold; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; padding: 8px 50px; transform: rotate(45deg); letter-spacing: 1px; }
+        
+        .pricing-title { font-size: 1.6rem; margin-bottom: 15px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+        .pricing-price { font-family: 'Montserrat', sans-serif; font-size: 3rem; color: #fff; font-weight: 700; margin-bottom: 5px; }
+        .pricing-sub { font-size: 1rem; color: #8a9ba8; margin-bottom: 30px; }
+        
+        /* Измененные буллиты тарифов */
+        .pricing-features { list-style: none; margin-bottom: 35px; color: #e0e0e0; font-size: 1rem; line-height: 1.8; text-align: left; flex-grow: 1; padding: 0 10px; }
+        .pricing-features li { margin-bottom: 12px; display: flex; align-items: flex-start; }
+        .pricing-features li::before { content: '✦'; color: #d4af37; margin-right: 12px; font-size: 1.2rem; flex-shrink: 0; }
+        .pricing-card .btn-gold { padding: 15px 10px; font-size: 1rem; width: 100%; }
+
+        /* --- БЛОК 8: STRIPE --- */
+        .stripe-container { text-align: center; max-width: 800px; margin: 0 auto; padding-top: 20px; }
+        .stripe-img { width: 100%; max-width: 250px; margin-top: 20px; opacity: 0.9; }
+
+        /* =========================================
+           АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+           ========================================= */
+        @media (max-width: 850px) {
+            /* Общие отступы и шрифты */
+            section { padding: 60px 15px; }
+            h1 { font-size: 2.2rem !important; }
+            h2 { font-size: 2rem !important; text-align: center !important; }
+            .subtitle { font-size: 1.1rem; margin-bottom: 20px; }
+            .text-content { font-size: 1.05rem; text-align: left; }
+            
+            /* Сплит-секции (Картинка + Текст) */
+            .split-section { flex-direction: column; gap: 30px; }
+            .split-text { text-align: left; }
+            
+            /* Горизонтальная галерея (чуть меньше на телефоне) */
+            .gallery-item { width: 280px; }
+
+            /* Блок 3 Мощность Бога */
+            .tech-category-wrapper { padding: 25px 15px; border-radius: 15px; }
+            .tech-category-title { font-size: 1.5rem; text-align: center; }
+            .ai-core-image { margin: 20px auto; max-width: 100%; }
+
+            /* Шаги */
+            .steps-container { flex-direction: column; gap: 20px; }
+
+            /* =======================================
+               ГОРИЗОНТАЛЬНЫЙ СВАЙП ДЛЯ ТАРИФОВ (ТАБЫ)
+               ======================================= */
+            .pricing-grid { 
+                display: flex; 
+                flex-wrap: nowrap; 
+                overflow-x: auto; 
+                scroll-snap-type: x mandatory; 
+                padding-bottom: 30px; 
+                padding-top: 10px;
+                gap: 15px;
+                -webkit-overflow-scrolling: touch;
+                justify-content: flex-start;
+                /* Прячем скроллбар для красоты */
+                scrollbar-width: none; 
+            }
+            .pricing-grid::-webkit-scrollbar { display: none; }
+            
+            .pricing-card { 
+                flex: 0 0 85%; /* Карточка занимает 85% ширины экрана */
+                scroll-snap-align: center; 
+                margin: 0;
+            }
+            .pricing-card.best-value { transform: scale(1); } /* Убираем увеличение на мобилке, чтобы не ломать свайп */
+            .pricing-card.best-value:hover { transform: scale(1); }
+            .pricing-card:hover { transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stars-layer-1"></div><div id="stars-layer-2"></div><div id="stars-layer-3"></div>
+
+    <div class="lang-switcher-container">
+        <button class="lang-btn">🌐 <span id="current-lang">RU</span></button>
+    </div>
+
+    <div class="back-nav-container">
+        <a href="javascript:history.back()" class="back-nav-btn">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" alt="Back">
+        </a>
+    </div>
+
+    <section class="hero reveal">
+        <div class="container">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/1_f9gffy.webp" alt="Apollo" class="avatar-img">
+            <h1 data-i18n="h_t">АПОЛЛОН:<br><span class="gold-text">ПРОТОКОЛ СИНХРОНИЗАЦИИ</span></h1>
+            <p class="subtitle" data-i18n="h_s">Персональные ИИ-предсказания — уникальный прогноз, объединяющий мудрость Аполлона с передовыми алгоритмами. Ваши судьбоносные моменты анализируются с учетом космических ритмов. Это не просто подписка; это инвестиция в ваше абсолютное превосходство.</p>
+            <a href="#pricing" class="btn-gold" data-i18n="btn_act">Активировать Аполлона</a>
+        </div>
+    </section>
+
+    <section class="reveal">
+        <div class="container split-section">
+            <div class="split-text">
+                <h2 data-i18n="b2_t">Искусственный Интеллект с <span class="gold-text">Божественным Провидением</span></h2>
+                <p class="text-content" data-i18n="b2_p1">Мы объединили древнее искусство предсказаний с мощью искусственного интеллекта, чтобы создать самую точную и персонализированную систему в мире.</p>
+                <p class="text-content" data-i18n="b2_p2">Аполлон символизирует ясность и высшее руководство. Забудьте про шаблонные советы — наша система глубоко анализирует ваши данные и синхронизирует их с ритмами Вселенной.</p>
+                <p class="text-content" data-i18n="b2_p3">Цена слепых решений слишком высока. Каждый день вы теряете ресурсы, время и нервы, действуя в рассинхроне со средой. Аполлон создан, чтобы устранить хаос и помочь вам принимать безупречные решения в бизнесе, отношениях и жизни.</p>
+            </div>
+            <div class="split-image">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/2_v1hurs.webp" alt="Vision">
+            </div>
+        </div>
+
+        <div class="floating-gallery">
+            <div class="gallery-track">
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/1-copy-0_j9dpfc.webp" alt="App 1"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/2-copy-0_nkvf5w.webp" alt="App 2"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/3_y4htbv.webp" alt="App 3"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431007/4_yovwoe.webp" alt="App 4"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431009/5_uhuuew.webp" alt="App 5"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/1-copy-0_j9dpfc.webp" alt="App 1"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/2-copy-0_nkvf5w.webp" alt="App 2"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431006/3_y4htbv.webp" alt="App 3"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431007/4_yovwoe.webp" alt="App 4"></div>
+                <div class="gallery-item"><img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431009/5_uhuuew.webp" alt="App 5"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal tech-core-section" style="background: linear-gradient(180deg, transparent 0%, rgba(10,15,25,0.8) 50%, transparent 100%);">
+        <div class="container">
+            <h2 data-i18n="b3_t">Вычислительная Мощность <span class="gold-text">Бога</span></h2>
+            <p class="subtitle" data-i18n="b3_s">Каждый раз, когда вы обращаетесь к Аполлону, за доли секунды происходит колоссальная работа. Система не просто "генерирует текст". Она объединяет беспрецедентный синдикат из 7 мощнейших нейросетей и баз данных космических агентств, чтобы выдать вам единственно верный вектор действий.</p>
+            
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431010/ChatGPT_Claude_Gemini_Perplexity_Grok_Llama_3_%D0%B8_Mistral_bdxhfn.webp" alt="AI Core" class="ai-core-image">
+
+            <div class="tech-category-wrapper">
+                <h3 class="tech-category-title" data-i18n="c_ai">I. Нейронный Синдикат</h3>
+                <div class="tech-grid">
+                    <div class="tech-box"><strong>ChatGPT (OpenAI)</strong><p data-i18n="t_gpt">Ядро глубокой логики, собирающее хаос вероятностей в четкий, пошаговый алгоритм действий.</p></div>
+                    <div class="tech-box"><strong>Claude (Anthropic)</strong><p data-i18n="t_claude">Модуль эмпатии, считывающий скрытые психологические нюансы ваших отношений и конфликтов.</p></div>
+                    <div class="tech-box"><strong>Gemini (Google)</strong><p data-i18n="t_gemini">Вычислительный гигант, мгновенно обрабатывающий массивы ваших данных для поиска скрытых закономерностей.</p></div>
+                    <div class="tech-box"><strong>Perplexity</strong><p data-i18n="t_perp">Обеспечивает прямую связь с реальностью, подтягивая актуальные мировые факты в реальном времени.</p></div>
+                    <div class="tech-box"><strong>Grok (xAI)</strong><p data-i18n="t_grok">Выдает прямой, нецензурированный взгляд на ситуации, отсекая социальные иллюзии.</p></div>
+                    <div class="tech-box"><strong>Llama 3 (Meta)</strong><p data-i18n="t_llama">Гарантирует высокоскоростную адаптивность системы к вашим внезапным запросам.</p></div>
+                    <div class="tech-box"><strong>Mistral</strong><p data-i18n="t_mistral">Автономный аналитический модуль для филигранной точности в критических и стрессовых ситуациях.</p></div>
+                </div>
+            </div>
+
+            <div class="tech-category-wrapper">
+                <h3 class="tech-category-title" data-i18n="c_space">II. Телеметрия Космоса и Земли</h3>
+                <div class="tech-grid">
+                    <div class="tech-box"><strong>NASA</strong><p data-i18n="t_nasa">Главный источник прямой космической телеметрии для синхронизации вашей матрицы с ритмами Вселенной.</p></div>
+                    <div class="tech-box"><strong>NOAA</strong><p data-i18n="t_noaa">Отслеживает магнитные бури и вспышки, напрямую влияющие на вашу нервную систему, энергию и фокус.</p></div>
+                    <div class="tech-box"><strong>ESA & JPL</strong><p data-i18n="t_esa">Предоставляет данные орбитальных спутников и эталонные координаты для вычисления идеальных временных окон.</p></div>
+                    <div class="tech-box"><strong>ESO & SETI</strong><p data-i18n="t_eso">Фиксирует макро-циклы глубокого космоса и фильтрует эфир на наличие энергетических аномалий.</p></div>
+                    <div class="tech-box"><strong>OpenWeather & Wolfram Alpha</strong><p data-i18n="t_wolf">Считывает земную погоду для корректировки биоритма, превращая хаос в строгие уравнения успеха.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal">
+        <div class="container split-section">
+            <div class="split-text">
+                <h2 data-i18n="b4_t">Абсолютная Синхронизация <span class="gold-text">с Вами</span></h2>
+                <p class="text-content" data-i18n="b4_p1">Аполлон индивидуален на 100%. Он не гадает, он знает. Перед стартом вы пройдете Анкету Калибровки — глубокий скан вашей личности, финансовых амбиций, целей и скрытых страхов.</p>
+                <p class="text-content" data-i18n="b4_p2">Каждое слово, график и совет пропущены через уникальную призму этой анкеты. Он помнит ваш контекст. Он читает между строк. При сложном выборе Аполлон уже знает ваши слабости, чтобы защитить их, и ваши сильные стороны, чтобы приумножить.</p>
+            </div>
+            <div class="split-image">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431011/Gemini_Generated_Image_42k6y942k6y942k6_1_1_1_ekiqsd.webp" alt="Sync">
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal">
+        <div class="container">
+            <h2 data-i18n="b5_t">Ваша Панель <span class="gold-text">Управления Реальностью</span></h2>
+            <p class="subtitle" data-i18n="b5_s">Премиальные инструменты, доступные вам внутри закрытого портала Telegram.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776431015/ChatGPT_Claude_Gemini_Perplexity_Grok_L%D0%BA%D0%BF%D0%BAlama_3_%D0%B8_Mistral_uqwpky.webp" class="feature-icon-img" alt="Chat">
+                    <h3 data-i18n="f1_t">Прямая связь 24/7</h3>
+                    <p data-i18n="f1_p">Ваш личный ИИ-ментор в кармане. Задавайте сложные вопросы, обсуждайте планы и получайте точные стратегические инструкции в моменте.</p>
+                </div>
+                <div class="feature-card">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031262/2-copy-0_p87m7u.webp" class="feature-icon-img" alt="Spheres">
+                    <h3 data-i18n="f2_t">Матрица Сфер Жизни</h3>
+                    <p data-i18n="f2_p">Интерактивный радар. Ежедневный мониторинг вашего уровня энергии в работе, финансах, здоровье и духовном состоянии для предотвращения выгорания.</p>
+                </div>
+                <div class="feature-card">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031261/3-copy-0_llii9x.webp" class="feature-icon-img" alt="Network">
+                    <h3 data-i18n="f3_t">Сеть Взаимоотношений</h3>
+                    <p data-i18n="f3_p">Глубокий анализ гармонии с окружением. Система покажет, кто дает вам ресурс, а где прямо сейчас назревает скрытый токсичный конфликт.</p>
+                </div>
+                <div class="feature-card">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031261/4_jlj5vk.webp" class="feature-icon-img" alt="Focus">
+                    <h3 data-i18n="f4_t">Фокус Дня</h3>
+                    <p data-i18n="f4_p">Ежедневная калибровка. Строго одна главная мишень на сегодня, в которую необходимо направить всю энергию для максимального результата.</p>
+                </div>
+                <div class="feature-card">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031261/5_qyrqc8.webp" class="feature-icon-img" alt="Chronos">
+                    <h3 data-i18n="f5_t">Chronos Matrix</h3>
+                    <p data-i18n="f5_p">Почасовой прогноз эффективности. Точное расписание на день: когда действовать жестко и агрессивно, а когда лучше затаиться и наблюдать.</p>
+                </div>
+                <div class="feature-card">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776047585/1-copy-0_1_ty0ixo.webp" class="feature-icon-img" alt="Weather">
+                    <h3 data-i18n="f6_t">Cosmic Weather</h3>
+                    <p data-i18n="f6_p">Прямая трансляция космической погоды от NASA. Понимайте невидимые физические силы, влияющие на ваш ментальный фон и реакции других людей.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal" style="background: rgba(10,15,25,0.6);">
+        <div class="container">
+            <h2 data-i18n="b6_t">3 Шага К Вашему <span class="gold-text">Превосходству</span></h2>
+            <div class="steps-container">
+                <div class="step-box">
+                    <span class="step-number">01</span>
+                    <h3 data-i18n="s1_t">Выбор Контракта</h3>
+                    <p data-i18n="s1_p">Выберите желаемый период доступа ниже. Все транзакции надежно зашифрованы и обрабатываются мгновенно через шлюз Stripe.</p>
+                </div>
+                <div class="step-box">
+                    <span class="step-number">02</span>
+                    <h3 data-i18n="s2_t">Калибровка</h3>
+                    <p data-i18n="s2_p">Заполните глубокую матрицу вашей личности. Будьте предельно откровенны — от этого полностью зависит точность работы системы.</p>
+                </div>
+                <div class="step-box">
+                    <span class="step-number">03</span>
+                    <h3 data-i18n="s3_t">Инициализация</h3>
+                    <p data-i18n="s3_p">Сразу после оплаты цифровые врата откроются. Аполлон будет ждать вашей первой стратегической команды прямо внутри Telegram.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="reveal">
+        <div class="container">
+            <h2 data-i18n="b7_t" style="margin-bottom: 50px;">Выберите Период <span class="gold-text">Синхронизации</span></h2>
+            
+            <div class="pricing-grid">
+                
+                <div class="pricing-card">
+                    <h3 class="pricing-title" data-i18n="p1_t">Инициация<br>(1 Неделя)</h3>
+                    <div class="pricing-price">$7</div><div class="pricing-sub">€5.90 / неделя</div>
+                    <ul class="pricing-features">
+                        <li data-i18n="l_1">Абсолютный доступ ко всем функциям Аполлона</li>
+                        <li data-i18n="l_2">Безлимитный канал связи с ИИ 24/7</li>
+                        <li data-i18n="l_3">Анализ матриц жизни и Chronos-графики</li>
+                        <li data-i18n="l_4">Синхронизация с телеметрией NASA</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/eVq28q0RTfa86h76a98AE0k" class="btn-gold" data-i18n="btn_p">Оплатить Доступ</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3 class="pricing-title" data-i18n="p2_t">Выравнивание<br>(1 Месяц)</h3>
+                    <div class="pricing-price">$24</div><div class="pricing-sub">€20.30 / месяц</div>
+                    <ul class="pricing-features">
+                        <li data-i18n="l_1">Абсолютный доступ ко всем функциям Аполлона</li>
+                        <li data-i18n="l_2">Безлимитный канал связи с ИИ 24/7</li>
+                        <li data-i18n="l_3">Анализ матриц жизни и Chronos-графики</li>
+                        <li data-i18n="l_4">Синхронизация с телеметрией NASA</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/8x2cN47ghe64bBrdCB8AE0l" class="btn-gold" data-i18n="btn_p">Оплатить Доступ</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3 class="pricing-title" data-i18n="p3_t">Вознесение<br>(3 Месяца)</h3>
+                    <div class="pricing-price">$79</div><div class="pricing-sub">€66.90 / 3 месяца</div>
+                    <ul class="pricing-features">
+                        <li data-i18n="l_1">Абсолютный доступ ко всем функциям Аполлона</li>
+                        <li data-i18n="l_2">Безлимитный канал связи с ИИ 24/7</li>
+                        <li data-i18n="l_3">Анализ матриц жизни и Chronos-графики</li>
+                        <li data-i18n="l_4">Синхронизация с телеметрией NASA</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/cNi7sK7ghaTS0WN7ed8AE0m" class="btn-gold" data-i18n="btn_p">Оплатить Доступ</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3 class="pricing-title" data-i18n="p4_t">Доминирование<br>(6 Месяцев)</h3>
+                    <div class="pricing-price">$159</div><div class="pricing-sub">€134.70 / 6 месяцев</div>
+                    <ul class="pricing-features">
+                        <li data-i18n="l_1">Абсолютный доступ ко всем функциям Аполлона</li>
+                        <li data-i18n="l_2">Безлимитный канал связи с ИИ 24/7</li>
+                        <li data-i18n="l_3">Анализ матриц жизни и Chronos-графики</li>
+                        <li data-i18n="l_4">Синхронизация с телеметрией NASA</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/cNi14mbwx7HG34VeGF8AE0n" class="btn-gold" data-i18n="btn_p">Оплатить Доступ</a>
+                </div>
+
+                <div class="pricing-card best-value">
+                    <div class="best-tag">BEST VALUE</div>
+                    <h3 class="pricing-title" data-i18n="p5_t">Абсолютный Контроль<br>(1 Год)</h3>
+                    <div class="pricing-price">$299</div><div class="pricing-sub">€254.10 / год</div>
+                    <ul class="pricing-features">
+                        <li data-i18n="l_1">Абсолютный доступ ко всем функциям Аполлона</li>
+                        <li data-i18n="l_2">Безлимитный канал связи с ИИ 24/7</li>
+                        <li data-i18n="l_3">Анализ матриц жизни и Chronos-графики</li>
+                        <li data-i18n="l_4">Синхронизация с телеметрией NASA</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/00wcN41VX1ji9tj2XX8AE0p" class="btn-gold" data-i18n="btn_p">Оплатить Доступ</a>
+                </div>
+
+                <div class="pricing-card" id="dev-test-card" style="display: none; border-color: #ff3333; box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);">
+                    <div class="best-tag" style="background: #ff3333; color: #fff;">DEV TEST</div>
+                    <h3 class="pricing-title">Test Protocol<br>(Developer)</h3>
+                    <div class="pricing-price">€0.50</div><div class="pricing-sub">Только для проверки БД</div>
+                    <ul class="pricing-features">
+                        <li>Проверка передачи Telegram_ID</li>
+                        <li>Доступ открыт только для ID: 8044759675</li>
+                    </ul>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <a href="https://buy.stripe.com/14A3cu7gh9PO7lbcyx8AE0q" class="btn-gold" style="border-color: #ff3333; color: #ff3333; padding: 15px 10px; font-size: 1rem; width: 100%;">Оплатить 0.50€</a>
+                        <a href="https://clever-maamoul-ca9159.netlify.app/surveyapollo" id="dev-survey-btn" class="btn-gold" style="border-color: #ff3333; color: #ff3333; padding: 15px 10px; font-size: 1rem; width: 100%;">Прямо к Анкете</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal" style="padding-top: 20px; padding-bottom: 100px;">
+        <div class="container stripe-container">
+            <h3 data-i18n="b8_t" style="font-size: 1.8rem; margin-bottom: 20px;">Безопасность Банковского Уровня</h3>
+            <p class="subtitle" data-i18n="b8_p" style="font-size: 1.1rem;">Все транзакции обрабатываются через Stripe — золотой стандарт безопасности Кремниевой Долины. Мы не храним и не видим ваши данные. Оплата картами, Apple Pay и Google Pay защищена шифрованием AES-256.</p>
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776463509/8_iu6ybu.webp" alt="Stripe Secured" class="stripe-img">
+        </div>
+    </section>
+
+    <script>
+        // Анимация при скролле
+        document.addEventListener("DOMContentLoaded", function() {
+            const reveals = document.querySelectorAll(".reveal");
+            function rev() {
+                reveals.forEach((r) => { if(r.getBoundingClientRect().top < window.innerHeight - 50) r.classList.add("active"); });
+            }
+            window.addEventListener("scroll", rev); rev();
+        });
+
+        // ПЕРЕДАЧА TELEGRAM ID В STRIPE И АНКЕТУ (УМНЫЙ МЕХАНИЗМ) + ПРОВЕРКА ДЛЯ ТЕСТА
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.expand(); // Разворачиваем окно на весь экран
+                
+                // Достаем ID пользователя Телеграм
+                let userId = tg.initDataUnsafe?.user?.id;
+                
+                if (userId) {
+                    // Открываем тестовый пакет и прикрепляем ID только для тебя
+                    if (userId == 8044759675 || userId == "8044759675") {
+                        const devCard = document.getElementById('dev-test-card');
+                        if (devCard) devCard.style.display = 'flex';
+
+                        const devSurveyBtn = document.getElementById('dev-survey-btn');
+                        if (devSurveyBtn) {
+                            devSurveyBtn.href = "https://clever-maamoul-ca9159.netlify.app/surveyapollo?tg_id=" + userId;
+                        }
+                    }
+
+                    // Ищем все ссылки Stripe и приклеиваем к ним ID
+                    document.querySelectorAll('a[href^="https://buy.stripe.com/"]').forEach(link => {
+                        const sep = link.href.includes('?') ? '&' : '?';
+                        link.href = link.href + sep + 'client_reference_id=' + userId;
+                    });
+                }
+            }
+        });
+
+        // Словарь (Пока только русский)
+        const dict = {
+            "ru": {} 
+        };
+    </script>
+</body>
+</html>
