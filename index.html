@@ -297,8 +297,8 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.access === "YES") {
-                        // ВОТ ОНО. ТЕПЕРЬ ПРИ ПЕРЕХОДЕ ID ЕДЕТ СЛЕДОМ:
-                        window.location.href = "apollo.html?tg_id=" + userId;
+                        // ВОТ ОНО. ТЕПЕРЬ ПРИ ПЕРЕХОДЕ ID ЕДЕТ СЛЕДОМ НА GITHUB PAGES:
+                        window.location.href = "https://fatumalogy-ctrl.github.io/Fatum/apollo.html?tg_id=" + userId;
                     } else {
                         window.location.href = "apollo-landing.html";
                     }
