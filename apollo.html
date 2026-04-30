@@ -117,7 +117,7 @@
     .light-button .button-holder img { height: 35px; object-fit: contain; transition: 300ms; }
     .light-button .light-holder { position: absolute; bottom: 60px; left: 0; height: 120px; width: 60px; display: flex; flex-direction: column; align-items: center; pointer-events: none; opacity: 0; transition: 300ms; }
     .light-button .light-holder .dot { position: absolute; top: 0; width: 6px; height: 6px; background-color: rgba(88, 101, 242, 1); border-radius: 10px; z-index: 2; box-shadow: 0 0 10px rgba(88, 101, 242, 1); }
-    .light-button .light-holder .light { absolute; top: 0; width: 120px; left: -30px; height: 120px; clip-path: polygon(50% 0%, 25% 100%, 75% 100%); background: linear-gradient(180deg, rgba(88, 101, 242, 0.8) 0%, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255, 0) 100%); }
+    .light-button .light-holder .light { position: absolute; top: 0; width: 120px; left: -30px; height: 120px; clip-path: polygon(50% 0%, 25% 100%, 75% 100%); background: linear-gradient(180deg, rgba(88, 101, 242, 0.8) 0%, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255, 0) 100%); }
     .light-button .btn-text-label { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; color: #b3c2ff; opacity: 0; transition: 300ms; white-space: nowrap; pointer-events: none; }
 
     .light-button.is-available .light-holder, .light-button.is-available .btn-text-label { opacity: 1; }
@@ -166,44 +166,24 @@
     .audio-freq { font-family: 'Cinzel Decorative', cursive; font-size: 1.2rem; color: #ff8c00; font-weight: bold; margin-right: 15px; flex-shrink: 0;}
     .audio-desc { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #e6f0ff; line-height: 1.4;}
 
-    /* === 12. МОБИЛЬНАЯ АДАПТАЦИЯ (ПОЛНОСТЬЮ ПЕРЕПИСАНА ПО ТРЕБОВАНИЮ) === */
+    /* === 12. МОБИЛЬНАЯ АДАПТАЦИЯ === */
     @media (max-width: 768px) {
         .nasa-monitor-bar { padding: 10px 20px; height: auto; flex-direction: row; align-items: center; justify-content: space-between;}
         .nasa-info-tag { align-items: center; width: 85%;}
         .nasa-label { font-size: 0.7rem; }
         #nasa-dynamic-state { font-size: 0.95rem; margin-left: 10px; margin-top: 0; white-space: nowrap;}
         
-        /* Уменьшенная в 3 раза шапка */
-        .mystic-header { padding: 0 15px; height: 40px;}
-        .back-nav-btn { width: 15px; margin-right: 15px; }
-        .mystic-header-name { font-size: 0.9rem; }
-        .mystic-communion-target img { width: 25px; }
-        .mystic-header-status { font-size: 0.7rem; gap: 5px; }
-        .mystic-header-status div { width: 4px !important; height: 4px !important; }
+        .mystic-header { padding: 0 20px; height: 75px;}
+        .back-nav-btn { width: 30px; margin-right: 15px; }
+        .mystic-header-name { font-size: 1.3rem; }
+        .mystic-communion-target img { width: 45px; }
 
         .mystic-visions-history { padding: 20px 15px; gap: 20px; }
-        .mystic-bubble { max-width: 92%; font-size: 1rem; padding: 12px 15px; }
+        .mystic-bubble { max-width: 92%; font-size: 1.1rem; padding: 15px 20px; }
         
         .mystic-altar-container { padding: 10px 10px 15px 10px; gap: 15px; }
-        
-        /* Угольник иконок (Сетка) */
-        .dashboard-dock-inline { 
-            display: grid !important; 
-            grid-template-columns: repeat(5, 30px); 
-            grid-template-rows: 30px 30px 30px; 
-            gap: 10px; 
-            justify-content: center; 
-        }
-        .custom-tool-icon { width: 30px !important; height: 30px !important; margin: 0; }
-        
-        /* Четкий порядок иконок */
-        .dashboard-dock-inline img:nth-child(1) { grid-column: 1; grid-row: 3; } /* Сферы */
-        .dashboard-dock-inline img:nth-child(2) { grid-column: 2; grid-row: 3; } /* Отношения */
-        .dashboard-dock-inline img:nth-child(3) { grid-column: 3; grid-row: 3; } /* Фокус */
-        .dashboard-dock-inline img:nth-child(4) { grid-column: 4; grid-row: 3; } /* Часы */
-        .dashboard-dock-inline img:nth-child(5) { grid-column: 5; grid-row: 3; } /* Гормоны */
-        .dashboard-dock-inline img:nth-child(6) { grid-column: 5; grid-row: 2; } /* Звуки */
-        .dashboard-dock-inline img:nth-child(7) { grid-column: 5; grid-row: 1; } /* Телеграм */
+        .dashboard-dock-inline { gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .custom-tool-icon { width: 28px; }
 
         .light-button { margin-right: 10px; }
         .light-button .button-holder { width: 45px; height: 45px; border-radius: 12px; }
