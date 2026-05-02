@@ -66,7 +66,7 @@
         }
         .breadcrumb-text span { color: var(--gold); opacity: 0.7; margin: 0 8px; }
 
-        /* === СЕТКА МУЗ (БЕЗ РАМОК) === */
+        /* === СЕТКА МУЗ === */
         .muses-container {
             max-width: 1100px; margin: 50px auto; padding: 0 20px;
             display: grid;
@@ -104,6 +104,30 @@
 
         @keyframes museEntrance { to { opacity: 1; transform: translateY(0); } }
 
+        /* АНИМАЦИЯ ИСЧЕЗНОВЕНИЯ В ПЫЛЬ */
+        .muse-consumed {
+            pointer-events: none;
+            animation: turnToDust 2.5s forwards ease-in-out;
+        }
+
+        @keyframes turnToDust {
+            0% {
+                opacity: 1;
+                filter: blur(0) grayscale(0) sepia(0);
+                transform: scale(1) translateY(0);
+            }
+            40% {
+                opacity: 0.8;
+                filter: blur(2px) grayscale(50%) sepia(30%);
+                transform: scale(0.95) translateY(-5px);
+            }
+            100% {
+                opacity: 0;
+                filter: blur(15px) grayscale(100%) sepia(80%);
+                transform: scale(0.8) translateY(-40px) rotate(5deg);
+            }
+        }
+
         /* Аватар Музы */
         .muse-avatar-container {
             width: 100%;
@@ -136,10 +160,7 @@
             transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Текстовая инфа под аватаром */
-        .muse-info {
-            transition: transform 0.4s ease;
-        }
+        .muse-info { transition: transform 0.4s ease; }
 
         .muse-name {
             font-family: 'Cinzel Decorative', cursive;
@@ -159,20 +180,9 @@
             transform: translateY(-15px) scale(1.08);
             filter: drop-shadow(0 20px 35px rgba(212, 175, 55, 0.6)) brightness(1.1);
         }
-
-        .muse-wrapper:hover .muse-avatar-container::before {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        .muse-wrapper:hover .muse-name {
-            color: #fff;
-            text-shadow: 0 0 15px var(--gold);
-        }
-
-        .muse-wrapper:hover .muse-domain {
-            color: #e6f0ff;
-        }
+        .muse-wrapper:hover .muse-avatar-container::before { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        .muse-wrapper:hover .muse-name { color: #fff; text-shadow: 0 0 15px var(--gold); }
+        .muse-wrapper:hover .muse-domain { color: #e6f0ff; }
 
         /* === МОДАЛЬНОЕ ОКНО ОТВЕТА === */
         .muse-modal-overlay {
@@ -206,41 +216,20 @@
             text-align: justify; display: none;
         }
 
-        /* === НОВЫЙ ЛОАДЕР (АНИМИРОВАННАЯ ЗВЕЗДА) === */
+        /* === ЗВЕЗДНЫЙ ЛОАДЕР === */
         .summoning-loader {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 180px;
         }
         
-        .star {
-            margin: auto;
-            width: 6em; /* Адаптировал размер под модалку */
-            height: 6em;
-            overflow: visible;
-        }
+        .star { margin: auto; width: 6em; height: 6em; overflow: visible; }
         .star__stroke {
-            fill: none;
-            stroke: var(--gold); /* Фирменный золотой цвет */
-            stroke-width: 3;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-dasharray: 31 93; /* Создает разрывы для анимации */
-            --dur: 2s;
-            animation: stroke1 var(--dur) linear infinite;
+            fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+            stroke-dasharray: 31 93; --dur: 2s; animation: stroke1 var(--dur) linear infinite;
         }
-        .star__stroke--2 {
-            animation-name: stroke2;
-            animation-delay: calc(var(--dur) / -2);
-        }
-        .star__stroke--3 {
-            animation-name: stroke3;
-            animation-direction: reverse;
-        }
-        .star__stroke--4 {
-            animation-name: stroke4;
-            animation-delay: calc(var(--dur) / -2);
-            animation-direction: reverse;
-        }
+        .star__stroke--2 { animation-name: stroke2; animation-delay: calc(var(--dur) / -2); }
+        .star__stroke--3 { animation-name: stroke3; animation-direction: reverse; }
+        .star__stroke--4 { animation-name: stroke4; animation-delay: calc(var(--dur) / -2); animation-direction: reverse; }
 
         @keyframes stroke1 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 124; } }
         @keyframes stroke2 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 248; } }
@@ -269,12 +258,10 @@
 </head>
 <body>
 
-    <!-- Звезды -->
     <div id="stars-layer-1"></div>
     <div id="stars-layer-2"></div>
     <div id="stars-layer-3"></div>
 
-    <!-- Шапка -->
     <header class="muses-header">
         <button class="back-btn" onclick="goBack()">←</button>
         <div class="breadcrumb-container">
@@ -283,22 +270,18 @@
         </div>
     </header>
 
-    <!-- Сетка Муз -->
     <main class="muses-container" id="muses-grid">
-        <!-- Генерируется через JS -->
+        <!-- Сетка генерируется через JS -->
     </main>
 
-    <!-- Модальное окно для ответа Музы -->
     <div class="muse-modal-overlay" id="muse-modal">
         <div class="muse-modal-content">
             <button class="close-modal-btn" onclick="closeMuseModal()">×</button>
             <h2 class="modal-muse-name" id="modal-title">Имя Музы</h2>
             <p class="modal-muse-domain" id="modal-subtitle">Сфера</p>
             
-            <!-- НОВЫЙ ЗВЕЗДНЫЙ ЛОАДЕР -->
             <div class="summoning-loader" id="modal-loader">
                 <svg class="star" viewBox="0 0 100 100">
-                    <!-- Построенная 8-конечная звезда для CSS анимации -->
                     <path class="star__stroke" d="M50,5 L62,38 L95,50 L62,62 L50,95 L38,62 L5,50 L38,38 Z" />
                     <path class="star__stroke star__stroke--2" d="M50,5 L62,38 L95,50 L62,62 L50,95 L38,62 L5,50 L38,38 Z" />
                     <path class="star__stroke star__stroke--3" d="M50,5 L62,38 L95,50 L62,62 L50,95 L38,62 L5,50 L38,38 Z" transform="rotate(45 50 50)" />
@@ -307,14 +290,11 @@
                 <div class="summoning-text">СИНХРОНИЗАЦИЯ...</div>
             </div>
 
-            <div class="muse-advice-text" id="modal-advice">
-                <!-- Текст совета будет здесь -->
-            </div>
+            <div class="muse-advice-text" id="modal-advice"></div>
         </div>
     </div>
 
     <script>
-        // База данных Муз
         const musesData = [
             { id: "calliope", name: "Каллиопа", domain: "Стратегия дня", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736891/1_ekjuye.webp" },
             { id: "clio", name: "Клио", domain: "Анализ паттернов", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736890/3_fd7wml.webp" },
@@ -327,18 +307,36 @@
             { id: "urania", name: "Урания", domain: "Большая картина", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736889/17_t2ztwv.webp" }
         ];
 
-        // Инициализация ID пользователя
         const tg = window.Telegram?.WebApp;
         let fatumDeviceId = localStorage.getItem('fatum_device_id');
         const REAL_USER_ID = tg?.initDataUnsafe?.user?.id || new URLSearchParams(window.location.search).get('tg_id') || fatumDeviceId;
-
         const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/lav872pnigndq8y4r8ujeruucai4pywj';
+        
+        // === ЛОГИКА 12 ЧАСОВ ===
+        const COOLDOWN_MS = 12 * 60 * 60 * 1000; // 12 часов в миллисекундах
+        let consumedMuses = JSON.parse(localStorage.getItem('fatum_muses_cooldown')) || {};
 
-        // Генерация бескаркасных Муз
+        let activeMuseId = null;
+        let adviceSuccessfullyReceived = false;
+
         const grid = document.getElementById('muses-grid');
+        
+        // Генерация сетки (Только если Муза не "сгорела")
         musesData.forEach(muse => {
+            // Проверка: прошло ли 12 часов с момента последнего совета?
+            if (consumedMuses[muse.id]) {
+                const timePassed = Date.now() - consumedMuses[muse.id];
+                if (timePassed < COOLDOWN_MS) {
+                    return; // Муза еще отдыхает, даже не рисуем её на экране
+                } else {
+                    delete consumedMuses[muse.id]; // Время вышло, удаляем из кэша
+                    localStorage.setItem('fatum_muses_cooldown', JSON.stringify(consumedMuses));
+                }
+            }
+
             const wrapper = document.createElement('article');
             wrapper.className = 'muse-wrapper';
+            wrapper.id = `muse-wrapper-${muse.id}`;
             wrapper.onclick = () => openMuseModal(muse);
             wrapper.innerHTML = `
                 <div class="muse-avatar-container">
@@ -352,12 +350,10 @@
             grid.appendChild(wrapper);
         });
 
-        // Навигация
         function goBack() {
             window.location.href = `apollo.html?tg_id=${REAL_USER_ID}`;
         }
 
-        // Логика Модалки
         const modal = document.getElementById('muse-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalSubtitle = document.getElementById('modal-subtitle');
@@ -365,6 +361,9 @@
         const modalAdvice = document.getElementById('modal-advice');
 
         async function openMuseModal(muse) {
+            activeMuseId = muse.id;
+            adviceSuccessfullyReceived = false; // Сбрасываем флаг успеха
+
             modalTitle.innerText = muse.name;
             modalSubtitle.innerText = muse.domain;
             modalLoader.style.display = 'flex';
@@ -374,40 +373,54 @@
             modal.classList.add('active');
 
             try {
-                const payload = {
-                    action: 'ask_muse',
-                    muse_id: muse.id,
-                    muse_name: muse.name,
-                    user_id: REAL_USER_ID
-                };
-
+                const payload = { action: 'ask_muse', muse_id: muse.id, muse_name: muse.name, user_id: REAL_USER_ID };
                 const response = await fetch(MAKE_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
                 });
                 
                 const adviceText = await response.text();
-                
                 modalLoader.style.display = 'none';
                 modalAdvice.style.display = 'block';
                 
-                // === ИЗМЕНЕННЫЙ ЛОРНЫЙ ТЕКСТ ВМЕСТО MAKE.COM ===
                 if(adviceText.includes("Accepted")) {
-                    modalAdvice.innerHTML = `<i>Нити судьбы сплетаются. Эфирный отклик ${muse.name} сейчас формируется в ткани мироздания. Ожидайте синхронизации матриц.</i>`;
+                    modalAdvice.innerHTML = `<i>Нити судьбы сплетаются. Эфирный отклик ${muse.name} сейчас формируется.</i>`;
+                    // Оставляем adviceSuccessfullyReceived = false, чтобы Муза НЕ ИСЧЕЗЛА, так как ответа нет
                 } else {
                     modalAdvice.innerText = adviceText;
+                    adviceSuccessfullyReceived = true; // УРА! Ответ получен!
                 }
-
             } catch (error) {
                 modalLoader.style.display = 'none';
                 modalAdvice.style.display = 'block';
                 modalAdvice.innerHTML = `<span style="color: #ff4a4a;">Связь с астральным планом потеряна. Попробуйте совершить зов снова.</span>`;
+                // adviceSuccessfullyReceived остается false
             }
         }
 
         function closeMuseModal() {
             modal.classList.remove('active');
+
+            // ЕСЛИ ЮЗЕР УСПЕШНО ПОЛУЧИЛ СОВЕТ -> МУЗА ПРЕВРАЩАЕТСЯ В ПЫЛЬ
+            if (adviceSuccessfullyReceived && activeMuseId) {
+                // Записываем время смерти Музы
+                consumedMuses[activeMuseId] = Date.now();
+                localStorage.setItem('fatum_muses_cooldown', JSON.stringify(consumedMuses));
+
+                // Ищем эту музу на странице и запускаем анимацию растворения
+                const wrapper = document.getElementById(`muse-wrapper-${activeMuseId}`);
+                if (wrapper) {
+                    wrapper.classList.add('muse-consumed'); // Эта CSS-анимация превратит её в прах
+                    
+                    // Через 2.5 секунды (когда пыль осядет), физически удаляем её код со страницы
+                    setTimeout(() => {
+                        wrapper.remove();
+                    }, 2500);
+                }
+            }
+
+            // Очищаем переменные
+            activeMuseId = null;
+            adviceSuccessfullyReceived = false;
         }
     </script>
 </body>
