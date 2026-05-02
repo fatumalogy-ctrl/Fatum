@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Зал Муз | Аполлон</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.6);
+            --dark-bg: #04060a;
+            --card-bg: rgba(10, 15, 25, 0.85);
+            --text-light: #e6f0ff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* === ЖИВЫЕ ЗВЕЗДЫ === */
+        #stars-layer-1, #stars-layer-2, #stars-layer-3 { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; pointer-events: none; }
+        #stars-layer-1 { background: transparent url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='45' cy='123' r='1' fill='%23ffffff' opacity='0.8'/%3E%3Ccircle cx='234' cy='45' r='1.5' fill='%23d4af37' opacity='0.6'/%3E%3C/svg%3E") repeat; animation: twinkle 4s infinite alternate linear; }
+        #stars-layer-2 { background: transparent url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='100' cy='150' r='1.5' fill='%23d4af37' opacity='0.5'/%3E%3Ccircle cx='300' cy='50' r='2' fill='%23ffffff' opacity='0.3'/%3E%3C/svg%3E") repeat; animation: twinkle 5s infinite alternate linear; animation-delay: 1.5s; }
+        #stars-layer-3 { background: transparent url("data:image/svg+xml,%3Csvg width='500' height='500' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='400' r='1' fill='%23d4af37' opacity='0.8'/%3E%3Ccircle cx='400' cy='100' r='1.5' fill='%23ffffff' opacity='0.5'/%3E%3C/svg%3E") repeat; animation: twinkle 6s infinite alternate linear; animation-delay: 3s; }
+        @keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 1; } }
+
+        /* === СКРОЛЛБАР === */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 10px; }
+
+        /* === ШАПКА === */
+        .muses-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            background: linear-gradient(180deg, rgba(4, 6, 10, 0.95) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .back-btn {
+            background: none; border: none; color: var(--gold); font-size: 1.8rem; cursor: pointer;
+            margin-right: 20px; transition: 0.3s; padding-bottom: 5px;
+        }
+        .back-btn:hover { color: #fff; transform: scale(1.1); text-shadow: 0 0 10px var(--gold); }
+        
+        .breadcrumb-container { display: flex; align-items: center; gap: 15px; }
+        .logo-icon { width: 35px; height: auto; filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
+        .breadcrumb-text {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.1rem; color: #fff; letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .breadcrumb-text span { color: var(--gold); opacity: 0.7; margin: 0 8px; }
+
+        /* === СЕТКА МУЗ (БЕЗ РАМОК) === */
+        .muses-container {
+            max-width: 1100px; margin: 50px auto; padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px 40px;
+            justify-items: center;
+        }
+
+        .muse-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: museEntrance 0.8s forwards;
+            width: 100%;
+            max-width: 280px;
+            text-align: center;
+            position: relative;
+        }
+
+        .muse-wrapper:nth-child(1) { animation-delay: 0.1s; }
+        .muse-wrapper:nth-child(2) { animation-delay: 0.2s; }
+        .muse-wrapper:nth-child(3) { animation-delay: 0.3s; }
+        .muse-wrapper:nth-child(4) { animation-delay: 0.4s; }
+        .muse-wrapper:nth-child(5) { animation-delay: 0.5s; }
+        .muse-wrapper:nth-child(6) { animation-delay: 0.6s; }
+        .muse-wrapper:nth-child(7) { animation-delay: 0.7s; }
+        .muse-wrapper:nth-child(8) { animation-delay: 0.8s; }
+        .muse-wrapper:nth-child(9) { animation-delay: 0.9s; }
+
+        @keyframes museEntrance { to { opacity: 1; transform: translateY(0); } }
+
+        /* Аватар Музы */
+        .muse-avatar-container {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .muse-avatar-container::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 75%; height: 75%;
+            background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: -1;
+            transition: all 0.6s ease;
+        }
+
+        .muse-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.15)) brightness(0.85);
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Текстовая инфа под аватаром */
+        .muse-info {
+            transition: transform 0.4s ease;
+        }
+
+        .muse-name {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.6rem; color: var(--gold);
+            margin-bottom: 5px; 
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .muse-domain {
+            font-size: 1.1rem; color: #8a9ba8; font-style: italic;
+            transition: color 0.3s;
+        }
+
+        /* ЭФФЕКТЫ ПРИ НАВЕДЕНИИ */
+        .muse-wrapper:hover .muse-img {
+            transform: translateY(-15px) scale(1.08);
+            filter: drop-shadow(0 20px 35px rgba(212, 175, 55, 0.6)) brightness(1.1);
+        }
+
+        .muse-wrapper:hover .muse-avatar-container::before {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .muse-wrapper:hover .muse-name {
+            color: #fff;
+            text-shadow: 0 0 15px var(--gold);
+        }
+
+        .muse-wrapper:hover .muse-domain {
+            color: #e6f0ff;
+        }
+
+        /* === МОДАЛЬНОЕ ОКНО ОТВЕТА === */
+        .muse-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .muse-modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .muse-modal-content {
+            width: 90%; max-width: 550px; background: var(--card-bg);
+            border: 1px solid var(--gold); border-radius: 20px; padding: 40px;
+            position: relative; transform: scale(0.9) translateY(20px); transition: all 0.4s ease;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.15);
+            text-align: center;
+        }
+        .muse-modal-overlay.active .muse-modal-content { transform: scale(1) translateY(0); }
+
+        .close-modal-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            color: var(--gold); font-size: 2.5rem; cursor: pointer; transition: 0.3s; line-height: 0.5;
+        }
+        .close-modal-btn:hover { color: #fff; }
+
+        .modal-muse-name { font-family: 'Cinzel Decorative', cursive; font-size: 2rem; color: var(--gold); margin-bottom: 5px; }
+        .modal-muse-domain { font-style: italic; color: #8a9ba8; margin-bottom: 30px; font-size: 1.2rem;}
+        
+        .muse-advice-text {
+            font-size: 1.3rem; line-height: 1.6; color: #fff;
+            text-align: justify; display: none;
+        }
+
+        /* === НОВЫЙ ЛОАДЕР (АНИМИРОВАННАЯ ЗВЕЗДА) === */
+        .summoning-loader {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 180px;
+        }
+        
+        .star {
+            margin: auto;
+            width: 6em; /* Адаптировал размер под модалку */
+            height: 6em;
+            overflow: visible;
+        }
+        .star__stroke {
+            fill: none;
+            stroke: var(--gold); /* Фирменный золотой цвет */
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 31 93; /* Создает разрывы для анимации */
+            --dur: 2s;
+            animation: stroke1 var(--dur) linear infinite;
+        }
+        .star__stroke--2 {
+            animation-name: stroke2;
+            animation-delay: calc(var(--dur) / -2);
+        }
+        .star__stroke--3 {
+            animation-name: stroke3;
+            animation-direction: reverse;
+        }
+        .star__stroke--4 {
+            animation-name: stroke4;
+            animation-delay: calc(var(--dur) / -2);
+            animation-direction: reverse;
+        }
+
+        @keyframes stroke1 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 124; } }
+        @keyframes stroke2 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 248; } }
+        @keyframes stroke3 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 372; } }
+        @keyframes stroke4 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 496; } }
+
+        .summoning-text {
+            margin-top: 15px; font-family: 'Cinzel Decorative', cursive;
+            color: var(--gold); letter-spacing: 2px; animation: textPulse 1.5s infinite;
+        }
+        @keyframes textPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        /* === МОБИЛКА === */
+        @media (max-width: 768px) {
+            .muses-header { padding: 0 15px; height: 60px; }
+            .breadcrumb-text { font-size: 0.9rem; }
+            .logo-icon { width: 28px; }
+            .muses-container { grid-template-columns: repeat(2, 1fr); gap: 30px 15px; margin: 30px auto; }
+            .muse-name { font-size: 1.3rem; }
+            .muse-domain { font-size: 0.9rem; }
+            .muse-modal-content { padding: 30px 20px; }
+            .modal-muse-name { font-size: 1.5rem; }
+            .muse-advice-text { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Звезды -->
+    <div id="stars-layer-1"></div>
+    <div id="stars-layer-2"></div>
+    <div id="stars-layer-3"></div>
+
+    <!-- Шапка -->
+    <header class="muses-header">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="breadcrumb-container">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="logo-icon" alt="Logo">
+            <div class="breadcrumb-text">Фатум <span>/</span> Аполлон <span>/</span> Музы</div>
+        </div>
+    </header>
+
+    <!-- Сетка Муз -->
+    <main class="muses-container" id="muses-grid">
+        <!-- Генерируется через JS -->
+    </main>
+
+    <!-- Модальное окно для ответа Музы -->
+    <div class="muse-modal-overlay" id="muse-modal">
+        <div class="muse-modal-content">
+            <button class="close-modal-btn" onclick="closeMuseModal()">×</button>
+            <h2 class="modal-muse-name" id="modal-title">Имя Музы</h2>
+            <p class="modal-muse-domain" id="modal-subtitle">Сфера</p>
+            
+            <!-- НОВЫЙ ЗВЕЗДНЫЙ ЛОАДЕР -->
+            <div class="summoning-loader" id="modal-loader">
+                <svg class="star" viewBox="0 0 100 100">
+                    <!-- Построенная 8-конечная звезда для CSS анимации -->
+                    <path class="star__stroke" d="M50,5 L62,38 L95,50 L62,62 L50,95 L38,62 L5,50 L38,38 Z" />
+                    <path class="star__stroke star__stroke--2" d="M50,5 L62,38 L95,50 L62,62 L50,95 L38,62 L5,50 L38,38 Z" />
+                    <path class="star__stroke star__stroke--3" d="M50,5 L62,38 L95,50 L62,62 L50,95 L38,62 L5,50 L38,38 Z" transform="rotate(45 50 50)" />
+                    <path class="star__stroke star__stroke--4" d="M50,5 L62,38 L95,50 L62,62 L50,95 L38,62 L5,50 L38,38 Z" transform="rotate(45 50 50)" />
+                </svg>
+                <div class="summoning-text">СИНХРОНИЗАЦИЯ...</div>
+            </div>
+
+            <div class="muse-advice-text" id="modal-advice">
+                <!-- Текст совета будет здесь -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // База данных Муз
+        const musesData = [
+            { id: "calliope", name: "Каллиопа", domain: "Стратегия дня", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736891/1_ekjuye.webp" },
+            { id: "clio", name: "Клио", domain: "Анализ паттернов", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736890/3_fd7wml.webp" },
+            { id: "euterpe", name: "Эвтерпа", domain: "Акустика и настроение", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736890/5_zdht9g.webp" },
+            { id: "thalia", name: "Талия", domain: "Лёгкость и антистресс", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736890/7_1_uns2zw.webp" },
+            { id: "melpomene", name: "Мельпомена", domain: "Риски и тени", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736889/9_1_j4auog.webp" },
+            { id: "terpsichore", name: "Терпсихора", domain: "Тело и ритм", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736890/11_1_nfmwnn.webp" },
+            { id: "erato", name: "Эрато", domain: "Отношения", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736889/13_pwprqp.webp" },
+            { id: "polyhymnia", name: "Полигимния", domain: "Внутреннее состояние", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736890/15_modtrk.webp" },
+            { id: "urania", name: "Урания", domain: "Большая картина", img: "https://res.cloudinary.com/dmirmbjtj/image/upload/v1777736889/17_t2ztwv.webp" }
+        ];
+
+        // Инициализация ID пользователя
+        const tg = window.Telegram?.WebApp;
+        let fatumDeviceId = localStorage.getItem('fatum_device_id');
+        const REAL_USER_ID = tg?.initDataUnsafe?.user?.id || new URLSearchParams(window.location.search).get('tg_id') || fatumDeviceId;
+
+        const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/lav872pnigndq8y4r8ujeruucai4pywj';
+
+        // Генерация бескаркасных Муз
+        const grid = document.getElementById('muses-grid');
+        musesData.forEach(muse => {
+            const wrapper = document.createElement('article');
+            wrapper.className = 'muse-wrapper';
+            wrapper.onclick = () => openMuseModal(muse);
+            wrapper.innerHTML = `
+                <div class="muse-avatar-container">
+                    <img src="${muse.img}" class="muse-img" alt="${muse.name}">
+                </div>
+                <div class="muse-info">
+                    <h2 class="muse-name">${muse.name}</h2>
+                    <p class="muse-domain">${muse.domain}</p>
+                </div>
+            `;
+            grid.appendChild(wrapper);
+        });
+
+        // Навигация
+        function goBack() {
+            window.location.href = `apollo.html?tg_id=${REAL_USER_ID}`;
+        }
+
+        // Логика Модалки
+        const modal = document.getElementById('muse-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalSubtitle = document.getElementById('modal-subtitle');
+        const modalLoader = document.getElementById('modal-loader');
+        const modalAdvice = document.getElementById('modal-advice');
+
+        async function openMuseModal(muse) {
+            modalTitle.innerText = muse.name;
+            modalSubtitle.innerText = muse.domain;
+            modalLoader.style.display = 'flex';
+            modalAdvice.style.display = 'none';
+            modalAdvice.innerText = '';
+            
+            modal.classList.add('active');
+
+            try {
+                const payload = {
+                    action: 'ask_muse',
+                    muse_id: muse.id,
+                    muse_name: muse.name,
+                    user_id: REAL_USER_ID
+                };
+
+                const response = await fetch(MAKE_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const adviceText = await response.text();
+                
+                modalLoader.style.display = 'none';
+                modalAdvice.style.display = 'block';
+                
+                // === ИЗМЕНЕННЫЙ ЛОРНЫЙ ТЕКСТ ВМЕСТО MAKE.COM ===
+                if(adviceText.includes("Accepted")) {
+                    modalAdvice.innerHTML = `<i>Нити судьбы сплетаются. Эфирный отклик ${muse.name} сейчас формируется в ткани мироздания. Ожидайте синхронизации матриц.</i>`;
+                } else {
+                    modalAdvice.innerText = adviceText;
+                }
+
+            } catch (error) {
+                modalLoader.style.display = 'none';
+                modalAdvice.style.display = 'block';
+                modalAdvice.innerHTML = `<span style="color: #ff4a4a;">Связь с астральным планом потеряна. Попробуйте совершить зов снова.</span>`;
+            }
+        }
+
+        function closeMuseModal() {
+            modal.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
