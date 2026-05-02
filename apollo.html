@@ -41,84 +41,73 @@
     .mystic-astral-root ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 10px; }
 
     /* === 4. ГЛАВНАЯ ЗОНА ЧАТА === */
-    .mystic-main-area { flex-grow: 1; display: flex; flex-direction: column; height: 100%; position: relative; padding-bottom: 20px; }
+    .mystic-main-area { flex-grow: 1; display: flex; flex-direction: column; height: 100%; position: relative; padding-bottom: 15px; }
 
     /* === 5. ПАНЕЛЬ NASA === */
-    .nasa-monitor-bar { height: 65px; background: rgba(4, 6, 10, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(212, 175, 55, 0.15); display: flex; align-items: center; padding: 0 30px; justify-content: space-between; cursor: pointer; z-index: 20; transition: all 0.3s ease; }
+    .nasa-monitor-bar { height: 50px; background: rgba(4, 6, 10, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(212, 175, 55, 0.15); display: flex; align-items: center; padding: 0 20px; justify-content: space-between; cursor: pointer; z-index: 20; transition: all 0.3s ease; }
     .nasa-monitor-bar:hover { background: rgba(10, 15, 25, 0.9); }
-    .nasa-info-tag { display: flex; align-items: center; gap: 15px; width: 100%; overflow: hidden; }
-    .nasa-icon-img { width: 32px; height: auto; object-fit: contain; animation: spinSphere 12s linear infinite; }
+    .nasa-info-tag { display: flex; align-items: center; gap: 10px; width: 100%; overflow: hidden; }
+    .nasa-icon-img { width: 24px; height: auto; object-fit: contain; animation: spinSphere 12s linear infinite; }
     @keyframes spinSphere { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .nasa-label { font-family: 'Cinzel Decorative', cursive; font-size: 0.85rem; color: #d4af37; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
-    #nasa-dynamic-state { color: #ffffff; font-weight: 500; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .down-arrow { font-size: 0.9rem; color: #d4af37; animation: arrowPulse 2s infinite; opacity: 0.7; margin-left: 15px; }
+    .nasa-label { font-family: 'Cinzel Decorative', cursive; font-size: 0.75rem; color: #d4af37; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    #nasa-dynamic-state { color: #ffffff; font-weight: 500; font-family: 'Cormorant Garamond', serif; font-size: 1rem; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .down-arrow { font-size: 0.8rem; color: #d4af37; animation: arrowPulse 2s infinite; opacity: 0.7; margin-left: 10px; }
     @keyframes arrowPulse { 0%, 100% { opacity: 0.4; transform: translateY(0); } 50% { opacity: 1; transform: translateY(3px); } }
 
-    .nasa-modal { position: absolute; top: 65px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; background: rgba(4, 6, 10, 0.98); border: 1px solid rgba(212, 175, 55, 0.4); border-top: none; border-radius: 0 0 20px 20px; padding: 30px; display: none; z-index: 100; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+    .nasa-modal { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 600px; background: rgba(4, 6, 10, 0.98); border: 1px solid rgba(212, 175, 55, 0.4); border-top: none; border-radius: 0 0 15px 15px; padding: 20px; display: none; z-index: 100; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
     .nasa-modal.active { display: block; animation: slideDown 0.4s ease-out; }
     @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-    .nasa-close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #d4af37; font-size: 1.8rem; cursor: pointer; }
-    #nasa-full-text { 
-        font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: #e0e0e0; line-height: 1.6; text-align: justify; margin-top: 15px;
-        white-space: pre-line;
-        text-indent: 20px;
-        max-height: 50vh;
-        overflow-y: auto;
-        padding-right: 10px;
-    }
-    #nasa-full-text::-webkit-scrollbar { width: 4px; }
-    #nasa-full-text::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
+    .nasa-close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; color: #d4af37; font-size: 1.5rem; cursor: pointer; }
+    #nasa-full-text { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #e0e0e0; line-height: 1.5; text-align: justify; margin-top: 10px; white-space: pre-line; max-height: 40vh; overflow-y: auto; padding-right: 10px; }
 
-    /* === 6. ШАПКА ЧАТА И КНОПКА НАЗАД === */
-    .mystic-header { height: 85px; flex-shrink: 0; display: flex; align-items: center; padding: 0 40px; background: linear-gradient(180deg, rgba(4, 6, 10, 0.95) 0%, transparent 100%); border-bottom: 1px solid rgba(212, 175, 55, 0.05); z-index: 10; }
+    /* === 6. УМЕНЬШЕННАЯ ШАПКА ЧАТА И КНОПКА МЕНЮ === */
+    .mystic-header { height: 60px; flex-shrink: 0; display: flex; align-items: center; padding: 0 20px; background: linear-gradient(180deg, rgba(4, 6, 10, 0.95) 0%, transparent 100%); border-bottom: 1px solid rgba(212, 175, 55, 0.05); z-index: 10; }
     
-    .back-nav-btn { width: 35px; height: auto; cursor: pointer; margin-right: 25px; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4)); transition: transform 0.3s ease; }
-    .back-nav-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.8)); }
+    .header-nav-group { display: flex; align-items: center; gap: 15px; margin-right: 20px; }
+    .back-nav-btn { width: 25px; height: auto; cursor: pointer; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4)); transition: transform 0.3s ease; }
+    .back-nav-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8)); }
     
-    .mystic-communion-target { display: flex; align-items: center; gap: 18px; }
-    .mystic-communion-target img { width: 55px; height: auto; object-fit: contain; background: transparent; border: none; border-radius: 0; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3)); }
+    .menu-nav-btn { width: 28px; height: auto; cursor: pointer; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4)); transition: transform 0.3s ease; }
+    .menu-nav-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8)); }
+    
+    .mystic-communion-target { display: flex; align-items: center; gap: 12px; }
+    .mystic-communion-target img { width: 40px; height: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
     .mystic-header-text { display: flex; flex-direction: column; }
-    .mystic-header-name { font-family: 'Cinzel Decorative', cursive; font-size: 1.5rem; font-weight: 700; color: #ffffff; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
-    .mystic-header-status { font-style: italic; font-size: 1rem; color: #8a9ba8; display: flex; align-items: center; gap: 8px; margin-top: -2px; }
+    .mystic-header-name { font-family: 'Cinzel Decorative', cursive; font-size: 1.2rem; font-weight: 700; color: #ffffff; letter-spacing: 1px; }
+    .mystic-header-status { font-style: italic; font-size: 0.85rem; color: #8a9ba8; display: flex; align-items: center; gap: 6px; margin-top: -2px; }
 
     /* === 7. ИСТОРИЯ ЧАТА === */
-    .mystic-visions-history { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; gap: 35px; scroll-behavior: smooth; }
+    .mystic-visions-history { flex-grow: 1; overflow-y: auto; padding: 20px 25px; display: flex; flex-direction: column; gap: 25px; scroll-behavior: smooth; }
     .mystic-message-row { display: flex; width: 100%; animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .mystic-bubble { padding: 20px 25px; font-size: 1.2rem; line-height: 1.6; max-width: 80%; word-wrap: break-word; border-radius: 20px; white-space: pre-wrap; box-shadow: 0 5px 25px rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
+    .mystic-bubble { padding: 15px 20px; font-size: 1.15rem; line-height: 1.5; max-width: 85%; word-wrap: break-word; border-radius: 18px; white-space: pre-wrap; box-shadow: 0 5px 20px rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
     .vision-oracle { justify-content: flex-start; }
-    .vision-oracle .mystic-avatar-wrapper { margin-right: 20px; flex-shrink: 0; }
-    .vision-oracle .mystic-avatar-wrapper img { width: 25px; height: auto; object-fit: contain; background: transparent; border: none; border-radius: 0; filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.3)); }
+    .vision-oracle .mystic-avatar-wrapper { margin-right: 15px; flex-shrink: 0; }
+    .vision-oracle .mystic-avatar-wrapper img { width: 22px; height: auto; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
     .vision-oracle .mystic-bubble { background: rgba(10, 15, 25, 0.85); border: 1px solid rgba(212, 175, 55, 0.3); border-top-left-radius: 4px; color: #e6f0ff; }
     .vision-seeker { justify-content: flex-end; }
     .vision-seeker .mystic-bubble { background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%); border: 1px solid rgba(212, 175, 55, 0.4); border-top-right-radius: 4px; color: #ffffff; }
 
-    /* === 9. ЗОНА ВВОДА (АЛТАРЬ) === */
-    .mystic-altar-container { padding: 15px 40px 25px 40px; background: linear-gradient(0deg, #04060a 85%, transparent 100%); flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
-    .chat-limit-display { text-align: center; font-family: 'Cinzel Decorative', cursive; font-size: 0.85rem; color: #8a9ba8; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.9; transition: all 0.3s ease; cursor: pointer; }
+    /* === 8. ЗОНА ВВОДА (АЛТАРЬ) === */
+    .mystic-altar-container { padding: 10px 20px 20px 20px; background: linear-gradient(0deg, #04060a 85%, transparent 100%); flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; }
+    .chat-limit-display { text-align: center; font-family: 'Cinzel Decorative', cursive; font-size: 0.8rem; color: #8a9ba8; letter-spacing: 1px; margin-bottom: 2px; opacity: 0.9; cursor: pointer; }
     .chat-limit-display.low-limit { color: #d4af37; opacity: 1; }
     .chat-limit-display.no-limit { color: #ff4a4a; opacity: 1; font-weight: bold; }
 
-    .dashboard-dock-inline { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; max-width: 850px; margin: 0 auto; width: 100%; }
-    .custom-tool-icon { width: 35px; height: auto; object-fit: contain; cursor: pointer; transition: all 0.3s ease; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2)); }
+    .dashboard-dock-inline { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; max-width: 850px; margin: 0 auto; width: 100%; }
+    .custom-tool-icon { width: 32px; height: auto; object-fit: contain; cursor: pointer; transition: all 0.3s ease; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2)); }
     .custom-tool-icon:hover { transform: translateY(-4px) scale(1.1); filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
-
-    /* СТИЛИ ДЛЯ КНОПКИ ТЕЛЕГРАМ */
-    #tg-save-icon { opacity: 0.2; pointer-events: none; transition: all 0.4s ease; }
-    #tg-save-icon.active-tg { opacity: 1; pointer-events: auto; filter: drop-shadow(0 0 8px rgba(100, 180, 255, 0.8)); }
-    #tg-save-icon.active-tg:hover { transform: translateY(-4px) scale(1.1); filter: drop-shadow(0 0 20px rgba(100, 180, 255, 1)); }
 
     /* === КНОПКА ГЕНЕРАЦИИ === */
     .input-row-wrapper { display: flex; align-items: flex-end; justify-content: center; max-width: 850px; margin: 0 auto; width: 100%; }
-
-    .light-button { position: relative; height: 60px; display: flex; align-items: flex-end; outline: none; background: none; border: none; cursor: pointer; margin-right: 15px; }
-    .light-button .button-holder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px; width: 60px; background-color: rgba(10, 15, 25, 0.9); border-radius: 15px; transition: 300ms; outline: rgba(88, 101, 242, 0.2) 2px solid; outline-offset: 2px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-    .light-button .button-holder img { height: 35px; object-fit: contain; transition: 300ms; }
-    .light-button .light-holder { position: absolute; bottom: 60px; left: 0; height: 120px; width: 60px; display: flex; flex-direction: column; align-items: center; pointer-events: none; opacity: 0; transition: 300ms; }
-    .light-button .light-holder .dot { position: absolute; top: 0; width: 6px; height: 6px; background-color: rgba(88, 101, 242, 1); border-radius: 10px; z-index: 2; box-shadow: 0 0 10px rgba(88, 101, 242, 1); }
-    .light-button .light-holder .light { position: absolute; top: 0; width: 120px; left: -30px; height: 120px; clip-path: polygon(50% 0%, 25% 100%, 75% 100%); background: linear-gradient(180deg, rgba(88, 101, 242, 0.8) 0%, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255, 0) 100%); }
-    .light-button .btn-text-label { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; color: #b3c2ff; opacity: 0; transition: 300ms; white-space: nowrap; pointer-events: none; }
+    .light-button { position: relative; height: 55px; display: flex; align-items: flex-end; outline: none; background: none; border: none; cursor: pointer; margin-right: 12px; }
+    .light-button .button-holder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 55px; width: 55px; background-color: rgba(10, 15, 25, 0.9); border-radius: 12px; transition: 300ms; outline: rgba(88, 101, 242, 0.2) 2px solid; outline-offset: 2px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+    .light-button .button-holder img { height: 30px; object-fit: contain; transition: 300ms; }
+    .light-button .light-holder { position: absolute; bottom: 55px; left: 0; height: 100px; width: 55px; display: flex; flex-direction: column; align-items: center; pointer-events: none; opacity: 0; transition: 300ms; }
+    .light-button .light-holder .dot { position: absolute; top: 0; width: 6px; height: 6px; background-color: rgba(88, 101, 242, 1); border-radius: 10px; box-shadow: 0 0 10px rgba(88, 101, 242, 1); }
+    .light-button .light-holder .light { position: absolute; top: 0; width: 110px; left: -27.5px; height: 100px; clip-path: polygon(50% 0%, 25% 100%, 75% 100%); background: linear-gradient(180deg, rgba(88, 101, 242, 0.8) 0%, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255, 0) 100%); }
+    .light-button .btn-text-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-family: 'Cormorant Garamond', serif; font-size: 0.8rem; color: #b3c2ff; opacity: 0; transition: 300ms; white-space: nowrap; pointer-events: none; }
 
     .light-button.is-available .light-holder, .light-button.is-available .btn-text-label { opacity: 1; }
     .light-button.is-available .button-holder { outline: rgba(88, 101, 242, 0.8) 2px solid; box-shadow: 0 0 15px rgba(88, 101, 242, 0.3); }
@@ -126,35 +115,34 @@
     .light-button:hover.is-available .button-holder img { transform: scale(1.1); filter: drop-shadow(0 0 5px rgba(88, 101, 242, 0.8)); }
     .light-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .mystic-altar-wrapper { flex-grow: 1; background: rgba(10, 15, 25, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 35px; display: flex; align-items: center; padding: 8px 15px 8px 30px; transition: all 0.4s ease; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+    .mystic-altar-wrapper { flex-grow: 1; background: rgba(10, 15, 25, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 25px; display: flex; align-items: center; padding: 5px 12px 5px 25px; transition: all 0.4s ease; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
     .mystic-altar-wrapper:focus-within { border-color: rgba(255, 255, 255, 0.6); box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
-    .mystic-input { flex-grow: 1; background: transparent; border: none; color: #ffffff !important; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; outline: none; resize: none; padding: 12px 0; min-height: 52px; display: flex; align-items: center; }
+    .mystic-input { flex-grow: 1; background: transparent; border: none; color: #ffffff !important; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; outline: none; resize: none; padding: 10px 0; min-height: 45px; display: flex; align-items: center; }
     .mystic-input::placeholder { color: #8a9ba8; font-style: italic; }
-    .mystic-cast-btn { background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.8); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; margin-left: 15px; transition: all 0.3s ease; color: #d4af37; }
+    .mystic-cast-btn { background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.8); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; margin-left: 12px; transition: all 0.3s ease; color: #d4af37; }
     .mystic-cast-btn:hover:not(:disabled) { background: rgba(212, 175, 55, 0.9); transform: scale(1.05); color: #fff; box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
     .mystic-cast-btn:disabled { background: rgba(30, 30, 30, 0.6); border-color: rgba(80, 80, 80, 0.4); color: #555; cursor: not-allowed; }
-    .send-icon { width: 22px; height: 22px; fill: currentColor; transform: translateX(-1px); }
+    .send-icon { width: 20px; height: 20px; fill: currentColor; transform: translateX(-1px); }
 
-    /* === 11. МОДАЛЬНЫЕ ОКНА И СКРОЛЛЫ === */
+    /* === 9. НОВОЕ ГЛАВНОЕ МЕНЮ (МОДАЛЬНОЕ) === */
+    #modal-main-menu .dash-modal-content { max-width: 400px; padding: 30px; background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.6); box-shadow: 0 0 40px rgba(212, 175, 55, 0.15); }
+    .main-menu-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+    .main-menu-btn { background: linear-gradient(90deg, rgba(212, 175, 55, 0.05) 0%, rgba(212, 175, 55, 0.15) 100%); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 15px; color: #e6f0ff; font-family: 'Cinzel Decorative', cursive; font-size: 1.1rem; text-align: left; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: space-between; align-items: center; }
+    .main-menu-btn:hover { background: rgba(212, 175, 55, 0.25); border-color: rgba(212, 175, 55, 0.8); color: #fff; transform: translateX(5px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2); }
+    .main-menu-btn::after { content: '→'; color: #d4af37; opacity: 0; transition: 0.3s; }
+    .main-menu-btn:hover::after { opacity: 1; transform: translateX(-5px); }
+
+    /* === 10. ОСТАЛЬНЫЕ МОДАЛКИ === */
     .dash-modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 200; opacity: 0; transition: opacity 0.3s ease; }
     .dash-modal-overlay.active { display: flex; opacity: 1; }
-    
-    .dash-modal-content { 
-        width: 90%; max-width: 600px; background: rgba(10, 15, 25, 0.98); 
-        border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 20px; 
-        padding: 40px; position: relative; transform: scale(0.9); transition: transform 0.3s ease; box-shadow: 0 0 50px rgba(212, 175, 55, 0.2); 
-        max-height: 85vh; display: flex; flex-direction: column;
-    }
-    
+    .dash-modal-content { width: 90%; max-width: 600px; background: rgba(10, 15, 25, 0.98); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 20px; padding: 30px; position: relative; transform: scale(0.9); transition: transform 0.3s ease; box-shadow: 0 0 50px rgba(212, 175, 55, 0.2); max-height: 85vh; display: flex; flex-direction: column; }
     .dash-modal-overlay.active .dash-modal-content { transform: scale(1); }
-    .dash-close-btn { position: absolute; top: 15px; right: 25px; background: none; border: none; color: #d4af37; font-size: 2.5rem; cursor: pointer; transition: 0.3s; line-height: 0.5; z-index: 10;}
+    .dash-close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #d4af37; font-size: 2.2rem; cursor: pointer; transition: 0.3s; line-height: 0.5; z-index: 10;}
     .dash-close-btn:hover { color: #ffffff; }
-    .dash-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.6rem; color: #d4af37; text-align: center; margin-bottom: 5px; letter-spacing: 2px; flex-shrink: 0;}
-    .dash-subtitle { text-align: center; font-style: italic; color: #8a9ba8; margin-bottom: 25px; flex-shrink: 0;}
-    
-    .chart-container { position: relative; height: 350px; width: 100%; flex-shrink: 0;}
+    .dash-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.5rem; color: #d4af37; text-align: center; margin-bottom: 5px; letter-spacing: 2px; flex-shrink: 0;}
+    .dash-subtitle { text-align: center; font-style: italic; color: #8a9ba8; margin-bottom: 20px; flex-shrink: 0;}
+    .chart-container { position: relative; height: 300px; width: 100%; flex-shrink: 0;}
 
-    /* Скроллы для списков внутри модалок */
     #hourly-dynamic-list, #audio-dynamic-list { overflow-y: auto; flex-grow: 1; padding-right: 10px; margin-top: 10px; }
     #hourly-dynamic-list::-webkit-scrollbar, #audio-dynamic-list::-webkit-scrollbar { width: 4px; }
     #hourly-dynamic-list::-webkit-scrollbar-thumb, #audio-dynamic-list::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
@@ -166,41 +154,7 @@
     .audio-freq { font-family: 'Cinzel Decorative', cursive; font-size: 1.2rem; color: #ff8c00; font-weight: bold; margin-right: 15px; flex-shrink: 0;}
     .audio-desc { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #e6f0ff; line-height: 1.4;}
 
-    /* === 12. МОБИЛЬНАЯ АДАПТАЦИЯ === */
-    @media (max-width: 768px) {
-        .nasa-monitor-bar { padding: 10px 20px; height: auto; flex-direction: row; align-items: center; justify-content: space-between;}
-        .nasa-info-tag { align-items: center; width: 85%;}
-        .nasa-label { font-size: 0.7rem; }
-        #nasa-dynamic-state { font-size: 0.95rem; margin-left: 10px; margin-top: 0; white-space: nowrap;}
-        
-        .mystic-header { padding: 0 20px; height: 75px;}
-        .back-nav-btn { width: 30px; margin-right: 15px; }
-        .mystic-header-name { font-size: 1.3rem; }
-        .mystic-communion-target img { width: 45px; }
-
-        .mystic-visions-history { padding: 20px 15px; gap: 20px; }
-        .mystic-bubble { max-width: 92%; font-size: 1.1rem; padding: 15px 20px; }
-        
-        .mystic-altar-container { padding: 10px 10px 15px 10px; gap: 15px; }
-        .dashboard-dock-inline { gap: 8px; flex-wrap: wrap; justify-content: center; }
-        .custom-tool-icon { width: 28px; }
-
-        .light-button { margin-right: 10px; }
-        .light-button .button-holder { width: 45px; height: 45px; border-radius: 12px; }
-        .light-button .button-holder img { height: 25px; }
-        .light-button .light-holder { bottom: 45px; width: 45px; height: 90px; }
-        .light-button .light-holder .light { width: 90px; left: -22.5px; height: 90px; }
-
-        .mystic-altar-wrapper { padding: 5px 8px 5px 20px; border-radius: 25px; }
-        .mystic-input { font-size: 1.15rem; min-height: 45px; }
-        .mystic-cast-btn { width: 42px; height: 42px; margin-left: 10px; }
-        
-        .dash-modal-content { width: 95%; padding: 30px 20px; }
-        .chart-container { height: 280px; }
-        .mystic-main-area { padding-bottom: 20px; } 
-    }
-
-    /* === НОВЫЙ ЛОАДЕР === */
+    /* === 11. ЛОАДЕР === */
     .loader-wrapper { position: relative; display: flex; align-items: center; justify-content: center; width: 180px; height: 180px; font-family: "Inter", sans-serif; font-size: 1.3em; font-weight: 300; color: white; border-radius: 50%; background-color: transparent; user-select: none; }
     .loader { position: absolute; top: 0; left: 0; width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; background-color: transparent; animation: loader-rotate 2s linear infinite; z-index: 0; }
     @keyframes loader-rotate { 0% { transform: rotate(90deg); box-shadow: 0 10px 20px 0 #fff inset, 0 20px 30px 0 #ad5fff inset, 0 60px 60px 0 #471eec inset; } 50% { transform: rotate(270deg); box-shadow: 0 10px 20px 0 #fff inset, 0 20px 10px 0 #d60a47 inset, 0 40px 60px 0 #311e80 inset; } 100% { transform: rotate(450deg); box-shadow: 0 10px 20px 0 #fff inset, 0 20px 30px 0 #ad5fff inset, 0 60px 60px 0 #471eec inset; } }
@@ -217,7 +171,7 @@
 
 <main class="mystic-main-area">
     
-    <div class="nasa-monitor-bar" onclick="document.getElementById('nasa-modal').classList.toggle('active')">
+    <div class="nasa-monitor-bar" onclick="openModal('nasa-modal')">
         <div class="nasa-info-tag">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776047585/1-copy-0_1_ty0ixo.webp" class="nasa-icon-img" alt="Cosmic Feed">
             <span class="nasa-label">КОСМИЧЕСКАЯ ПОГОДА:</span>
@@ -227,19 +181,22 @@
     </div>
 
     <div class="nasa-modal" id="nasa-modal">
-        <button class="nasa-close-btn" onclick="document.getElementById('nasa-modal').classList.remove('active'); event.stopPropagation();">×</button>
+        <button class="nasa-close-btn" onclick="closeModal('nasa-modal'); event.stopPropagation();">×</button>
         <h3 style="font-family:'Cinzel Decorative', cursive; font-size:1.2rem; color:#d4af37; text-transform: uppercase; text-align:center;">Космический Статус</h3>
         <p id="nasa-full-text">Сгенерируйте прогноз, чтобы прочитать полный отчет космической среды.</p>
     </div>
 
     <header class="mystic-header">
-        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" class="back-nav-btn" onclick="history.back()" alt="Назад">
+        <div class="header-nav-group">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" class="back-nav-btn" onclick="history.back()" alt="Назад">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777742292/%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD_%D0%B1%D0%B5%D0%B7_%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F1111_1_1_qi5s0y.webp" class="menu-nav-btn" onclick="openModal('modal-main-menu')" alt="Меню">
+        </div>
         <div class="mystic-communion-target">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776086148/Apollo_1_1_1_rv0njc.webp" alt="Apollo">
             <div class="mystic-header-text">
                 <span class="mystic-header-name">Аполлон</span>
                 <span class="mystic-header-status">
-                    <div style="display:inline-block; width:6px; height:6px; background:#d4af37; border-radius:50%; margin-right:8px; box-shadow: 0 0 5px #d4af37;"></div> 
+                    <div style="display:inline-block; width:5px; height:5px; background:#d4af37; border-radius:50%; margin-right:6px; box-shadow: 0 0 5px #d4af37;"></div> 
                     Ожидание запроса
                 </span>
             </div>
@@ -256,19 +213,17 @@
     </div>
 
     <div class="mystic-altar-container">
-        
         <div class="chat-limit-display" id="chat-limit-text" title="Двойной клик сбросит лимит">Осталось: -- сеансов связи</div>
 
         <div class="dashboard-dock-inline">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031262/2-copy-0_p87m7u.webp" class="custom-tool-icon" onclick="openModal('modal-spheres')" title="Сферы жизни">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031261/3-copy-0_llii9x.webp" class="custom-tool-icon" onclick="openModal('modal-relations')" title="Отношения">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031261/4_jlj5vk.webp" class="custom-tool-icon" onclick="openModal('modal-focus')" title="Фокус дня">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031261/5_qyrqc8.webp" class="custom-tool-icon" onclick="openModal('modal-hourly')" title="Расписание по часам">
-            
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776031261/5_qyrqc8.webp" class="custom-tool-icon" onclick="openModal('modal-hourly')" title="Матрица Времени">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777458119/ChatGPT_Claude_Gemini_Perplexity_Grok_Llama_3_%D0%B8_Mistral_1_1_1_xfbw1b.webp" class="custom-tool-icon" onclick="openModal('modal-hormones')" title="Эндокринная Матрица">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776947544/%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD_%D0%B1%D0%B5%D0%B7_%D0%BD%D0%B0%D0%B7%D0%BA%D0%B0%D0%BA%D0%B0_1_1_1_1_hc4vj6.webp" class="custom-tool-icon" onclick="openModal('modal-audio')" title="Акустическая Матрица">
-            
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776887912/%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD_%D0%B1%D0%B5%D0%B7_%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D1%86%D1%86%D1%86%D1%86%D1%86%D1%8F_1_1_k4mp8d.webp" class="custom-tool-icon" onclick="sendForecastToTelegram()" title="Отправить прогноз в Telegram" id="tg-save-icon">
+            <!-- НОВАЯ ИКОНКА МУЗ ВМЕСТО ТЕЛЕГРАМА -->
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777742279/%D0%94%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD_%D0%B1%D0%B5%D0%B7_%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F2_1_1_1_c28qhf.webp" class="custom-tool-icon" onclick="goToMuses()" title="Музы">
         </div>
 
         <div class="input-row-wrapper">
@@ -292,7 +247,26 @@
         </div>
     </div>
 
-    <!-- Модальные окна -->
+    <!-- === НОВОЕ ГЛАВНОЕ МЕНЮ === -->
+    <div class="dash-modal-overlay" id="modal-main-menu">
+        <div class="dash-modal-content">
+            <button class="dash-close-btn" onclick="closeModal('modal-main-menu')">×</button>
+            <h2 class="dash-title">Навигация</h2>
+            <div class="main-menu-list">
+                <button class="main-menu-btn" onclick="fetchSavedForecast(); closeModal('modal-main-menu');">Показать прогноз</button>
+                <button class="main-menu-btn" onclick="openModal('modal-spheres'); closeModal('modal-main-menu');">Сферы жизни</button>
+                <button class="main-menu-btn" onclick="openModal('modal-relations'); closeModal('modal-main-menu');">Отношения</button>
+                <button class="main-menu-btn" onclick="openModal('modal-focus'); closeModal('modal-main-menu');">Фокус дня</button>
+                <button class="main-menu-btn" onclick="openModal('modal-hourly'); closeModal('modal-main-menu');">Матрица времени</button>
+                <button class="main-menu-btn" onclick="openModal('modal-hormones'); closeModal('modal-main-menu');">Эндокринная матрица</button>
+                <button class="main-menu-btn" onclick="openModal('modal-audio'); closeModal('modal-main-menu');">Акустическая матрица</button>
+                <button class="main-menu-btn" onclick="goToMuses()">Музы</button>
+                <button class="main-menu-btn" onclick="alert('Модуль поддержки в разработке');">Поддержка</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальные окна с графиками -->
     <div class="dash-modal-overlay" id="modal-spheres">
         <div class="dash-modal-content">
             <button class="dash-close-btn" onclick="closeModal('modal-spheres')">×</button>
@@ -350,7 +324,6 @@
             </div>
         </div>
     </div>
-
 </main>
 </div>
 
@@ -374,165 +347,61 @@
     const chatLimitText = document.getElementById('chat-limit-text');
     const generateBtn = document.getElementById('generate-daily-btn');
     const userLocalDate = new Date().toLocaleDateString('ru-RU');
-    
-    // === ХРАНИЛИЩЕ ПРОГНОЗА ДЛЯ ТЕЛЕГРАМА ===
-    let currentDailyForecast = "";
-    const tgSaveIcon = document.getElementById('tg-save-icon');
 
-    // === УМНОЕ СОСТОЯНИЕ КНОПКИ ТЕЛЕГРАМА ===
-    function updateTelegramButtonState() {
-        if (currentDailyForecast) {
-            tgSaveIcon.classList.add('active-tg');
-        } else {
-            tgSaveIcon.classList.remove('active-tg');
-        }
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    // === ПЕРЕХОД К МУЗАМ ===
+    function goToMuses() {
+        window.location.href = `muses.html?tg_id=${REAL_USER_ID}`;
     }
 
-    function openModal(id) { 
-        document.getElementById(id).classList.add('active'); 
-    }
-    function closeModal(id) { 
-        document.getElementById(id).classList.remove('active'); 
-    }
-
+    // === ИНИЦИАЛИЗАЦИЯ ГРАФИКОВ ===
     Chart.defaults.color = '#8a9ba8'; 
     Chart.defaults.font.family = "'Cormorant Garamond', serif"; 
     Chart.defaults.font.size = 14;
     
     let chartSpheres = new Chart(document.getElementById('chartSpheres'), { 
         type: 'radar', 
-        data: { 
-            labels: ['Работа', 'Отдых', 'Здоровье', 'Финансы', 'Творчество', 'Дух', 'Разум', 'Тело'], 
-            datasets: [{ 
-                data: [0,0,0,0,0,0,0,0], 
-                backgroundColor: 'rgba(212, 175, 55, 0.2)', 
-                borderColor: '#d4af37', 
-                pointBackgroundColor: '#ffffff', 
-                pointBorderColor: '#d4af37', 
-                borderWidth: 2 
-            }] 
-        }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            scales: { 
-                r: { 
-                    angleLines: { color: 'rgba(212, 175, 55, 0.15)' }, 
-                    grid: { color: 'rgba(212, 175, 55, 0.15)' }, 
-                    pointLabels: { font: { size: 12 }, color: '#ffffff' }, 
-                    ticks: { display: false, min: 0, max: 100 } 
-                } 
-            }, 
-            plugins: { legend: { display: false } } 
-        } 
+        data: { labels: ['Работа', 'Отдых', 'Здоровье', 'Финансы', 'Творчество', 'Дух', 'Разум', 'Тело'], datasets: [{ data: [0,0,0,0,0,0,0,0], backgroundColor: 'rgba(212, 175, 55, 0.2)', borderColor: '#d4af37', pointBackgroundColor: '#ffffff', pointBorderColor: '#d4af37', borderWidth: 2 }] }, 
+        options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { color: 'rgba(212, 175, 55, 0.15)' }, grid: { color: 'rgba(212, 175, 55, 0.15)' }, pointLabels: { font: { size: 12 }, color: '#ffffff' }, ticks: { display: false, min: 0, max: 100 } } }, plugins: { legend: { display: false } } } 
     });
     
     let chartRelations = new Chart(document.getElementById('chartRelations'), { 
         type: 'polarArea', 
-        data: { 
-            labels: ['Семья', 'Друзья', 'Я сам', 'Дети', 'Коллеги', 'Партнер', 'Общество', 'Наставники'], 
-            datasets: [{ 
-                data: [0,0,0,0,0,0,0,0], 
-                backgroundColor: [
-                    'rgba(212, 175, 55, 0.7)',  // Золото
-                    'rgba(91, 123, 158, 0.7)',  // Стальной синий
-                    'rgba(255, 255, 255, 0.7)', // Белый
-                    'rgba(136, 102, 17, 0.7)',  // Темная бронза
-                    'rgba(174, 184, 195, 0.7)', // Серебро
-                    'rgba(45, 62, 80, 0.7)',    // Темно-синий
-                    'rgba(160, 140, 80, 0.7)',  // Приглушенное золото
-                    'rgba(100, 110, 120, 0.7)'  // Серый
-                ], 
-                borderWidth: 1, 
-                borderColor: '#04060a' 
-            }] 
-        }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            scales: { 
-                r: { ticks: { display: false }, grid: { color: 'rgba(212, 175, 55, 0.15)' } } 
-            }, 
-            plugins: { legend: { position: 'bottom', labels: { color: '#ffffff', padding: 10, font: { size: 11 } } } } 
-        } 
+        data: { labels: ['Семья', 'Друзья', 'Я сам', 'Дети', 'Коллеги', 'Партнер', 'Общество', 'Наставники'], datasets: [{ data: [0,0,0,0,0,0,0,0], backgroundColor: ['rgba(212, 175, 55, 0.7)', 'rgba(91, 123, 158, 0.7)', 'rgba(255, 255, 255, 0.7)', 'rgba(136, 102, 17, 0.7)', 'rgba(174, 184, 195, 0.7)', 'rgba(45, 62, 80, 0.7)', 'rgba(160, 140, 80, 0.7)', 'rgba(100, 110, 120, 0.7)'], borderWidth: 1, borderColor: '#04060a' }] }, 
+        options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, grid: { color: 'rgba(212, 175, 55, 0.15)' } } }, plugins: { legend: { position: 'bottom', labels: { color: '#ffffff', padding: 10, font: { size: 11 } } } } } 
     });
     
     let chartFocus = new Chart(document.getElementById('chartFocus'), { 
         type: 'doughnut', 
-        data: { 
-            labels: ['Ожидание Фокуса'], 
-            datasets: [{ 
-                data: [100], 
-                backgroundColor: ['#d4af37', '#5b7b9e', '#ffffff', '#886611', '#aeb8c3', '#2d3e50'], 
-                borderWidth: 2, 
-                borderColor: '#04060a' 
-            }] 
-        }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            cutout: '60%', 
-            plugins: { legend: { position: 'bottom', labels: { color: '#ffffff', padding: 15, font: { size: 12 } } } } 
-        } 
+        data: { labels: ['Ожидание Фокуса'], datasets: [{ data: [100], backgroundColor: ['#d4af37', '#5b7b9e', '#ffffff', '#886611', '#aeb8c3', '#2d3e50'], borderWidth: 2, borderColor: '#04060a' }] }, 
+        options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: '#ffffff', padding: 15, font: { size: 12 } } } } } 
     });
 
     let chartHormones = new Chart(document.getElementById('chartHormones'), {
         type: 'bar',
-        data: {
-            labels: ['Мелатонин', 'Серотонин', 'Кортизол', 'Вит. D', 'Тестостерон', 'Окситоцин', 'Тироксин', 'Инсулин'],
-            datasets: [{
-                data: [0, 0, 0, 0, 0, 0, 0, 0],
-                backgroundColor: [
-                    '#5b7b9e', // Мелатонин
-                    '#d4af37', // Серотонин
-                    '#ff4a4a', // Кортизол
-                    '#ffa500', // Вит. D
-                    '#8a2be2', // Тестостерон
-                    '#ff69b4', // Окситоцин
-                    '#00ced1', // Тироксин
-                    '#32cd32'  // Инсулин
-                ],
-                borderRadius: 5,
-                borderWidth: 1,
-                borderColor: 'rgba(0,0,0,0.5)'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true, max: 100, grid: { color: 'rgba(212, 175, 55, 0.1)' }, ticks: { color: '#8a9ba8', callback: function(value) { return value + "%" } } },
-                x: { grid: { display: false }, ticks: { color: '#e0e0e0', font: { size: 11 } } }
-            },
-            plugins: { legend: { display: false } }
-        }
+        data: { labels: ['Мелатонин', 'Серотонин', 'Кортизол', 'Вит. D', 'Тестостерон', 'Окситоцин', 'Тироксин', 'Инсулин'], datasets: [{ data: [0, 0, 0, 0, 0, 0, 0, 0], backgroundColor: ['#5b7b9e', '#d4af37', '#ff4a4a', '#ffa500', '#8a2be2', '#ff69b4', '#00ced1', '#32cd32'], borderRadius: 5, borderWidth: 1, borderColor: 'rgba(0,0,0,0.5)' }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(212, 175, 55, 0.1)' }, ticks: { color: '#8a9ba8', callback: function(v) { return v + "%" } } }, x: { grid: { display: false }, ticks: { color: '#e0e0e0', font: { size: 11 } } } }, plugins: { legend: { display: false } } }
     });
 
+    // === ЛИМИТЫ ЧАТА ===
     function updateLimitUI(remaining) {
         chatLimitText.innerText = `Осталось: ${remaining} сеансов связи`;
         chatLimitText.classList.remove('low-limit', 'no-limit');
-        
-        if (remaining <= 5 && remaining > 0) {
-            chatLimitText.classList.add('low-limit');
-        }
-        
+        if (remaining <= 5 && remaining > 0) chatLimitText.classList.add('low-limit');
         if (remaining <= 0) {
             chatLimitText.innerText = "Лимит связи исчерпан. Жди рассвета.";
             chatLimitText.classList.add('no-limit');
-            sendBtn.disabled = true; 
-            userInput.disabled = true; 
-            userInput.placeholder = "Диалог закрыт до завтра...";
+            sendBtn.disabled = true; userInput.disabled = true; userInput.placeholder = "Диалог закрыт до завтра...";
         } else {
-            sendBtn.disabled = false; 
-            userInput.disabled = false; 
-            userInput.placeholder = "Направьте свои мысли в эфир...";
+            sendBtn.disabled = false; userInput.disabled = false; userInput.placeholder = "Направьте свои мысли в эфир...";
         }
     }
 
     function getRemainingQuestions() {
         const savedDate = localStorage.getItem('fatum_limit_date');
         let remaining = localStorage.getItem('fatum_remaining_questions');
-        
         if (savedDate !== userLocalDate) {
             remaining = DAILY_LIMIT; 
             localStorage.setItem('fatum_limit_date', userLocalDate); 
@@ -556,40 +425,25 @@
 
     function checkDailyForecastStatus() {
         const lastForecastDate = localStorage.getItem('fatum_last_forecast_date');
-
         if (lastForecastDate === userLocalDate) { 
-            generateBtn.classList.remove('is-available');
-            generateBtn.disabled = true;
+            generateBtn.classList.remove('is-available'); generateBtn.disabled = true;
         } else { 
-            generateBtn.classList.add('is-available');
-            generateBtn.disabled = false;
+            generateBtn.classList.add('is-available'); generateBtn.disabled = false;
         }
     }
 
+    // === UI ЧАТА И ИНДИКАЦИЯ ===
     function appendMessage(text, sender) {
         const row = document.createElement('div');
         row.className = `mystic-message-row ${sender === 'user' ? 'vision-seeker' : 'vision-oracle'}`;
         let innerHTML = '';
-        if (sender === 'oracle') {
-            innerHTML += `<div class="mystic-avatar-wrapper"><img src="${AVATAR_URL}"></div>`;
-        }
+        if (sender === 'oracle') innerHTML += `<div class="mystic-avatar-wrapper"><img src="${AVATAR_URL}"></div>`;
         innerHTML += `<div class="mystic-bubble">${text}</div>`;
         row.innerHTML = innerHTML;
-        
         chatHistory.appendChild(row);
         
-        // Плавный скролл: если это ответ от оракула, аккуратно скроллим к началу его сообщения
-        if (sender === 'oracle') {
-            setTimeout(() => {
-                chatHistory.scrollTo({
-                    top: row.offsetTop - 20,
-                    behavior: 'smooth'
-                });
-            }, 50);
-        } else {
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
-        
+        if (sender === 'oracle') { setTimeout(() => { chatHistory.scrollTo({ top: row.offsetTop - 20, behavior: 'smooth' }); }, 50); } 
+        else { chatHistory.scrollTop = chatHistory.scrollHeight; }
         return row;
     }
 
@@ -601,54 +455,116 @@
             <div style="display: flex; align-items: center; margin-left: 10px;">
                 <div class="loader-wrapper" style="transform: scale(0.6); transform-origin: left center;">
                     <div class="loader"></div>
-                    <span class="loader-letter">A</span>
-                    <span class="loader-letter">P</span>
-                    <span class="loader-letter">O</span>
-                    <span class="loader-letter">L</span>
-                    <span class="loader-letter">L</span>
-                    <span class="loader-letter">O</span>
+                    <span class="loader-letter">A</span><span class="loader-letter">P</span><span class="loader-letter">O</span><span class="loader-letter">L</span><span class="loader-letter">L</span><span class="loader-letter">O</span>
                 </div>
-            </div>
-        `;
+            </div>`;
         chatHistory.appendChild(row);
         chatHistory.scrollTop = chatHistory.scrollHeight;
         return row;
     }
 
     async function callMakeWebhook(payload) {
-        const response = await fetch(MAKE_WEBHOOK_URL, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(payload) 
-        });
+        const response = await fetch(MAKE_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         return await response.text();
     }
 
-    // === ФУНКЦИЯ ОТПРАВКИ ПРОГНОЗА В ТЕЛЕГРАМ ===
-    async function sendForecastToTelegram() {
-        if (!currentDailyForecast) return; 
-
-        tgSaveIcon.classList.remove('active-tg');
-        tgSaveIcon.style.opacity = '0.5';
-
-        try {
-            const result = await callMakeWebhook({ 
-                action: 'send_to_telegram', 
-                user_id: REAL_USER_ID,
-                message: "📜 ТВОЙ ПРОГНОЗ ОТ АПОЛЛОНА:\n\n" + currentDailyForecast
-            });
-            appendMessage(result, 'oracle');
-        } catch (error) {
-            appendMessage('Не удалось доставить свиток в Telegram. Помехи связи.', 'oracle');
-        } finally {
-            updateTelegramButtonState();
+    // === ЕДИНАЯ ФУНКЦИЯ ОТРИСОВКИ ДАННЫХ ПРОГНОЗА ===
+    function renderForecastData(payload) {
+        if(payload.morning_message) {
+            appendMessage(payload.morning_message, 'oracle');
+        }
+        if(payload.cosmic_feed) {
+            document.getElementById('nasa-dynamic-state').innerText = payload.cosmic_feed;
+            document.getElementById('nasa-full-text').innerText = payload.cosmic_feed;
+        }
+        if(payload.spheres && payload.spheres.length > 0) { 
+            chartSpheres.data.datasets[0].data = payload.spheres; chartSpheres.update(); 
+        }
+        if(payload.relationships && payload.relationships.length > 0) { 
+            chartRelations.data.datasets[0].data = payload.relationships; chartRelations.update(); 
+        }
+        if(payload.focus && payload.focus.length > 0) {
+            chartFocus.data.labels = payload.focus.map(f => f.activity);
+            chartFocus.data.datasets[0].data = payload.focus.map(f => f.percent);
+            chartFocus.update();
+        }
+        if(payload.hourly_forecast && payload.hourly_forecast.length > 0) {
+            document.getElementById('hourly-dynamic-list').innerHTML = payload.hourly_forecast.map(h => `
+                <div class="hourly-item">
+                    <span class="hour-time">${h.time}</span>
+                    <span class="hour-desc">${h.state}</span>
+                </div>`).join('');
+        }
+        if(payload.hormones && payload.hormones.length === 8) {
+            chartHormones.data.datasets[0].data = payload.hormones; chartHormones.update();
+        }
+        if(payload.audio_matrix) {
+            let audioHtml = '';
+            if(payload.audio_matrix.daily_audio && payload.audio_matrix.daily_audio.length > 0) {
+                audioHtml += '<div style="text-align:center; color:#d4af37; margin-bottom:10px; font-family:\'Cinzel Decorative\', cursive;">БАЗОВАЯ СИНХРОНИЗАЦИЯ</div>';
+                audioHtml += payload.audio_matrix.daily_audio.map(a => `
+                    <div class="hourly-item">
+                        <div style="display:flex; flex-direction:column; align-items:center; margin-right:15px; flex-shrink:0;">
+                            <span class="audio-freq" style="margin-right:0;">${a.freq}</span>
+                            <span style="font-size:0.9rem; color:#8a9ba8; margin-top:5px;">${a.duration}</span>
+                        </div>
+                        <span class="audio-desc">${a.reason}</span>
+                    </div>`).join('');
+            }
+            if(payload.audio_matrix.situational_audio && payload.audio_matrix.situational_audio.length > 0) {
+                audioHtml += '<div style="text-align:center; color:#ff4a4a; margin-top:20px; margin-bottom:10px; font-family:\'Cinzel Decorative\', cursive;">ЭКСТРЕННЫЙ ПРОТОКОЛ (SOS)</div>';
+                audioHtml += payload.audio_matrix.situational_audio.map(a => `
+                    <div class="hourly-item">
+                        <div style="display:flex; flex-direction:column; align-items:center; margin-right:15px; flex-shrink:0;">
+                            <span class="audio-freq" style="margin-right:0;">${a.freq}</span>
+                            <span style="font-size:0.9rem; color:#8a9ba8; margin-top:5px;">${a.duration}</span>
+                        </div>
+                        <span class="audio-desc"><b style="color:#e6f0ff;">${a.state}:</b> ${a.reason}</span>
+                    </div>`).join('');
+            }
+            document.getElementById('audio-dynamic-list').innerHTML = audioHtml;
         }
     }
 
+    // === НОВАЯ ФУНКЦИЯ: ПОЛУЧЕНИЕ ПРОГНОЗА ИЗ БД ===
+    async function fetchSavedForecast(isSilentLoad = false) {
+        let typingRow = null;
+        if (!isSilentLoad) {
+            typingRow = showTypingIndicator();
+        }
+
+        try {
+            const rawData = await callMakeWebhook({ 
+                action: 'get_forecast', 
+                user_id: REAL_USER_ID 
+            });
+
+            if(typingRow) chatHistory.removeChild(typingRow);
+
+            if (!rawData || rawData.trim() === '') {
+                if (!isSilentLoad) appendMessage("Аполлон еще не формировал матрицы для вас сегодня. Нажмите 'ПРОГНОЗ', чтобы синхронизировать данные.", 'oracle');
+                return;
+            }
+
+            try {
+                const payload = JSON.parse(rawData);
+                renderForecastData(payload);
+                // Если данные пришли успешно, помечаем, что прогноз на сегодня готов
+                localStorage.setItem('fatum_last_forecast_date', userLocalDate);
+                checkDailyForecastStatus();
+            } catch (e) {
+                if (!isSilentLoad) appendMessage("Ошибка расшифровки матриц.", 'oracle');
+            }
+        } catch (error) {
+            if(typingRow) chatHistory.removeChild(typingRow);
+            if (!isSilentLoad) appendMessage("Сбой связи с базой данных.", 'oracle');
+        }
+    }
+
+    // === КНОПКА ГЕНЕРАЦИИ (НОВЫЙ ЗАПРОС) ===
     generateBtn.addEventListener('click', async () => {
         generateBtn.disabled = true;
         generateBtn.classList.remove('is-available');
-        
         const typingRow = showTypingIndicator();
 
         try {
@@ -663,81 +579,7 @@
 
             try {
                 const payload = JSON.parse(rawData);
-                
-                if(payload.morning_message) {
-                    appendMessage(payload.morning_message, 'oracle');
-                    
-                    if (!payload.morning_message.includes("уже говорил с тобой")) {
-                        currentDailyForecast = payload.morning_message;
-                        updateTelegramButtonState();
-                    }
-                }
-                
-                if(payload.cosmic_feed) {
-                    document.getElementById('nasa-dynamic-state').innerText = payload.cosmic_feed;
-                    document.getElementById('nasa-full-text').innerText = payload.cosmic_feed;
-                }
-
-                if(payload.spheres && payload.spheres.length > 0) { 
-                    chartSpheres.data.datasets[0].data = payload.spheres; 
-                    chartSpheres.update(); 
-                }
-
-                if(payload.relationships && payload.relationships.length > 0) { 
-                    chartRelations.data.datasets[0].data = payload.relationships; 
-                    chartRelations.update(); 
-                }
-
-                if(payload.focus && payload.focus.length > 0) {
-                    chartFocus.data.labels = payload.focus.map(f => f.activity);
-                    chartFocus.data.datasets[0].data = payload.focus.map(f => f.percent);
-                    chartFocus.update();
-                }
-
-                if(payload.hourly_forecast && payload.hourly_forecast.length > 0) {
-                    const hourlyHtml = payload.hourly_forecast.map(h => `
-                        <div class="hourly-item">
-                            <span class="hour-time">${h.time}</span>
-                            <span class="hour-desc">${h.state}</span>
-                        </div>
-                    `).join('');
-                    document.getElementById('hourly-dynamic-list').innerHTML = hourlyHtml;
-                }
-
-                if(payload.hormones && payload.hormones.length === 8) {
-                    chartHormones.data.datasets[0].data = payload.hormones;
-                    chartHormones.update();
-                }
-
-                if(payload.audio_matrix) {
-                    let audioHtml = '';
-                    if(payload.audio_matrix.daily_audio && payload.audio_matrix.daily_audio.length > 0) {
-                        audioHtml += '<div style="text-align:center; color:#d4af37; margin-bottom:10px; font-family:\'Cinzel Decorative\', cursive;">БАЗОВАЯ СИНХРОНИЗАЦИЯ</div>';
-                        audioHtml += payload.audio_matrix.daily_audio.map(a => `
-                            <div class="hourly-item">
-                                <div style="display:flex; flex-direction:column; align-items:center; margin-right:15px; flex-shrink:0;">
-                                    <span class="audio-freq" style="margin-right:0;">${a.freq}</span>
-                                    <span style="font-size:0.9rem; color:#8a9ba8; margin-top:5px;">${a.duration}</span>
-                                </div>
-                                <span class="audio-desc">${a.reason}</span>
-                            </div>
-                        `).join('');
-                    }
-                    if(payload.audio_matrix.situational_audio && payload.audio_matrix.situational_audio.length > 0) {
-                        audioHtml += '<div style="text-align:center; color:#ff4a4a; margin-top:20px; margin-bottom:10px; font-family:\'Cinzel Decorative\', cursive;">ЭКСТРЕННЫЙ ПРОТОКОЛ (SOS)</div>';
-                        audioHtml += payload.audio_matrix.situational_audio.map(a => `
-                            <div class="hourly-item">
-                                <div style="display:flex; flex-direction:column; align-items:center; margin-right:15px; flex-shrink:0;">
-                                    <span class="audio-freq" style="margin-right:0;">${a.freq}</span>
-                                    <span style="font-size:0.9rem; color:#8a9ba8; margin-top:5px;">${a.duration}</span>
-                                </div>
-                                <span class="audio-desc"><b style="color:#e6f0ff;">${a.state}:</b> ${a.reason}</span>
-                            </div>
-                        `).join('');
-                    }
-                    document.getElementById('audio-dynamic-list').innerHTML = audioHtml;
-                }
-
+                renderForecastData(payload);
             } catch (jsonError) {
                 appendMessage(rawData, 'oracle');
             }
@@ -752,6 +594,7 @@
         }
     });
 
+    // === ЧАТ С АПОЛЛОНОМ ===
     async function sendMessage() {
         const text = userInput.value.trim();
         if (!text || getRemainingQuestions() <= 0) return;
@@ -759,14 +602,11 @@
         appendMessage(text, 'user');
         userInput.value = '';
         consumeQuestion();
-        
         const typingRow = showTypingIndicator();
 
         try {
             const data = await callMakeWebhook({ 
-                action: 'chat', 
-                message: text, 
-                oracle: 'Apollo', 
+                action: 'chat', message: text, oracle: 'Apollo', 
                 local_time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
                 user_id: REAL_USER_ID 
             });
@@ -779,14 +619,14 @@
     }
 
     sendBtn.addEventListener('click', sendMessage);
-    userInput.addEventListener('keypress', function (e) { 
-        if (e.key === 'Enter' && !e.shiftKey) { 
-            e.preventDefault(); 
-            sendMessage(); 
-        } 
-    });
+    userInput.addEventListener('keypress', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
-    updateTelegramButtonState();
+    // === СТАРТОВЫЕ НАСТРОЙКИ ===
     checkDailyForecastStatus();
     updateLimitUI(getRemainingQuestions());
+    
+    // Тихо загружаем сегодняшний прогноз при входе (если кнопка прогноза неактивна)
+    if(localStorage.getItem('fatum_last_forecast_date') === userLocalDate) {
+        setTimeout(() => fetchSavedForecast(true), 1000);
+    }
 </script>
