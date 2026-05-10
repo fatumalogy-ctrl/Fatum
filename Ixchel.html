@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Папаханаумоку | Диафрагмальное дыхание</title>
+    <title>Иш-Чель | Резонансное дыхание</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
 
         :root {
-            --papa-magma: #ff4500;
-            --papa-lava: #ff9100;
-            --papa-dark: #3a1c02;
-            --papa-stone: #9e8e82;
-            --silver-accent: #fcd5a4;
-            --obsidian: #0a0502;
-            --text-light: #fdf5eb;
+            --ixchel-cyan: #00e5ff;
+            --ixchel-moon: #d0f8ff;
+            --ixchel-stone: #78909c;
+            --ixchel-deep: #002b36;
+            --silver-accent: #a8c0c0;
+            --obsidian: #03080a;
+            --text-light: #e0f2f2;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,33 +27,37 @@
             width: 100vw; height: 100vh; height: 100dvh;
             overflow: hidden; 
             display: flex; flex-direction: column; position: relative;
-            background: radial-gradient(circle at 50% 50%, #170800 0%, var(--obsidian) 80%);
+            background: radial-gradient(circle at 50% 50%, #061a22 0%, var(--obsidian) 80%);
         }
 
-        /* === ЭЛЕГАНТНЫЙ ФОН (Мрачные искры бездны / Магма) === */
+        /* === ЭЛЕГАНТНЫЙ ФОН (Нити судьбы и лунные приливы) === */
         #luxury-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; }
         .lux-ember {
-            position: absolute; width: 3px; height: 3px; border-radius: 50%;
-            background: var(--papa-lava); box-shadow: 0 0 15px var(--papa-magma);
-            animation: floatVoid linear infinite; opacity: 0;
+            position: absolute; width: 2px; height: 2px; border-radius: 50%;
+            background: var(--ixchel-cyan); box-shadow: 0 0 15px var(--ixchel-cyan);
+            animation: floatTide linear infinite; opacity: 0;
         }
-        @keyframes floatVoid {
-            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+        .lux-ember:nth-child(even) {
+            background: var(--ixchel-moon); box-shadow: 0 0 15px var(--ixchel-moon);
+            width: 3px; height: 3px;
+        }
+        @keyframes floatTide {
+            0% { transform: translateY(100vh) translateX(-15px) scale(0.5); opacity: 0; }
             40% { opacity: 0.6; }
             60% { opacity: 0.6; }
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+            100% { transform: translateY(-10vh) translateX(15px) scale(1.5); opacity: 0; }
         }
 
         /* === ШАПКА === */
         .battle-header {
             height: 70px; display: flex; align-items: center; padding: 0 20px;
-            background: linear-gradient(180deg, rgba(10, 5, 2, 0.95) 0%, transparent 100%);
-            border-bottom: 1px solid rgba(255, 69, 0, 0.15); flex-shrink: 0; z-index: 100;
+            background: linear-gradient(180deg, rgba(3, 8, 10, 0.95) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.15); flex-shrink: 0; z-index: 100;
         }
-        .back-btn { width: 26px; cursor: pointer; filter: drop-shadow(0 0 5px rgba(158, 142, 130, 0.3)); margin-right: 15px; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
-        .back-btn:hover { transform: translateX(-5px); filter: drop-shadow(0 0 10px var(--papa-stone)); }
+        .back-btn { width: 26px; cursor: pointer; filter: drop-shadow(0 0 5px rgba(120, 144, 156, 0.3)); margin-right: 15px; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .back-btn:hover { transform: translateX(-5px); filter: drop-shadow(0 0 10px var(--ixchel-cyan)); }
         
-        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.2rem, 4vw, 1.4rem); color: var(--papa-stone); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px rgba(158, 142, 130, 0.3); }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.2rem, 4vw, 1.4rem); color: var(--ixchel-stone); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px rgba(120, 144, 156, 0.3); }
 
         /* === ГЛАВНЫЙ СЛОЙ === */
         .main-layout {
@@ -72,12 +76,12 @@
             display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
         }
 
-        /* === SVG Кольцо с 4 дугами === */
+        /* SVG Кольцо с 4 дугами */
         .breath-ring-svg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             transform: rotate(135deg); 
             z-index: 5; pointer-events: none;
-            filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.3));
+            filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.2));
         }
 
         .base-track { fill: none; stroke: rgba(255, 255, 255, 0.03); stroke-width: 2; }
@@ -89,56 +93,56 @@
             transform-origin: 50px 50px;
         }
         
-        .arc-inhale { stroke: var(--papa-stone); filter: drop-shadow(0 0 10px var(--papa-stone)); transform: rotate(0deg); }
-        .arc-hold1 { stroke: var(--papa-lava); filter: drop-shadow(0 0 10px var(--papa-lava)); transform: rotate(90deg); }
-        .arc-exhale { stroke: var(--papa-magma); filter: drop-shadow(0 0 10px var(--papa-magma)); transform: rotate(180deg); }
-        .arc-hold2 { stroke: var(--papa-dark); filter: drop-shadow(0 0 10px var(--papa-dark)); transform: rotate(270deg); }
+        .arc-inhale { stroke: var(--ixchel-cyan); filter: drop-shadow(0 0 10px var(--ixchel-cyan)); transform: rotate(0deg); }
+        .arc-hold1 { stroke: transparent; filter: none; transform: rotate(90deg); } 
+        .arc-exhale { stroke: var(--ixchel-moon); filter: drop-shadow(0 0 10px var(--ixchel-moon)); transform: rotate(180deg); }
+        .arc-hold2 { stroke: transparent; filter: none; transform: rotate(270deg); } 
 
         /* Аватар Божества */
         .avatar-container {
             width: 86%; height: 86%; border-radius: 50%; overflow: hidden;
-            border: 2px solid rgba(255, 69, 0, 0.2); z-index: 2;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 40px rgba(255, 69, 0, 0.3);
+            border: 2px solid rgba(0, 229, 255, 0.3); z-index: 2;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 40px rgba(0, 229, 255, 0.15);
         }
-        .deity-avatar { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8) contrast(1.1); transition: 2s; }
-        .is-breathing .deity-avatar { filter: brightness(1.1) contrast(1.2) drop-shadow(0 0 20px var(--papa-magma)); }
+        .deity-avatar { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85) contrast(1.15); transition: 2.5s ease-in-out; }
+        .is-breathing .deity-avatar { filter: brightness(1.2) contrast(1.2) drop-shadow(0 0 30px var(--ixchel-cyan)); }
 
         /* Текстовые индикаторы */
         .phase-text {
             font-family: 'Cinzel Decorative', cursive; font-size: clamp(2rem, 5vw, 2.5rem); font-weight: 700;
-            color: var(--papa-magma); letter-spacing: 6px; text-transform: uppercase; height: 40px;
+            color: var(--ixchel-cyan); letter-spacing: 6px; text-transform: uppercase; height: 40px;
             transition: color 0.5s ease, text-shadow 0.5s ease;
         }
 
         .timer-text {
-            font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--papa-stone);
+            font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--ixchel-stone);
             letter-spacing: 3px; margin-top: 5px; margin-bottom: 25px; font-weight: 500;
         }
 
         /* Кнопка старта */
         .start-btn {
-            padding: 15px 50px; background: transparent; border: 1px solid var(--papa-magma);
-            border-radius: 40px; color: var(--papa-magma);
+            padding: 15px 50px; background: transparent; border: 1px solid var(--ixchel-cyan);
+            border-radius: 40px; color: var(--ixchel-cyan);
             font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
             cursor: pointer; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.1); position: relative; overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.1); position: relative; overflow: hidden;
         }
         .start-btn::before {
             content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 69, 0, 0.2), transparent); transition: 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.2), transparent); transition: 0.5s;
         }
-        .start-btn:hover { background: rgba(255, 69, 0, 0.1); box-shadow: 0 0 25px rgba(255, 69, 0, 0.4); color: #fff; border-color: #fff;}
+        .start-btn:hover { background: rgba(0, 229, 255, 0.15); box-shadow: 0 0 25px rgba(0, 229, 255, 0.5); color: #fff; border-color: #fff;}
         .start-btn:hover::before { left: 100%; }
         
-        .start-btn.stop-mode { border-color: var(--papa-stone); color: var(--papa-stone); box-shadow: 0 0 15px rgba(158, 142, 130, 0.2); }
-        .start-btn.stop-mode:hover { background: rgba(158, 142, 130, 0.1); box-shadow: 0 0 25px rgba(158, 142, 130, 0.5); color: #fff; border-color: #fff;}
-        .start-btn.stop-mode::before { background: linear-gradient(90deg, transparent, rgba(158, 142, 130, 0.2), transparent); }
+        .start-btn.stop-mode { border-color: var(--ixchel-stone); color: var(--ixchel-stone); box-shadow: 0 0 15px rgba(120, 144, 156, 0.2); }
+        .start-btn.stop-mode:hover { background: rgba(120, 144, 156, 0.15); box-shadow: 0 0 25px rgba(120, 144, 156, 0.5); color: #fff; border-color: #fff;}
+        .start-btn.stop-mode::before { background: linear-gradient(90deg, transparent, rgba(120, 144, 156, 0.2), transparent); }
 
         /* === ПРАВАЯ КОЛОНКА === */
         .right-column {
             width: 100px; 
             height: 100%; 
-            background: linear-gradient(270deg, rgba(10, 5, 2, 0.95) 0%, transparent 100%);
+            background: linear-gradient(270deg, rgba(3, 8, 10, 0.95) 0%, transparent 100%);
             border-left: 1px solid rgba(255, 255, 255, 0.05); 
             display: flex; flex-direction: column; align-items: center; 
             padding: 20px 25px; 
@@ -152,9 +156,9 @@
         .raw-icon {
             width: 45px; height: 45px; cursor: pointer; object-fit: contain;
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            filter: drop-shadow(0 0 5px rgba(255, 69, 0, 0.3)); flex-shrink: 0;
+            filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.3)); flex-shrink: 0;
         }
-        .raw-icon:hover { transform: scale(1.3); filter: drop-shadow(0 0 15px var(--papa-magma)); }
+        .raw-icon:hover { transform: scale(1.3); filter: drop-shadow(0 0 15px var(--ixchel-cyan)); }
 
         /* === НИЖНЯЯ ПАНЕЛЬ ЛОРА === */
         .bottom-lore-panel {
@@ -171,16 +175,16 @@
         /* === ЛЮКСОВЫЕ МОДАЛЬНЫЕ ОКНА === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 5, 2, 0.95); backdrop-filter: blur(20px);
+            background: rgba(3, 8, 10, 0.95); backdrop-filter: blur(20px);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.5s ease; z-index: 200; padding: 20px;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
         .modal-content {
-            background: rgba(15, 8, 3, 0.95);
-            border: 1px solid rgba(255, 69, 0, 0.3); border-radius: 20px; padding: 35px 25px; 
-            max-width: 500px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(255, 69, 0, 0.05);
+            background: rgba(6, 16, 20, 0.95);
+            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 20px; padding: 35px 25px; 
+            max-width: 500px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(0, 229, 255, 0.05);
             position: relative; text-align: center; display: flex; flex-direction: column; align-items: center;
             max-height: 80vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
             scrollbar-width: none; -ms-overflow-style: none;
@@ -189,16 +193,16 @@
 
         .modal-dynamic-icon {
             width: 80px; height: 80px; object-fit: contain; margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px var(--papa-magma));
+            filter: drop-shadow(0 0 15px var(--ixchel-cyan));
         }
         
-        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.8rem; color: var(--papa-magma); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
-        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #fdf5eb; line-height: 1.6; text-align: center; margin-bottom: 30px; font-weight: 300;}
-        .modal-text strong { color: var(--papa-lava); font-weight: 600;}
+        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.8rem; color: var(--ixchel-cyan); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
+        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #e0f2f2; line-height: 1.6; text-align: center; margin-bottom: 30px; font-weight: 300;}
+        .modal-text strong { color: var(--ixchel-cyan); font-weight: 600;}
 
-        .ai-modal .modal-content { border-color: rgba(158, 142, 130, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(158, 142, 130, 0.05); }
-        .ai-modal .modal-title { color: var(--papa-stone); }
-        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--papa-stone)); }
+        .ai-modal .modal-content { border-color: rgba(120, 144, 156, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(120, 144, 156, 0.05); }
+        .ai-modal .modal-title { color: var(--ixchel-stone); }
+        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--ixchel-stone)); }
 
         .close-btn {
             width: 100%; padding: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.2);
@@ -222,7 +226,7 @@
 
     <header class="battle-header">
         <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192620/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_2_r76g4q.webp" class="back-btn" onclick="goBack()" alt="Назад">
-        <div class="breadcrumb-text">Papahānaumoku</div>
+        <div class="breadcrumb-text">Ixchel</div>
     </header>
 
     <div class="main-layout">
@@ -240,12 +244,13 @@
                 </svg>
                 
                 <div class="avatar-container">
-                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778161572/2_lrouki.webp" class="deity-avatar" alt="Papahanaumoku Avatar">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778161570/16_fb5fbw.webp" class="deity-avatar" alt="Ixchel Avatar">
                 </div>
             </div>
 
             <div class="phase-text" id="phase-display">ОЖИДАНИЕ</div>
-            <div class="timer-text" id="timer-display">05:00</div>
+            <!-- 600 секунд (10:00) = ровно 60 идеальных циклов по 10 секунд (5-0-5-0) -->
+            <div class="timer-text" id="timer-display">10:00</div>
 
             <button class="start-btn" id="start-btn" onclick="togglePractice()">Инициация</button>
 
@@ -284,10 +289,10 @@
     <div class="modal-overlay" id="modal-lore">
         <div class="modal-content">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" class="modal-dynamic-icon" alt="Lore Icon">
-            <h2 class="modal-title">Голос Матери Земли</h2>
+            <h2 class="modal-title">Голос Лунной Ткачихи</h2>
             <div class="modal-text">
-                «Я — <strong>Папаханаумоку</strong>. Из моего чрева родились острова, горы и океаны. Твое дыхание сейчас — как мелкая рябь на воде. Суетливо, поверхностно, полно страха.<br><br>
-                Я научу тебя дышать корнями. Вдыхай глубоко в живот, соединяясь с магмой и ядром планеты. Почувствуй абсолютную гравитацию. Отдай мне свой стресс — он сгорит в моем горниле».
+                «Я — <strong>Иш-Чель</strong>, богиня медицины и лунных приливов. Твое сердце и легкие работают в рассинхроне, словно два сломанных механизма, разрывая твое тело изнутри.<br><br>
+                Послушай океан. Прилив и отлив. Вдох и выдох. Никаких пауз, никаких задержек. Только идеальная, непрерывная волна. Я сплету твой пульс и дыхание в единую нить судьбы».
             </div>
             <button class="close-btn" onclick="closeModal('modal-lore')">Осознать</button>
         </div>
@@ -296,13 +301,12 @@
     <div class="modal-overlay" id="modal-instruct">
         <div class="modal-content">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" class="modal-dynamic-icon" alt="Instruct Icon">
-            <h2 class="modal-title">Алгоритм Земли</h2>
+            <h2 class="modal-title">Алгоритм Прилива</h2>
             <div class="modal-text" style="text-align: left;">
-                <strong>1. ПОДГОТОВКА:</strong> Сядь прямо или ляг на спину. Положи одну руку на грудь, другую на живот (ниже пупка).<br><br>
-                <strong>2. ВДОХ (4 сек):</strong> Медленно тяни воздух носом. Грудь неподвижна. Живот надувается, как магматический шар.<br><br>
-                <strong>3. ЗАДЕРЖКА (2 сек):</strong> Зафиксируй плотность и тяжесть воздуха внутри. Фокус в солнечном сплетении.<br><br>
-                <strong>4. ВЫДОХ (6 сек):</strong> Долгий, медленный сброс через рот. Живот опадает, унося всё напряжение в землю.<br><br>
-                <strong>5. ЗАДЕРЖКА (2 сек):</strong> Ощути абсолютную пустоту и тишину перед новым циклом.
+                <strong>1. НЕПРЕРЫВНОСТЬ:</strong> В этом дыхании нет пауз. Как только заканчивается вдох, сразу начинается выдох, образуя идеальный круг.<br><br>
+                <strong>2. ВДОХ (5 сек):</strong> Плавно наполняй легкие через нос, как вода накатывает на берег.<br><br>
+                <strong>3. ВЫДОХ (5 сек):</strong> Так же плавно, без рывков, стравливай воздух через рот, как вода отступает назад.<br><br>
+                <strong>4. ЧАСТОТА:</strong> Твоя задача держать этот ритм — ровно 6 дыхательных циклов в минуту.
             </div>
             <button class="close-btn" onclick="closeModal('modal-instruct')">Понял алгоритм</button>
         </div>
@@ -313,10 +317,9 @@
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" class="modal-dynamic-icon" alt="Timing Icon">
             <h2 class="modal-title">Цикл Синхронизации</h2>
             <div class="modal-text">
-                <strong>Утро (Пробуждение):</strong><br>
-                Для создания непоколебимого фундамента перед хаосом дня. Наполнись весом и уверенностью. Заземли свою нервную систему.<br><br>
-                <strong>Вечер (Экстренный сброс):</strong><br>
-                Используй это дыхание прямо перед сном, чтобы физически отключить выработку кортизола и подготовить тело к глубокому, исцеляющему сну.
+                <strong>Ежедневный ритуал:</strong><br>
+                Это научно доказанный метод максимизации Вариабельности Сердечного Ритма (HRV). Ритм 5 на 5 вызывает резонанс в сердечно-сосудистой системе.<br><br>
+                Если делать это 10 минут каждый вечер, твой организм станет практически невосприимчивым к внешнему стрессу. Цикл длится ровно <strong>600 секунд (60 идеальных волн)</strong>.
             </div>
             <button class="close-btn" onclick="closeModal('modal-timing')">Закрепить в памяти</button>
         </div>
@@ -338,12 +341,12 @@
     <script>
         function createParticles() {
             const container = document.getElementById('luxury-particles');
-            for (let i = 0; i < 25; i++) {
+            for (let i = 0; i < 30; i++) {
                 let p = document.createElement('div');
                 p.classList.add('lux-ember');
                 p.style.left = `${Math.random() * 100}vw`;
-                p.style.animationDuration = `${Math.random() * 8 + 4}s`;
-                p.style.animationDelay = `${Math.random() * 3}s`;
+                p.style.animationDuration = `${Math.random() * 10 + 5}s`; // Плавное движение волн
+                p.style.animationDelay = `${Math.random() * 4}s`;
                 container.appendChild(p);
             }
         }
@@ -364,15 +367,16 @@
         }
 
         function goBack() {
-            if (isActive && !confirm("Прервать погружение к корням Земли?")) return;
+            if (isActive && !confirm("Остановить лунный прилив?")) return;
             window.location.href = 'apollo.html'; 
         }
 
-        // === ЛОГИКА ДЫХАНИЯ (Тайминги 4с, 2с, 6с, 2с) ===
+        // === ЛОГИКА ДЫХАНИЯ (Тайминги 5с, 0с, 5с, 0с) ===
+        // Математически идеальный тайминг: 600 секунд (10 минут) = ровно 60 циклов по 10 сек.
         let isActive = false;
         let breathTimeout;
         let countdownInterval;
-        let totalSeconds = 300; 
+        let totalSeconds = 600; 
 
         const phaseDisplay = document.getElementById('phase-display');
         const timerDisplay = document.getElementById('timer-display');
@@ -387,10 +391,10 @@
         ];
 
         const phases = [
-            { name: "ВДОХ", duration: 4000, color: "var(--papa-stone)" },
-            { name: "ЗАДЕРЖКА", duration: 2000, color: "var(--papa-lava)" },
-            { name: "ВЫДОХ", duration: 6000, color: "var(--papa-magma)" },
-            { name: "ЗАДЕРЖКА", duration: 2000, color: "var(--papa-dark)" }
+            { name: "ПРИЛИВ", duration: 5000, color: "var(--ixchel-cyan)" },
+            { name: "БЕЗ ПАУЗЫ", duration: 0, color: "transparent" },
+            { name: "ОТЛИВ", duration: 5000, color: "var(--ixchel-moon)" },
+            { name: "БЕЗ ПАУЗЫ", duration: 0, color: "transparent" }
         ];
 
         let currentPhaseIndex = 0;
@@ -413,6 +417,7 @@
 
             const phase = phases[currentPhaseIndex];
             
+            // Пропуск нулевых фаз (без задержки)
             if (phase.duration === 0) {
                 currentPhaseIndex = (currentPhaseIndex + 1) % 4;
                 runPhase();
@@ -449,13 +454,13 @@
                 startBtn.innerText = "Инициация";
                 startBtn.classList.remove('stop-mode');
                 phaseDisplay.innerText = "ОЖИДАНИЕ";
-                phaseDisplay.style.color = "var(--papa-magma)";
+                phaseDisplay.style.color = "var(--ixchel-cyan)";
                 phaseDisplay.style.textShadow = "none";
                 stageWrapper.classList.remove('is-breathing');
                 
                 resetArcs();
                 
-                totalSeconds = 300; 
+                totalSeconds = 600; 
                 updateTimerText();
                 currentPhaseIndex = 0;
             } else {
@@ -469,7 +474,7 @@
                     updateTimerText();
                     if (totalSeconds <= 0) {
                         togglePractice();
-                        phaseDisplay.innerText = "ВОЗВРАЩЕНИЕ НА ЗЕМЛЮ";
+                        phaseDisplay.innerText = "НИТЬ СУДЬБЫ СПЛЕТЕНА";
                     }
                 }, 1000);
 

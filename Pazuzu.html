@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Папаханаумоку | Диафрагмальное дыхание</title>
+    <title>Пазузу | Очищающее дыхание</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
 
         :root {
-            --papa-magma: #ff4500;
-            --papa-lava: #ff9100;
-            --papa-dark: #3a1c02;
-            --papa-stone: #9e8e82;
-            --silver-accent: #fcd5a4;
+            --pazuzu-fire: #ff4500;
+            --pazuzu-rust: #b33900;
+            --pazuzu-bronze: #cd7f32;
+            --pazuzu-dark: #3a1100;
+            --silver-accent: #a9a9a9;
             --obsidian: #0a0502;
-            --text-light: #fdf5eb;
+            --text-light: #f7ede8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,21 +27,25 @@
             width: 100vw; height: 100vh; height: 100dvh;
             overflow: hidden; 
             display: flex; flex-direction: column; position: relative;
-            background: radial-gradient(circle at 50% 50%, #170800 0%, var(--obsidian) 80%);
+            background: radial-gradient(circle at 50% 50%, #170702 0%, var(--obsidian) 80%);
         }
 
-        /* === ЭЛЕГАНТНЫЙ ФОН (Мрачные искры бездны / Магма) === */
+        /* === ЭЛЕГАНТНЫЙ ФОН (Пустынный ветер и искры ярости) === */
         #luxury-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; }
         .lux-ember {
             position: absolute; width: 3px; height: 3px; border-radius: 50%;
-            background: var(--papa-lava); box-shadow: 0 0 15px var(--papa-magma);
+            background: var(--pazuzu-fire); box-shadow: 0 0 15px var(--pazuzu-fire);
             animation: floatVoid linear infinite; opacity: 0;
         }
+        .lux-ember:nth-child(even) {
+            background: var(--pazuzu-bronze); box-shadow: 0 0 15px var(--pazuzu-bronze);
+            width: 2px; height: 2px;
+        }
         @keyframes floatVoid {
-            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            0% { transform: translateY(100vh) translateX(-30px) scale(0.5); opacity: 0; }
             40% { opacity: 0.6; }
             60% { opacity: 0.6; }
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+            100% { transform: translateY(-10vh) translateX(30px) scale(1.5); opacity: 0; }
         }
 
         /* === ШАПКА === */
@@ -50,10 +54,10 @@
             background: linear-gradient(180deg, rgba(10, 5, 2, 0.95) 0%, transparent 100%);
             border-bottom: 1px solid rgba(255, 69, 0, 0.15); flex-shrink: 0; z-index: 100;
         }
-        .back-btn { width: 26px; cursor: pointer; filter: drop-shadow(0 0 5px rgba(158, 142, 130, 0.3)); margin-right: 15px; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
-        .back-btn:hover { transform: translateX(-5px); filter: drop-shadow(0 0 10px var(--papa-stone)); }
+        .back-btn { width: 26px; cursor: pointer; filter: drop-shadow(0 0 5px rgba(205, 127, 50, 0.3)); margin-right: 15px; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .back-btn:hover { transform: translateX(-5px); filter: drop-shadow(0 0 10px var(--pazuzu-bronze)); }
         
-        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.2rem, 4vw, 1.4rem); color: var(--papa-stone); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px rgba(158, 142, 130, 0.3); }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.2rem, 4vw, 1.4rem); color: var(--pazuzu-bronze); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255, 69, 0, 0.3); }
 
         /* === ГЛАВНЫЙ СЛОЙ === */
         .main-layout {
@@ -72,7 +76,7 @@
             display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
         }
 
-        /* === SVG Кольцо с 4 дугами === */
+        /* SVG Кольцо с 4 дугами */
         .breath-ring-svg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             transform: rotate(135deg); 
@@ -89,36 +93,36 @@
             transform-origin: 50px 50px;
         }
         
-        .arc-inhale { stroke: var(--papa-stone); filter: drop-shadow(0 0 10px var(--papa-stone)); transform: rotate(0deg); }
-        .arc-hold1 { stroke: var(--papa-lava); filter: drop-shadow(0 0 10px var(--papa-lava)); transform: rotate(90deg); }
-        .arc-exhale { stroke: var(--papa-magma); filter: drop-shadow(0 0 10px var(--papa-magma)); transform: rotate(180deg); }
-        .arc-hold2 { stroke: var(--papa-dark); filter: drop-shadow(0 0 10px var(--papa-dark)); transform: rotate(270deg); }
+        .arc-inhale { stroke: var(--pazuzu-bronze); filter: drop-shadow(0 0 10px var(--pazuzu-bronze)); transform: rotate(0deg); }
+        .arc-hold1 { stroke: var(--pazuzu-rust); filter: drop-shadow(0 0 10px var(--pazuzu-rust)); transform: rotate(90deg); } 
+        .arc-exhale { stroke: var(--pazuzu-fire); filter: drop-shadow(0 0 15px var(--pazuzu-fire)); transform: rotate(180deg); }
+        .arc-hold2 { stroke: var(--pazuzu-dark); filter: drop-shadow(0 0 10px var(--pazuzu-dark)); transform: rotate(270deg); }
 
         /* Аватар Божества */
         .avatar-container {
             width: 86%; height: 86%; border-radius: 50%; overflow: hidden;
-            border: 2px solid rgba(255, 69, 0, 0.2); z-index: 2;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 40px rgba(255, 69, 0, 0.3);
+            border: 2px solid rgba(255, 69, 0, 0.3); z-index: 2;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 40px rgba(255, 69, 0, 0.2);
         }
-        .deity-avatar { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8) contrast(1.1); transition: 2s; }
-        .is-breathing .deity-avatar { filter: brightness(1.1) contrast(1.2) drop-shadow(0 0 20px var(--papa-magma)); }
+        .deity-avatar { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85) contrast(1.1); transition: 1s ease-in-out; }
+        .is-breathing .deity-avatar { filter: brightness(1.2) contrast(1.2) drop-shadow(0 0 25px var(--pazuzu-fire)); }
 
         /* Текстовые индикаторы */
         .phase-text {
             font-family: 'Cinzel Decorative', cursive; font-size: clamp(2rem, 5vw, 2.5rem); font-weight: 700;
-            color: var(--papa-magma); letter-spacing: 6px; text-transform: uppercase; height: 40px;
-            transition: color 0.5s ease, text-shadow 0.5s ease;
+            color: var(--pazuzu-fire); letter-spacing: 6px; text-transform: uppercase; height: 40px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
         .timer-text {
-            font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--papa-stone);
+            font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--pazuzu-bronze);
             letter-spacing: 3px; margin-top: 5px; margin-bottom: 25px; font-weight: 500;
         }
 
         /* Кнопка старта */
         .start-btn {
-            padding: 15px 50px; background: transparent; border: 1px solid var(--papa-magma);
-            border-radius: 40px; color: var(--papa-magma);
+            padding: 15px 50px; background: transparent; border: 1px solid var(--pazuzu-fire);
+            border-radius: 40px; color: var(--pazuzu-fire);
             font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
             cursor: pointer; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             box-shadow: 0 0 15px rgba(255, 69, 0, 0.1); position: relative; overflow: hidden;
@@ -127,12 +131,12 @@
             content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 69, 0, 0.2), transparent); transition: 0.5s;
         }
-        .start-btn:hover { background: rgba(255, 69, 0, 0.1); box-shadow: 0 0 25px rgba(255, 69, 0, 0.4); color: #fff; border-color: #fff;}
+        .start-btn:hover { background: rgba(255, 69, 0, 0.15); box-shadow: 0 0 25px rgba(255, 69, 0, 0.5); color: #fff; border-color: #fff;}
         .start-btn:hover::before { left: 100%; }
         
-        .start-btn.stop-mode { border-color: var(--papa-stone); color: var(--papa-stone); box-shadow: 0 0 15px rgba(158, 142, 130, 0.2); }
-        .start-btn.stop-mode:hover { background: rgba(158, 142, 130, 0.1); box-shadow: 0 0 25px rgba(158, 142, 130, 0.5); color: #fff; border-color: #fff;}
-        .start-btn.stop-mode::before { background: linear-gradient(90deg, transparent, rgba(158, 142, 130, 0.2), transparent); }
+        .start-btn.stop-mode { border-color: var(--pazuzu-rust); color: var(--pazuzu-rust); box-shadow: 0 0 15px rgba(179, 57, 0, 0.2); }
+        .start-btn.stop-mode:hover { background: rgba(179, 57, 0, 0.1); box-shadow: 0 0 25px rgba(179, 57, 0, 0.5); color: #fff; border-color: #fff;}
+        .start-btn.stop-mode::before { background: linear-gradient(90deg, transparent, rgba(179, 57, 0, 0.2), transparent); }
 
         /* === ПРАВАЯ КОЛОНКА === */
         .right-column {
@@ -154,7 +158,7 @@
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             filter: drop-shadow(0 0 5px rgba(255, 69, 0, 0.3)); flex-shrink: 0;
         }
-        .raw-icon:hover { transform: scale(1.3); filter: drop-shadow(0 0 15px var(--papa-magma)); }
+        .raw-icon:hover { transform: scale(1.3); filter: drop-shadow(0 0 15px var(--pazuzu-fire)); }
 
         /* === НИЖНЯЯ ПАНЕЛЬ ЛОРА === */
         .bottom-lore-panel {
@@ -179,7 +183,7 @@
         
         .modal-content {
             background: rgba(15, 8, 3, 0.95);
-            border: 1px solid rgba(255, 69, 0, 0.3); border-radius: 20px; padding: 35px 25px; 
+            border: 1px solid rgba(255, 69, 0, 0.4); border-radius: 20px; padding: 35px 25px; 
             max-width: 500px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(255, 69, 0, 0.05);
             position: relative; text-align: center; display: flex; flex-direction: column; align-items: center;
             max-height: 80vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -189,16 +193,16 @@
 
         .modal-dynamic-icon {
             width: 80px; height: 80px; object-fit: contain; margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px var(--papa-magma));
+            filter: drop-shadow(0 0 15px var(--pazuzu-fire));
         }
         
-        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.8rem; color: var(--papa-magma); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
-        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #fdf5eb; line-height: 1.6; text-align: center; margin-bottom: 30px; font-weight: 300;}
-        .modal-text strong { color: var(--papa-lava); font-weight: 600;}
+        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.8rem; color: var(--pazuzu-fire); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
+        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #f7ede8; line-height: 1.6; text-align: center; margin-bottom: 30px; font-weight: 300;}
+        .modal-text strong { color: var(--pazuzu-bronze); font-weight: 600;}
 
-        .ai-modal .modal-content { border-color: rgba(158, 142, 130, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(158, 142, 130, 0.05); }
-        .ai-modal .modal-title { color: var(--papa-stone); }
-        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--papa-stone)); }
+        .ai-modal .modal-content { border-color: rgba(169, 169, 169, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(169, 169, 169, 0.05); }
+        .ai-modal .modal-title { color: var(--silver-accent); }
+        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--silver-accent)); }
 
         .close-btn {
             width: 100%; padding: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.2);
@@ -222,7 +226,7 @@
 
     <header class="battle-header">
         <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192620/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_2_r76g4q.webp" class="back-btn" onclick="goBack()" alt="Назад">
-        <div class="breadcrumb-text">Papahānaumoku</div>
+        <div class="breadcrumb-text">Pazuzu</div>
     </header>
 
     <div class="main-layout">
@@ -240,12 +244,13 @@
                 </svg>
                 
                 <div class="avatar-container">
-                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778161572/2_lrouki.webp" class="deity-avatar" alt="Papahanaumoku Avatar">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778161569/18_mvt7lb.webp" class="deity-avatar" alt="Pazuzu Avatar">
                 </div>
             </div>
 
             <div class="phase-text" id="phase-display">ОЖИДАНИЕ</div>
-            <div class="timer-text" id="timer-display">05:00</div>
+            <!-- 270 секунд (04:30) = ровно 30 циклов по 9 секунд (4-2-1-2) -->
+            <div class="timer-text" id="timer-display">04:30</div>
 
             <button class="start-btn" id="start-btn" onclick="togglePractice()">Инициация</button>
 
@@ -284,10 +289,10 @@
     <div class="modal-overlay" id="modal-lore">
         <div class="modal-content">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" class="modal-dynamic-icon" alt="Lore Icon">
-            <h2 class="modal-title">Голос Матери Земли</h2>
+            <h2 class="modal-title">Голос Демона Ветра</h2>
             <div class="modal-text">
-                «Я — <strong>Папаханаумоку</strong>. Из моего чрева родились острова, горы и океаны. Твое дыхание сейчас — как мелкая рябь на воде. Суетливо, поверхностно, полно страха.<br><br>
-                Я научу тебя дышать корнями. Вдыхай глубоко в живот, соединяясь с магмой и ядром планеты. Почувствуй абсолютную гравитацию. Отдай мне свой стресс — он сгорит в моем горниле».
+                «Я — <strong>Пазузу</strong>, крылатый ужас, прогоняющий болезни. Ты носишь в себе тонны подавленного гнева, глотаешь обиды и прячешь их в животе.<br><br>
+                Эта гниль сожрет тебя. Открой пасть! Собери всю ярость, всю боль, что скопилась в груди, и вышвырни ее наружу одним мощным, звериным выдохом. Пусть мой ветер вычистит твои внутренности».
             </div>
             <button class="close-btn" onclick="closeModal('modal-lore')">Осознать</button>
         </div>
@@ -296,13 +301,12 @@
     <div class="modal-overlay" id="modal-instruct">
         <div class="modal-content">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" class="modal-dynamic-icon" alt="Instruct Icon">
-            <h2 class="modal-title">Алгоритм Земли</h2>
+            <h2 class="modal-title">Алгоритм Изгнания</h2>
             <div class="modal-text" style="text-align: left;">
-                <strong>1. ПОДГОТОВКА:</strong> Сядь прямо или ляг на спину. Положи одну руку на грудь, другую на живот (ниже пупка).<br><br>
-                <strong>2. ВДОХ (4 сек):</strong> Медленно тяни воздух носом. Грудь неподвижна. Живот надувается, как магматический шар.<br><br>
-                <strong>3. ЗАДЕРЖКА (2 сек):</strong> Зафиксируй плотность и тяжесть воздуха внутри. Фокус в солнечном сплетении.<br><br>
-                <strong>4. ВЫДОХ (6 сек):</strong> Долгий, медленный сброс через рот. Живот опадает, унося всё напряжение в землю.<br><br>
-                <strong>5. ЗАДЕРЖКА (2 сек):</strong> Ощути абсолютную пустоту и тишину перед новым циклом.
+                <strong>1. НАКОПЛЕНИЕ (4 сек):</strong> Глубокий, плотный вдох носом. Представляй, как воздух собирает весь ментальный мусор в твоем теле.<br><br>
+                <strong>2. ФИКСАЦИЯ (2 сек):</strong> Напряги мышцы пресса и груди. Сожми эту энергию в ком.<br><br>
+                <strong>3. ВЫБРОС (1 сек):</strong> Распахни рот и сделай максимально резкий, взрывной выдох с характерным шипящим или глухим звуком (как удар).<br><br>
+                <strong>4. РАССЛАБЛЕНИЕ (2 сек):</strong> Почувствуй, как обмякло тело после сброса напряжения.
             </div>
             <button class="close-btn" onclick="closeModal('modal-instruct')">Понял алгоритм</button>
         </div>
@@ -313,10 +317,9 @@
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" class="modal-dynamic-icon" alt="Timing Icon">
             <h2 class="modal-title">Цикл Синхронизации</h2>
             <div class="modal-text">
-                <strong>Утро (Пробуждение):</strong><br>
-                Для создания непоколебимого фундамента перед хаосом дня. Наполнись весом и уверенностью. Заземли свою нервную систему.<br><br>
-                <strong>Вечер (Экстренный сброс):</strong><br>
-                Используй это дыхание прямо перед сном, чтобы физически отключить выработку кортизола и подготовить тело к глубокому, исцеляющему сну.
+                <strong>Конец тяжелого дня / После ссоры:</strong><br>
+                Это соматический сброс. Идеальная практика, чтобы оставить рабочий стресс за порогом дома.<br><br>
+                Пазузу физически пробивает диафрагмальный блок, в котором застревают непрожитые негативные эмоции. Практика длится ровно <strong>270 секунд (30 мощных выбросов)</strong>.
             </div>
             <button class="close-btn" onclick="closeModal('modal-timing')">Закрепить в памяти</button>
         </div>
@@ -338,12 +341,12 @@
     <script>
         function createParticles() {
             const container = document.getElementById('luxury-particles');
-            for (let i = 0; i < 25; i++) {
+            for (let i = 0; i < 35; i++) {
                 let p = document.createElement('div');
                 p.classList.add('lux-ember');
                 p.style.left = `${Math.random() * 100}vw`;
-                p.style.animationDuration = `${Math.random() * 8 + 4}s`;
-                p.style.animationDelay = `${Math.random() * 3}s`;
+                p.style.animationDuration = `${Math.random() * 5 + 3}s`; // Быстрый ветер
+                p.style.animationDelay = `${Math.random() * 2}s`;
                 container.appendChild(p);
             }
         }
@@ -364,15 +367,16 @@
         }
 
         function goBack() {
-            if (isActive && !confirm("Прервать погружение к корням Земли?")) return;
+            if (isActive && !confirm("Остановить очищающий ветер?")) return;
             window.location.href = 'apollo.html'; 
         }
 
-        // === ЛОГИКА ДЫХАНИЯ (Тайминги 4с, 2с, 6с, 2с) ===
+        // === ЛОГИКА ДЫХАНИЯ (Тайминги 4с, 2с, 1с, 2с) ===
+        // Математически идеальный тайминг: 270 секунд = ровно 30 циклов по 9 сек.
         let isActive = false;
         let breathTimeout;
         let countdownInterval;
-        let totalSeconds = 300; 
+        let totalSeconds = 270; 
 
         const phaseDisplay = document.getElementById('phase-display');
         const timerDisplay = document.getElementById('timer-display');
@@ -387,10 +391,10 @@
         ];
 
         const phases = [
-            { name: "ВДОХ", duration: 4000, color: "var(--papa-stone)" },
-            { name: "ЗАДЕРЖКА", duration: 2000, color: "var(--papa-lava)" },
-            { name: "ВЫДОХ", duration: 6000, color: "var(--papa-magma)" },
-            { name: "ЗАДЕРЖКА", duration: 2000, color: "var(--papa-dark)" }
+            { name: "НАКОПЛЕНИЕ", duration: 4000, color: "var(--pazuzu-bronze)" },
+            { name: "ФИКСАЦИЯ", duration: 2000, color: "var(--pazuzu-rust)" },
+            { name: "ВЫБРОС", duration: 1000, color: "var(--pazuzu-fire)" },
+            { name: "РАССЛАБЛЕНИЕ", duration: 2000, color: "var(--pazuzu-dark)" }
         ];
 
         let currentPhaseIndex = 0;
@@ -413,6 +417,7 @@
 
             const phase = phases[currentPhaseIndex];
             
+            // Пропуск нулевых фаз (если есть)
             if (phase.duration === 0) {
                 currentPhaseIndex = (currentPhaseIndex + 1) % 4;
                 runPhase();
@@ -449,13 +454,13 @@
                 startBtn.innerText = "Инициация";
                 startBtn.classList.remove('stop-mode');
                 phaseDisplay.innerText = "ОЖИДАНИЕ";
-                phaseDisplay.style.color = "var(--papa-magma)";
+                phaseDisplay.style.color = "var(--pazuzu-fire)";
                 phaseDisplay.style.textShadow = "none";
                 stageWrapper.classList.remove('is-breathing');
                 
                 resetArcs();
                 
-                totalSeconds = 300; 
+                totalSeconds = 270; 
                 updateTimerText();
                 currentPhaseIndex = 0;
             } else {
@@ -469,7 +474,7 @@
                     updateTimerText();
                     if (totalSeconds <= 0) {
                         togglePractice();
-                        phaseDisplay.innerText = "ВОЗВРАЩЕНИЕ НА ЗЕМЛЮ";
+                        phaseDisplay.innerText = "ЯРОСТЬ ИЗГНАНА";
                     }
                 }, 1000);
 
