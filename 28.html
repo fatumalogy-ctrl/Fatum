@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Махашунья | Эволюция: Урок 28</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+
+        :root {
+            --maha-mirror: #e0e5ec;        /* Осколки зеркала / Вдох */
+            --maha-purple: #5a189a;        /* Темный лотос / Выдох */
+            --maha-void: #030105;          /* Великая пустота / Задержка */
+            --maha-glitch: #9d4edd;        /* Энергия удаления данных */
+            
+            --silver-accent: #a0a4ab;
+            --obsidian: #000000;
+            --text-light: #eef2f5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            width: 100vw; height: 100vh; height: 100dvh;
+            overflow: hidden; 
+            display: flex; flex-direction: column; position: relative;
+            background: radial-gradient(circle at 50% 50%, #0d0414 0%, var(--obsidian) 90%);
+        }
+
+        /* === ЭЛЕГАНТНЫЙ ФОН (Удаление данных и битые зеркала) === */
+        #luxury-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+        .lux-ember {
+            position: absolute; 
+            animation: dataDelete linear infinite; opacity: 0;
+        }
+        /* Осколки зеркала */
+        .lux-ember:nth-child(odd) {
+            background: var(--maha-mirror); box-shadow: 0 0 10px var(--maha-mirror);
+            width: 4px; height: 4px; transform: rotate(45deg); border-radius: 0;
+        }
+        /* Глитч-код */
+        .lux-ember:nth-child(even) {
+            background: var(--maha-glitch); box-shadow: 0 0 15px var(--maha-glitch);
+            width: 2px; height: 15px; border-radius: 1px;
+        }
+        .lux-ember:nth-child(3n) {
+            background: var(--maha-purple); box-shadow: 0 0 8px var(--maha-purple);
+            width: 3px; height: 3px; border-radius: 50%;
+        }
+        @keyframes dataDelete {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            40% { opacity: 0.8; transform: translateY(60vh) scale(1.2); }
+            50% { opacity: 0.1; transform: translateY(50vh) scale(1.2) translateX(10px); } /* Glitch */
+            60% { opacity: 0.8; transform: translateY(40vh) scale(1.2) translateX(-10px); }
+            100% { transform: translateY(-10vh) scale(0); opacity: 0; }
+        }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 80px; display: flex; align-items: center; padding: 0 25px;
+            background: linear-gradient(180deg, rgba(3, 1, 5, 0.98) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(157, 78, 221, 0.2); flex-shrink: 0; z-index: 100;
+        }
+        .back-btn { width: 30px; cursor: pointer; filter: drop-shadow(0 0 5px rgba(157, 78, 221, 0.3)); margin-right: 20px; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .back-btn:hover { transform: translateX(-5px); filter: drop-shadow(0 0 12px var(--maha-mirror)); }
+        
+        .header-info { display: flex; flex-direction: column; justify-content: center; }
+        .lesson-text { font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: var(--maha-mirror); letter-spacing: 5px; font-weight: 700; margin-bottom: 2px; text-shadow: 0 0 10px rgba(224, 229, 236, 0.5); }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.2rem, 4vw, 1.4rem); color: var(--maha-glitch); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px rgba(157, 78, 221, 0.4); font-weight: 700; line-height: 1; }
+
+        /* === ГЛАВНЫЙ СЛОЙ === */
+        .main-layout {
+            flex: 1; display: flex; width: 100%; height: calc(100% - 80px); position: relative;
+        }
+
+        /* === АРЕНА ДЫХАНИЯ === */
+        .arena-center {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; padding: 10px 20px 80px 20px;
+        }
+
+        .stage-wrapper {
+            position: relative; width: 38vh; height: 38vh; min-width: 280px; min-height: 280px; max-width: 420px; max-height: 420px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
+        }
+
+        /* SVG Кольцо: Вдох 4с (1/6 круга), Выдох 8с (1/3 круга), Задержка 12с (1/2 круга). Цикл 24с. */
+        .breath-ring-svg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            transform: rotate(-90deg); /* Начинаем с 12 часов */
+            z-index: 5; pointer-events: none;
+            overflow: visible;
+        }
+
+        .base-track { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 2.5; }
+
+        .arc {
+            fill: none; stroke-width: 6; stroke-linecap: round;
+            transform-origin: 50px 50px;
+        }
+        
+        /* ВДОХ (4с) = 16.66% круга = 50.26. Угол старта: 0° */
+        .arc-inhale { 
+            stroke: var(--maha-mirror); filter: drop-shadow(0 0 10px var(--maha-mirror)); 
+            transform: rotate(0deg); 
+            stroke-dasharray: 50.26 301.6; 
+            stroke-dashoffset: 50.26; 
+        }
+        
+        /* ВЫДОХ (8с) = 33.33% круга = 100.53. Угол старта: 60° */
+        .arc-exhale { 
+            stroke: var(--maha-purple); filter: drop-shadow(0 0 15px var(--maha-purple)); 
+            transform: rotate(60deg); 
+            stroke-dasharray: 100.53 301.6; 
+            stroke-dashoffset: 100.53; 
+        }
+
+        /* ЗАДЕРЖКА (12с) = 50% круга = 150.8. Угол старта: 180° */
+        .arc-hold { 
+            stroke: var(--maha-glitch); filter: drop-shadow(0 0 8px rgba(157, 78, 221, 0.6)); 
+            transform: rotate(180deg); 
+            stroke-dasharray: 150.8 301.6; 
+            stroke-dashoffset: 150.8; 
+        }
+
+        /* Аватар Божества */
+        .avatar-container {
+            width: 86%; height: 86%; border-radius: 50%; overflow: hidden;
+            border: 3px solid rgba(224, 229, 236, 0.2); z-index: 2;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 50px rgba(90, 24, 154, 0.2);
+            transition: all 0.5s ease-in-out;
+        }
+        .deity-avatar { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8) contrast(1.2) grayscale(0.2); transition: all 0.5s ease-in-out; }
+        
+        /* Соматические анимации: Удаление данных */
+        .is-inhaling .avatar-container { animation: softInhale 4s ease-out forwards; border-color: var(--maha-mirror); }
+        .is-inhaling .deity-avatar { filter: brightness(1.1) drop-shadow(0 0 15px var(--maha-mirror)) grayscale(0); transform: scale(1.02); }
+
+        .is-exhaling .avatar-container { animation: emptyExhale 8s ease-in forwards; border-color: var(--maha-purple); box-shadow: 0 0 40px rgba(90, 24, 154, 0.5); }
+        .is-exhaling .deity-avatar { filter: brightness(0.7) contrast(1.4) hue-rotate(20deg); transform: scale(0.96); }
+
+        .is-holding .avatar-container { animation: dataWipe 12s forwards; border-color: var(--maha-glitch); }
+        .is-holding .deity-avatar { filter: brightness(0.4) contrast(1.6) grayscale(0.8); }
+
+        @keyframes softInhale {
+            0% { transform: scale(0.95); box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.5); }
+            100% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,1), inset 0 0 60px rgba(224, 229, 236, 0.4); }
+        }
+        @keyframes emptyExhale {
+            0% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,1), inset 0 0 60px rgba(224, 229, 236, 0.4); }
+            100% { transform: scale(0.95); box-shadow: 0 5px 20px rgba(0,0,0,0.9), inset 0 0 80px rgba(90, 24, 154, 0.8); }
+        }
+        @keyframes dataWipe {
+            /* Вибрация и эффект удаления (глитч) на задержке */
+            0%, 100% { transform: scale(0.95); box-shadow: 0 5px 20px rgba(0,0,0,0.9), inset 0 0 80px rgba(3, 1, 5, 0.9); }
+            10%, 30%, 50%, 70%, 90% { transform: scale(0.96) translate(1px, -1px); box-shadow: 0 10px 30px rgba(0,0,0,1), inset 0 0 90px rgba(157, 78, 221, 0.5); }
+            20%, 40%, 60%, 80% { transform: scale(0.94) translate(-1px, 1px); box-shadow: 0 5px 15px rgba(0,0,0,0.9), inset 0 0 100px rgba(3, 1, 5, 1); }
+        }
+
+        /* Текстовые индикаторы */
+        .phase-text {
+            font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 900;
+            color: var(--maha-mirror); letter-spacing: 4px; text-transform: uppercase; height: 40px;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .timer-text {
+            font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--silver-accent);
+            letter-spacing: 3px; margin-top: 5px; margin-bottom: 25px; font-weight: 500;
+        }
+
+        /* Кнопка старта */
+        .start-btn {
+            padding: 15px 50px; background: transparent; border: 1px solid var(--maha-mirror);
+            border-radius: 40px; color: var(--maha-mirror);
+            font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 15px rgba(224, 229, 236, 0.1); position: relative; overflow: hidden;
+        }
+        .start-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(224, 229, 236, 0.2), transparent); transition: 0.5s;
+        }
+        .start-btn:hover { background: rgba(224, 229, 236, 0.15); box-shadow: 0 0 25px rgba(224, 229, 236, 0.4); color: #fff; border-color: #fff;}
+        .start-btn:hover::before { left: 100%; }
+        
+        .start-btn.stop-mode { border-color: var(--maha-glitch); color: var(--maha-glitch); box-shadow: 0 0 15px rgba(157, 78, 221, 0.3); }
+        .start-btn.stop-mode:hover { background: rgba(157, 78, 221, 0.2); box-shadow: 0 0 25px rgba(157, 78, 221, 0.6); color: #fff; border-color: #fff;}
+        .start-btn.stop-mode::before { background: linear-gradient(90deg, transparent, rgba(157, 78, 221, 0.3), transparent); }
+
+        /* === ПРАВАЯ КОЛОНКА === */
+        .right-column {
+            width: 100px; 
+            height: 100%; 
+            background: linear-gradient(270deg, rgba(3, 1, 5, 0.95) 0%, transparent 100%);
+            border-left: 1px solid rgba(224, 229, 236, 0.05); 
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 20px 25px; 
+            gap: 25px;
+            overflow-y: auto; overflow-x: visible; 
+            z-index: 20;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .right-column::-webkit-scrollbar { display: none; }
+
+        .raw-icon {
+            width: 45px; height: 45px; cursor: pointer; object-fit: contain;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 0 5px rgba(157, 78, 221, 0.2)); flex-shrink: 0;
+        }
+        .raw-icon:hover { transform: scale(1.3); filter: drop-shadow(0 0 15px var(--maha-mirror)); }
+
+        /* === НИЖНЯЯ ПАНЕЛЬ ЛОРА === */
+        .bottom-lore-panel {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 40px; z-index: 15;
+        }
+        .lore-raw-icon {
+            width: 50px; height: 50px; cursor: pointer; object-fit: contain;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: none; 
+        }
+        .lore-raw-icon:hover { transform: scale(1.2) translateY(-5px); }
+
+        /* === ЛЮКСОВЫЕ МОДАЛЬНЫЕ ОКНА === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.96); backdrop-filter: blur(20px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.5s ease; z-index: 200; padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: rgba(3, 1, 5, 0.95);
+            border: 1px solid rgba(157, 78, 221, 0.3); border-radius: 20px; padding: 35px 25px; 
+            max-width: 520px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(157, 78, 221, 0.05);
+            position: relative; text-align: center; display: flex; flex-direction: column; align-items: center;
+            max-height: 80vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .modal-dynamic-icon {
+            width: 80px; height: 80px; object-fit: contain; margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px var(--maha-glitch));
+        }
+        
+        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.8rem; color: var(--maha-mirror); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
+        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #eef2f5; line-height: 1.6; text-align: center; margin-bottom: 30px; font-weight: 300;}
+        .modal-text strong { color: var(--maha-glitch); filter: brightness(1.2); font-weight: 600;}
+
+        .ai-modal .modal-content { border-color: rgba(160, 164, 171, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(160, 164, 171, 0.05); }
+        .ai-modal .modal-title { color: var(--silver-accent); }
+        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--silver-accent)); }
+
+        .close-btn {
+            width: 100%; padding: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-light); border-radius: 30px; cursor: pointer; transition: 0.3s; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;
+            margin-top: auto;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.05); border-color: #fff; color: #fff; }
+
+        @media (max-width: 600px) {
+            .right-column { width: 85px; padding: 20px 15px; gap: 20px; }
+            .raw-icon { width: 40px; height: 40px; }
+            .stage-wrapper { width: 32vh; height: 32vh; }
+            .bottom-lore-panel { bottom: 20px; gap: 30px; }
+            .lore-raw-icon { width: 45px; height: 45px; }
+            .phase-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="luxury-particles"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192620/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_2_r76g4q.webp" class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="header-info">
+            <div class="lesson-text">УРОК 28</div>
+            <div class="breadcrumb-text">Mahashunya</div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        
+        <main class="arena-center">
+            
+            <div class="stage-wrapper" id="stage-wrapper">
+                
+                <svg class="breath-ring-svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="48" class="base-track" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-inhale" id="arc-inhale" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-exhale" id="arc-exhale" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-hold" id="arc-hold" />
+                </svg>
+                
+                <div class="avatar-container">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192757/15_uynxpf.webp" class="deity-avatar" alt="Mahashunya Avatar">
+                </div>
+            </div>
+
+            <div class="phase-text" id="phase-display">ОЖИДАНИЕ</div>
+            <div class="timer-text" id="timer-display">40:00</div>
+
+            <button class="start-btn" id="start-btn" onclick="togglePractice()">Инициация</button>
+
+            <div class="bottom-lore-panel">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-lore')" alt="Lore">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-instruct')" alt="Instructions">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-timing')" alt="Timing">
+            </div>
+        </main>
+
+        <aside class="right-column">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194422/1_dk8uom.webp" class="raw-icon" onclick="openAiModal('Плетение Вагуса', this.src)" alt="Vagus">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194420/3_pyslxh.webp" class="raw-icon" onclick="openAiModal('Клетка Страха', this.src)" alt="Amygdala">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194418/5_quk1vh.webp" class="raw-icon" onclick="openAiModal('Частота Эфира', this.src)" alt="Brainwaves">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194417/7_1_n0ylwp.webp" class="raw-icon" onclick="openAiModal('Алхимия Крови', this.src)" alt="Bohr">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194029/9_1_i8xyvr.webp" class="raw-icon" onclick="openAiModal('Сброс Давления', this.src)" alt="Cortisol">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194026/11_1_ey1b7v.webp" class="raw-icon" onclick="openAiModal('Искра Зажигания', this.src)" alt="Adrenaline">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194024/13_eblqru.webp" class="raw-icon" onclick="openAiModal('Нектар Богов', this.src)" alt="Endorphins">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194021/15_ehrcjy.webp" class="raw-icon" onclick="openAiModal('Метроном Жизни', this.src)" alt="HRV">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194018/17_cuks2p.webp" class="raw-icon" onclick="openAiModal('Внутренняя Река', this.src)" alt="Lymphatic">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194017/19_ma3crh.webp" class="raw-icon" onclick="openAiModal('Огонь Очага', this.src)" alt="Digestion">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193741/21_jvsqul.webp" class="raw-icon" onclick="openAiModal('Разрыв Цепи', this.src)" alt="Patterns">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193738/23_dlwbcn.webp" class="raw-icon" onclick="openAiModal('Сброс Оков', this.src)" alt="Somatic">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193737/25_xk2ntl.webp" class="raw-icon" onclick="openAiModal('Распад Личности', this.src)" alt="Ego">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193736/27_gj5609.webp" class="raw-icon" onclick="openAiModal('Третий Глаз', this.src)" alt="Pineal">
+        </aside>
+
+    </div>
+
+    <div class="modal-overlay" id="modal-lore">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" class="modal-dynamic-icon" alt="Lore Icon">
+            <h2 class="modal-title">Голос Черного Лотоса</h2>
+            <div class="modal-text">
+                «Я — Махашунья. Великое форматирование. Последняя пустота, где исчезает даже само осознание "Я". Ты слишком крепко держишься за свою личность, свои травмы и свои достижения.<br><br>
+                Всё это — лишь битый код, перегружающий систему. Сделай выдох. Отдай мне весь воздух. Отдай мне свою жизнь на одну минуту. Позволь мне стереть тебя, чтобы ты смог перезагрузиться».
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-lore')">Запустить Дефрагментацию</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-instruct">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" class="modal-dynamic-icon" alt="Instruct Icon">
+            <h2 class="modal-title">Алгоритм Удаления</h2>
+            <div class="modal-text" style="text-align: left;">
+                <strong>1. СБРОС СИСТЕМЫ (4 сек):</strong> Сделай спокойный вдох.<br><br>
+                <strong>2. МАКСИМАЛЬНЫЙ ВЫДОХ (8 сек):</strong> Медленно, до последней капли выдави из себя ВЕСЬ воздух. Живот втянут.<br><br>
+                <strong>3. ПРОЦЕСС УДАЛЕНИЯ (12 сек):</strong> Замри без воздуха. Держи паузу. Мозг начнет кричать. Возникнет мысль "я задыхаюсь". Удали эту мысль. Появится страх — удали страх. Оставайся безмолвным экраном, на котором стираются файлы.<br><br>
+                <strong>4. РЕСТАРТ:</strong> На новом вдохе мягко впусти воздух, рождаясь заново.
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-instruct')">Понял алгоритм</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-timing">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" class="modal-dynamic-icon" alt="Timing Icon">
+            <h2 class="modal-title">Интеграция</h2>
+            <div class="modal-text">
+                <strong>Тотальный кризис / Перезагрузка жизни:</strong><br>
+                Экстремальная гипоксия на выдохе — это биологический "Control+Alt+Delete".<br><br>
+                Она принудительно обнуляет миндалевидное тело (центр страха) и стирает сиюминутные стрессовые паттерны. Человек возвращается из этой пустоты абсолютно чистым и спокойным.<br><br>
+                <strong>УНИКАЛЬНОЕ ВРЕМЯ:</strong> Практика длится ровно <strong>2400 секунд</strong> (40:00 - 100 циклов по 24 сек).
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-timing')">Закрепить в памяти</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay ai-modal" id="ai-modal">
+        <div class="modal-content">
+            <img src="" id="ai-modal-icon" class="modal-dynamic-icon" alt="AI Icon">
+            <h2 class="modal-title" id="ai-modal-title">Анализ...</h2>
+            <div class="modal-text">
+                <strong>Фатум: Нейроматрица не подключена.</strong><br><br>
+                Ваша система анализа не активирована или отсутствует подписка Эволюции. Доступ к индивидуальной расшифровке закрыт.
+            </div>
+            <button class="close-btn" onclick="closeModal('ai-modal')">Закрыть терминал</button>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('luxury-particles');
+            for (let i = 0; i < 45; i++) {
+                let p = document.createElement('div');
+                p.classList.add('lux-ember');
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.animationDuration = `${Math.random() * 6 + 3}s`; 
+                p.style.animationDelay = `${Math.random() * 4}s`;
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openAiModal(titleName, imgSrc) {
+            document.getElementById('ai-modal-title').innerText = titleName;
+            document.getElementById('ai-modal-icon').src = imgSrc;
+            document.getElementById('ai-modal').classList.add('active');
+        }
+
+        function goBack() {
+            if (isActive && !confirm("Отменить удаление данных?")) return;
+            window.location.href = 'apollo.html'; 
+        }
+
+        // === ИДЕАЛЬНО ПОНЯТНАЯ ЛОГИКА ДЫХАНИЯ ===
+        // Цикл 24 секунды: Вдох(4с, 1/6 круга), Выдох(8с, 2/6 круга), Задержка(12с, 3/6 круга).
+        
+        let isActive = false;
+        let breathTimeout;
+        let countdownInterval;
+        let totalSeconds = 2400; // 40:00 (100 циклов)
+        
+        let currentPhaseIndex = 0;
+
+        const phaseDisplay = document.getElementById('phase-display');
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const stageWrapper = document.getElementById('stage-wrapper');
+
+        const arcs = {
+            inhale: document.getElementById('arc-inhale'),
+            exhale: document.getElementById('arc-exhale'),
+            hold: document.getElementById('arc-hold')
+        };
+
+        function updateTimerText() {
+            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            timerDisplay.innerText = `${m}:${s}`;
+        }
+
+        // Прячем все дуги перед началом нового цикла
+        function resetArcs() {
+            arcs.inhale.style.transition = "none";
+            arcs.inhale.style.strokeDashoffset = "50.26"; 
+            
+            arcs.exhale.style.transition = "none";
+            arcs.exhale.style.strokeDashoffset = "100.53"; 
+            
+            arcs.hold.style.transition = "none";
+            arcs.hold.style.strokeDashoffset = "150.8"; 
+        }
+
+        function runPhase() {
+            if (!isActive || totalSeconds <= 0) return;
+
+            // Если это первая фаза (вдох) - сбрасываем весь круг
+            if (currentPhaseIndex === 0) {
+                resetArcs();
+            }
+            
+            // Принудительный рефлоу для запуска анимации SVG
+            void stageWrapper.offsetWidth;
+
+            let duration = 0;
+
+            if (currentPhaseIndex === 0) {
+                // ВДОХ (4с)
+                duration = 4000;
+                
+                arcs.inhale.style.transition = `stroke-dashoffset ${duration}ms linear`;
+                arcs.inhale.style.strokeDashoffset = "0";
+                
+                phaseDisplay.innerText = "СПОКОЙНЫЙ ВДОХ";
+                phaseDisplay.style.color = "var(--maha-mirror)";
+                phaseDisplay.style.textShadow = "0 0 15px var(--maha-mirror)";
+                stageWrapper.className = "stage-wrapper is-breathing is-inhaling";
+                
+            } else if (currentPhaseIndex === 1) {
+                // МАКС. ВЫДОХ (8с)
+                duration = 8000;
+                
+                // Оставляем дугу вдоха заполненной
+                arcs.inhale.style.strokeDashoffset = "0";
+                
+                arcs.exhale.style.transition = `stroke-dashoffset ${duration}ms linear`;
+                arcs.exhale.style.strokeDashoffset = "0";
+                
+                phaseDisplay.innerText = "ПОЛНОЕ УДАЛЕНИЕ";
+                phaseDisplay.style.color = "var(--maha-purple)";
+                phaseDisplay.style.textShadow = "0 0 15px var(--maha-purple)";
+                stageWrapper.className = "stage-wrapper is-breathing is-exhaling";
+                
+            } else if (currentPhaseIndex === 2) {
+                // ЗАДЕРЖКА БЕЗ ВОЗДУХА (12с)
+                duration = 12000;
+                
+                // Оставляем дуги вдоха и выдоха заполненными
+                arcs.inhale.style.strokeDashoffset = "0";
+                arcs.exhale.style.strokeDashoffset = "0";
+                
+                arcs.hold.style.transition = `stroke-dashoffset ${duration}ms linear`;
+                arcs.hold.style.strokeDashoffset = "0";
+                
+                phaseDisplay.innerText = "СТИРАНИЕ ДАННЫХ (БЕЗ ВОЗДУХА)";
+                phaseDisplay.style.color = "var(--maha-glitch)";
+                phaseDisplay.style.textShadow = "0 0 15px var(--maha-glitch)";
+                stageWrapper.className = "stage-wrapper is-breathing is-holding";
+            }
+
+            breathTimeout = setTimeout(() => {
+                currentPhaseIndex = (currentPhaseIndex + 1) % 3;
+                runPhase();
+            }, duration);
+        }
+
+        function togglePractice() {
+            if (isActive) {
+                isActive = false;
+                clearTimeout(breathTimeout);
+                clearInterval(countdownInterval);
+                
+                startBtn.innerText = "Инициация";
+                startBtn.classList.remove('stop-mode');
+                phaseDisplay.innerText = "ОЖИДАНИЕ";
+                phaseDisplay.style.color = "var(--maha-mirror)";
+                phaseDisplay.style.textShadow = "none";
+                stageWrapper.className = "stage-wrapper";
+                
+                resetArcs();
+                
+                totalSeconds = 2400; 
+                currentPhaseIndex = 0;
+                updateTimerText();
+            } else {
+                isActive = true;
+                startBtn.innerText = "Прервать";
+                startBtn.classList.add('stop-mode');
+                
+                countdownInterval = setInterval(() => {
+                    totalSeconds--;
+                    updateTimerText();
+                    if (totalSeconds <= 0) {
+                        togglePractice(); 
+                        phaseDisplay.innerText = "СИСТЕМА ОТФОРМАТИРОВАНА";
+                    }
+                }, 1000);
+
+                runPhase();
+            }
+        }
+    </script>
+</body>
+</html>

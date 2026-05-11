@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Хираньягарбха | Эволюция: Урок 29</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+
+        :root {
+            --hiranya-core: #ffea00;       /* Ослепительное ядро (Вдох) */
+            --hiranya-fusion: #ff8c00;     /* Термоядерный синтез (Задержка) */
+            --hiranya-nova: #ffd700;       /* Золотое расширение (Выдох) */
+            --hiranya-void: #0d0514;       /* Космический мрак */
+            
+            --silver-accent: #a0a4ab;
+            --obsidian: #030105;
+            --text-light: #eef2f5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            width: 100vw; height: 100vh; height: 100dvh;
+            overflow: hidden; 
+            display: flex; flex-direction: column; position: relative;
+            background: radial-gradient(circle at 50% 50%, var(--hiranya-void) 0%, var(--obsidian) 90%);
+        }
+
+        /* === ЭЛЕГАНТНЫЙ ФОН (Золотая плазма и звездная пыль) === */
+        #luxury-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+        .lux-ember {
+            position: absolute; border-radius: 50%;
+            animation: floatPlasma linear infinite; opacity: 0;
+        }
+        .lux-ember:nth-child(odd) {
+            background: var(--hiranya-core); box-shadow: 0 0 15px var(--hiranya-core);
+            width: 3px; height: 3px; 
+        }
+        .lux-ember:nth-child(even) {
+            background: var(--hiranya-fusion); box-shadow: 0 0 20px var(--hiranya-fusion);
+            width: 5px; height: 5px; filter: blur(1px);
+        }
+        .lux-ember:nth-child(3n) {
+            background: var(--hiranya-nova); box-shadow: 0 0 10px var(--hiranya-nova);
+            width: 2px; height: 2px;
+        }
+        @keyframes floatPlasma {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            40% { opacity: 0.8; transform: translateY(60vh) scale(1.5); }
+            60% { opacity: 0.8; transform: translateY(40vh) scale(1.5); }
+            100% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+        }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 80px; display: flex; align-items: center; padding: 0 25px;
+            background: linear-gradient(180deg, rgba(13, 5, 20, 0.98) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2); flex-shrink: 0; z-index: 100;
+        }
+        .back-btn { width: 30px; cursor: pointer; filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3)); margin-right: 20px; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .back-btn:hover { transform: translateX(-5px); filter: drop-shadow(0 0 12px var(--hiranya-core)); }
+        
+        .header-info { display: flex; flex-direction: column; justify-content: center; }
+        .lesson-text { font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: var(--hiranya-nova); letter-spacing: 5px; font-weight: 700; margin-bottom: 2px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.2rem, 4vw, 1.4rem); color: var(--hiranya-core); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255, 234, 0, 0.4); font-weight: 700; line-height: 1; }
+
+        /* === ГЛАВНЫЙ СЛОЙ === */
+        .main-layout {
+            flex: 1; display: flex; width: 100%; height: calc(100% - 80px); position: relative;
+        }
+
+        /* === АРЕНА ДЫХАНИЯ === */
+        .arena-center {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; padding: 10px 20px 80px 20px;
+        }
+
+        .stage-wrapper {
+            position: relative; width: 38vh; height: 38vh; min-width: 280px; min-height: 280px; max-width: 420px; max-height: 420px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
+        }
+
+        /* SVG Кольцо: Пропорция 1:4:2 (Вдох 4с, Задержка 16с, Выдох 8с). Общий цикл 28с. */
+        .breath-ring-svg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            transform: rotate(-90deg); /* Начинаем с 12 часов */
+            z-index: 5; pointer-events: none;
+            overflow: visible;
+        }
+
+        .base-track { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 2.5; }
+
+        .arc {
+            fill: none; stroke-width: 6; stroke-linecap: round;
+            transform-origin: 50px 50px;
+        }
+        
+        /* ВДОХ (4с) = 1/7 круга = 43.08. Угол старта: 0° */
+        .arc-inhale { 
+            stroke: var(--hiranya-core); filter: drop-shadow(0 0 12px var(--hiranya-core)); 
+            transform: rotate(0deg); 
+            stroke-dasharray: 43.08 301.6; 
+            stroke-dashoffset: 43.08; 
+        }
+        
+        /* СИНТЕЗ (16с) = 4/7 круга = 172.34. Угол старта: 51.43° */
+        .arc-hold { 
+            stroke: var(--hiranya-fusion); filter: drop-shadow(0 0 15px var(--hiranya-fusion)); 
+            transform: rotate(51.43deg); 
+            stroke-dasharray: 172.34 301.6; 
+            stroke-dashoffset: 172.34; 
+        }
+
+        /* РАСШИРЕНИЕ (8с) = 2/7 круга = 86.17. Угол старта: 257.14° */
+        .arc-exhale { 
+            stroke: var(--hiranya-nova); filter: drop-shadow(0 0 12px var(--hiranya-nova)); 
+            transform: rotate(257.14deg); 
+            stroke-dasharray: 86.17 301.6; 
+            stroke-dashoffset: 86.17; 
+        }
+
+        /* Аватар Божества */
+        .avatar-container {
+            width: 86%; height: 86%; border-radius: 50%; overflow: hidden;
+            border: 3px solid rgba(255, 215, 0, 0.2); z-index: 2;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 50px rgba(255, 140, 0, 0.2);
+            transition: all 0.5s ease-in-out;
+        }
+        .deity-avatar { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9) contrast(1.15); transition: all 0.5s ease-in-out; }
+        
+        /* Соматические анимации: Рождение Вселенной */
+        .is-inhaling .avatar-container { animation: gatherPlasma 4s ease-out forwards; border-color: var(--hiranya-core); }
+        .is-inhaling .deity-avatar { filter: brightness(1.3) drop-shadow(0 0 20px var(--hiranya-core)); transform: scale(1.02); }
+
+        .is-holding .avatar-container { animation: nuclearFusion 16s ease-in-out forwards; border-color: var(--hiranya-fusion); }
+        .is-holding .deity-avatar { filter: brightness(1.6) contrast(1.3) hue-rotate(-10deg) drop-shadow(0 0 40px var(--hiranya-fusion)); }
+
+        .is-exhaling .avatar-container { animation: novaExpand 8s ease-out forwards; border-color: var(--hiranya-nova); }
+        .is-exhaling .deity-avatar { filter: brightness(1.1) drop-shadow(0 0 15px var(--hiranya-nova)); transform: scale(1); }
+
+        @keyframes gatherPlasma {
+            0% { transform: scale(0.98); box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(255, 234, 0, 0.2); }
+            100% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,1), inset 0 0 60px rgba(255, 234, 0, 0.6); }
+        }
+        @keyframes nuclearFusion {
+            /* Уплотнение и разогрев ядра на протяжении 16 секунд */
+            0% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,1), inset 0 0 60px rgba(255, 234, 0, 0.6); }
+            40% { transform: scale(1.05); box-shadow: 0 25px 60px rgba(0,0,0,1), inset 0 0 90px rgba(255, 140, 0, 0.8); }
+            80% { transform: scale(1.04); box-shadow: 0 30px 80px rgba(0,0,0,1), inset 0 0 120px rgba(255, 140, 0, 1); }
+            100% { transform: scale(1.06); box-shadow: 0 35px 90px rgba(0,0,0,1), inset 0 0 150px rgba(255, 69, 0, 1); }
+        }
+        @keyframes novaExpand {
+            0% { transform: scale(1.06); box-shadow: 0 35px 90px rgba(0,0,0,1), inset 0 0 150px rgba(255, 69, 0, 1); }
+            100% { transform: scale(0.98); box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 40px rgba(255, 215, 0, 0.4); }
+        }
+
+        /* Текстовые индикаторы */
+        .phase-text {
+            font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 900;
+            color: var(--hiranya-core); letter-spacing: 4px; text-transform: uppercase; height: 40px;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .timer-text {
+            font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--silver-accent);
+            letter-spacing: 3px; margin-top: 5px; margin-bottom: 25px; font-weight: 500;
+        }
+
+        /* Кнопка старта */
+        .start-btn {
+            padding: 15px 50px; background: transparent; border: 1px solid var(--hiranya-core);
+            border-radius: 40px; color: var(--hiranya-core);
+            font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 15px rgba(255, 234, 0, 0.2); position: relative; overflow: hidden;
+        }
+        .start-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 234, 0, 0.3), transparent); transition: 0.5s;
+        }
+        .start-btn:hover { background: rgba(255, 234, 0, 0.15); box-shadow: 0 0 25px rgba(255, 234, 0, 0.6); color: #fff; border-color: #fff;}
+        .start-btn:hover::before { left: 100%; }
+        
+        .start-btn.stop-mode { border-color: var(--hiranya-fusion); color: var(--hiranya-fusion); box-shadow: 0 0 15px rgba(255, 140, 0, 0.3); }
+        .start-btn.stop-mode:hover { background: rgba(255, 140, 0, 0.2); box-shadow: 0 0 25px rgba(255, 140, 0, 0.6); color: #fff; border-color: #fff;}
+        .start-btn.stop-mode::before { background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.3), transparent); }
+
+        /* === ПРАВАЯ КОЛОНКА === */
+        .right-column {
+            width: 100px; 
+            height: 100%; 
+            background: linear-gradient(270deg, rgba(13, 5, 20, 0.95) 0%, transparent 100%);
+            border-left: 1px solid rgba(255, 215, 0, 0.05); 
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 20px 25px; 
+            gap: 25px;
+            overflow-y: auto; overflow-x: visible; 
+            z-index: 20;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .right-column::-webkit-scrollbar { display: none; }
+
+        .raw-icon {
+            width: 45px; height: 45px; cursor: pointer; object-fit: contain;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.2)); flex-shrink: 0;
+        }
+        .raw-icon:hover { transform: scale(1.3); filter: drop-shadow(0 0 15px var(--hiranya-core)); }
+
+        /* === НИЖНЯЯ ПАНЕЛЬ ЛОРА === */
+        .bottom-lore-panel {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 40px; z-index: 15;
+        }
+        .lore-raw-icon {
+            width: 50px; height: 50px; cursor: pointer; object-fit: contain;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: none; 
+        }
+        .lore-raw-icon:hover { transform: scale(1.2) translateY(-5px); }
+
+        /* === ЛЮКСОВЫЕ МОДАЛЬНЫЕ ОКНА === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 1, 5, 0.96); backdrop-filter: blur(20px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.5s ease; z-index: 200; padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: rgba(13, 5, 20, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 35px 25px; 
+            max-width: 520px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(255, 215, 0, 0.05);
+            position: relative; text-align: center; display: flex; flex-direction: column; align-items: center;
+            max-height: 80vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .modal-dynamic-icon {
+            width: 80px; height: 80px; object-fit: contain; margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px var(--hiranya-core));
+        }
+        
+        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.8rem; color: var(--hiranya-core); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
+        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #eef2f5; line-height: 1.6; text-align: center; margin-bottom: 30px; font-weight: 300;}
+        .modal-text strong { color: var(--hiranya-fusion); filter: brightness(1.2); font-weight: 600;}
+
+        .ai-modal .modal-content { border-color: rgba(160, 164, 171, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(160, 164, 171, 0.05); }
+        .ai-modal .modal-title { color: var(--silver-accent); }
+        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--silver-accent)); }
+
+        .close-btn {
+            width: 100%; padding: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-light); border-radius: 30px; cursor: pointer; transition: 0.3s; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;
+            margin-top: auto;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.05); border-color: #fff; color: #fff; }
+
+        @media (max-width: 600px) {
+            .right-column { width: 85px; padding: 20px 15px; gap: 20px; }
+            .raw-icon { width: 40px; height: 40px; }
+            .stage-wrapper { width: 32vh; height: 32vh; }
+            .bottom-lore-panel { bottom: 20px; gap: 30px; }
+            .lore-raw-icon { width: 45px; height: 45px; }
+            .phase-text { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="luxury-particles"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192620/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_2_r76g4q.webp" class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="header-info">
+            <div class="lesson-text">УРОК 29</div>
+            <div class="breadcrumb-text">Hiranyagarbha</div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        
+        <main class="arena-center">
+            
+            <div class="stage-wrapper" id="stage-wrapper">
+                
+                <svg class="breath-ring-svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="48" class="base-track" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-inhale" id="arc-inhale" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-hold" id="arc-hold" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-exhale" id="arc-exhale" />
+                </svg>
+                
+                <div class="avatar-container">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192772/17_wozw35.webp" class="deity-avatar" alt="Hiranyagarbha Avatar">
+                </div>
+            </div>
+
+            <div class="phase-text" id="phase-display">ОЖИДАНИЕ</div>
+            <div class="timer-text" id="timer-display">37:20</div>
+
+            <button class="start-btn" id="start-btn" onclick="togglePractice()">Инициация</button>
+
+            <div class="bottom-lore-panel">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-lore')" alt="Lore">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-instruct')" alt="Instructions">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-timing')" alt="Timing">
+            </div>
+        </main>
+
+        <aside class="right-column">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194422/1_dk8uom.webp" class="raw-icon" onclick="openAiModal('Плетение Вагуса', this.src)" alt="Vagus">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194420/3_pyslxh.webp" class="raw-icon" onclick="openAiModal('Клетка Страха', this.src)" alt="Amygdala">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194418/5_quk1vh.webp" class="raw-icon" onclick="openAiModal('Частота Эфира', this.src)" alt="Brainwaves">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194417/7_1_n0ylwp.webp" class="raw-icon" onclick="openAiModal('Алхимия Крови', this.src)" alt="Bohr">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194029/9_1_i8xyvr.webp" class="raw-icon" onclick="openAiModal('Сброс Давления', this.src)" alt="Cortisol">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194026/11_1_ey1b7v.webp" class="raw-icon" onclick="openAiModal('Искра Зажигания', this.src)" alt="Adrenaline">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194024/13_eblqru.webp" class="raw-icon" onclick="openAiModal('Нектар Богов', this.src)" alt="Endorphins">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194021/15_ehrcjy.webp" class="raw-icon" onclick="openAiModal('Метроном Жизни', this.src)" alt="HRV">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194018/17_cuks2p.webp" class="raw-icon" onclick="openAiModal('Внутренняя Река', this.src)" alt="Lymphatic">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194017/19_ma3crh.webp" class="raw-icon" onclick="openAiModal('Огонь Очага', this.src)" alt="Digestion">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193741/21_jvsqul.webp" class="raw-icon" onclick="openAiModal('Разрыв Цепи', this.src)" alt="Patterns">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193738/23_dlwbcn.webp" class="raw-icon" onclick="openAiModal('Сброс Оков', this.src)" alt="Somatic">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193737/25_xk2ntl.webp" class="raw-icon" onclick="openAiModal('Распад Личности', this.src)" alt="Ego">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193736/27_gj5609.webp" class="raw-icon" onclick="openAiModal('Третий Глаз', this.src)" alt="Pineal">
+        </aside>
+
+    </div>
+
+    <div class="modal-overlay" id="modal-lore">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" class="modal-dynamic-icon" alt="Lore Icon">
+            <h2 class="modal-title">Голос Новой Вселенной</h2>
+            <div class="modal-text">
+                «Я — Хираньягарбха, золотая капсула, дрейфующая во мраке, внутри которой зреет новая Вселенная. Твой жесткий диск отформатирован Пустотой.<br><br>
+                Теперь мы напишем новый мир. Я дам тебе идеальную пропорцию творения — 1:4:2. Собери сырую плазму, сожми ее до термоядерного синтеза внутри себя и расширь до размеров нового космоса».
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-lore')">Создать Мир</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-instruct">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" class="modal-dynamic-icon" alt="Instruct Icon">
+            <h2 class="modal-title">Алгоритм Синтеза</h2>
+            <div class="modal-text" style="text-align: left;">
+                <strong>1. СБОР ПЛАЗМЫ (4 сек):</strong> Вдохни носом чистое, золотое свечение.<br><br>
+                <strong>2. ТЕРМОЯДЕРНЫЙ СИНТЕЗ (16 сек):</strong> Задержи дыхание. Это долгая фаза. Сконцентрируй всё золотое свечение в центре живота. Почувствуй, как под давлением задержки оно уплотняется, разогревается и становится обжигающе-плотным ядром новой реальности.<br><br>
+                <strong>3. РАСШИРЕНИЕ ВСЕЛЕННОЙ (8 сек):</strong> Выдыхай в два раза дольше вдоха. Пусть это золотое ядро взорвется, заполняя каждую клетку тела и выходя за его пределы.
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-instruct')">Понял алгоритм</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-timing">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" class="modal-dynamic-icon" alt="Timing Icon">
+            <h2 class="modal-title">Интеграция</h2>
+            <div class="modal-text">
+                <strong>Воскрешение / Создание новой личности:</strong><br>
+                Классическая, мощнейшая пропорция 1:4:2. Максимально насыщает ткани кислородом, тренирует сердце и переводит мозг в состояние высочайшей, "богоподобной" ясности.<br><br>
+                Используется для старта нового, великого этапа в жизни.<br><br>
+                <strong>УНИКАЛЬНОЕ ВРЕМЯ:</strong> Практика длится ровно <strong>2240 секунд</strong> (37:20 - 80 циклов по 28 сек).
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-timing')">Закрепить в памяти</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay ai-modal" id="ai-modal">
+        <div class="modal-content">
+            <img src="" id="ai-modal-icon" class="modal-dynamic-icon" alt="AI Icon">
+            <h2 class="modal-title" id="ai-modal-title">Анализ...</h2>
+            <div class="modal-text">
+                <strong>Фатум: Нейроматрица не подключена.</strong><br><br>
+                Ваша система анализа не активирована или отсутствует подписка Эволюции. Доступ к индивидуальной расшифровке закрыт.
+            </div>
+            <button class="close-btn" onclick="closeModal('ai-modal')">Закрыть терминал</button>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('luxury-particles');
+            for (let i = 0; i < 40; i++) {
+                let p = document.createElement('div');
+                p.classList.add('lux-ember');
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.animationDuration = `${Math.random() * 6 + 4}s`; 
+                p.style.animationDelay = `${Math.random() * 4}s`;
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openAiModal(titleName, imgSrc) {
+            document.getElementById('ai-modal-title').innerText = titleName;
+            document.getElementById('ai-modal-icon').src = imgSrc;
+            document.getElementById('ai-modal').classList.add('active');
+        }
+
+        function goBack() {
+            if (isActive && !confirm("Остановить создание вселенной?")) return;
+            window.location.href = 'apollo.html'; 
+        }
+
+        // === ИДЕАЛЬНО ПОНЯТНАЯ ЛОГИКА ДЫХАНИЯ (Пропорция 1:4:2) ===
+        // Вдох 4с (1/7 круга) -> Задержка 16с (4/7 круга) -> Выдох 8с (2/7 круга). Цикл 28с.
+        // Сегменты заполняются последовательно, оставаясь активными до конца круга.
+        
+        let isActive = false;
+        let breathTimeout;
+        let countdownInterval;
+        let totalSeconds = 2240; // 37:20 (80 циклов)
+        
+        let currentPhaseIndex = 0;
+
+        const phaseDisplay = document.getElementById('phase-display');
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const stageWrapper = document.getElementById('stage-wrapper');
+
+        const arcs = {
+            inhale: document.getElementById('arc-inhale'),
+            hold: document.getElementById('arc-hold'),
+            exhale: document.getElementById('arc-exhale')
+        };
+
+        function updateTimerText() {
+            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            timerDisplay.innerText = `${m}:${s}`;
+        }
+
+        // Прячем все дуги перед началом нового цикла
+        function resetArcs() {
+            arcs.inhale.style.transition = "none";
+            arcs.inhale.style.strokeDashoffset = "43.08"; 
+            
+            arcs.hold.style.transition = "none";
+            arcs.hold.style.strokeDashoffset = "172.34"; 
+            
+            arcs.exhale.style.transition = "none";
+            arcs.exhale.style.strokeDashoffset = "86.17"; 
+        }
+
+        function runPhase() {
+            if (!isActive || totalSeconds <= 0) return;
+
+            // Если это первая фаза (вдох) - сбрасываем весь круг
+            if (currentPhaseIndex === 0) {
+                resetArcs();
+            }
+            
+            // Принудительный рефлоу для запуска анимации SVG
+            void stageWrapper.offsetWidth;
+
+            let duration = 0;
+
+            if (currentPhaseIndex === 0) {
+                // ВДОХ (4с)
+                duration = 4000;
+                
+                arcs.inhale.style.transition = `stroke-dashoffset ${duration}ms linear`;
+                arcs.inhale.style.strokeDashoffset = "0";
+                
+                phaseDisplay.innerText = "СБОР ПЛАЗМЫ";
+                phaseDisplay.style.color = "var(--hiranya-core)";
+                phaseDisplay.style.textShadow = "0 0 15px var(--hiranya-core)";
+                stageWrapper.className = "stage-wrapper is-breathing is-inhaling";
+                
+            } else if (currentPhaseIndex === 1) {
+                // ЗАДЕРЖКА (16с)
+                duration = 16000;
+                
+                // Оставляем дугу вдоха заполненной
+                arcs.inhale.style.strokeDashoffset = "0";
+                
+                arcs.hold.style.transition = `stroke-dashoffset ${duration}ms linear`;
+                arcs.hold.style.strokeDashoffset = "0";
+                
+                phaseDisplay.innerText = "ТЕРМОЯДЕРНЫЙ СИНТЕЗ";
+                phaseDisplay.style.color = "var(--hiranya-fusion)";
+                phaseDisplay.style.textShadow = "0 0 15px var(--hiranya-fusion)";
+                stageWrapper.className = "stage-wrapper is-breathing is-holding";
+                
+            } else if (currentPhaseIndex === 2) {
+                // ВЫДОХ (8с)
+                duration = 8000;
+                
+                // Оставляем дуги вдоха и задержки заполненными
+                arcs.inhale.style.strokeDashoffset = "0";
+                arcs.hold.style.strokeDashoffset = "0";
+                
+                arcs.exhale.style.transition = `stroke-dashoffset ${duration}ms linear`;
+                arcs.exhale.style.strokeDashoffset = "0";
+                
+                phaseDisplay.innerText = "РАСШИРЕНИЕ ВСЕЛЕННОЙ";
+                phaseDisplay.style.color = "var(--hiranya-nova)";
+                phaseDisplay.style.textShadow = "0 0 15px var(--hiranya-nova)";
+                stageWrapper.className = "stage-wrapper is-breathing is-exhaling";
+            }
+
+            breathTimeout = setTimeout(() => {
+                currentPhaseIndex = (currentPhaseIndex + 3 + 1) % 3;
+                runPhase();
+            }, duration);
+        }
+
+        function togglePractice() {
+            if (isActive) {
+                isActive = false;
+                clearTimeout(breathTimeout);
+                clearInterval(countdownInterval);
+                
+                startBtn.innerText = "Инициация";
+                startBtn.classList.remove('stop-mode');
+                phaseDisplay.innerText = "ОЖИДАНИЕ";
+                phaseDisplay.style.color = "var(--hiranya-core)";
+                phaseDisplay.style.textShadow = "none";
+                stageWrapper.className = "stage-wrapper";
+                
+                resetArcs();
+                
+                totalSeconds = 2240; 
+                currentPhaseIndex = 0;
+                updateTimerText();
+            } else {
+                isActive = true;
+                startBtn.innerText = "Прервать";
+                startBtn.classList.add('stop-mode');
+                
+                countdownInterval = setInterval(() => {
+                    totalSeconds--;
+                    updateTimerText();
+                    if (totalSeconds <= 0) {
+                        togglePractice(); 
+                        phaseDisplay.innerText = "НОВЫЙ МИР СОЗДАН";
+                    }
+                }, 1000);
+
+                runPhase();
+            }
+        }
+    </script>
+</body>
+</html>
