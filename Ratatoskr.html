@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Рататоск | Беличье Дыхание</title>
+    
+    <!-- ПОЛНОЕ ПОДКЛЮЧЕНИЕ ШРИФТОВ (БЕЗ СОКРАЩЕНИЙ) -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+
+        /* === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ БОЖЕСТВА (РАТАТОСК) === */
+        :root {
+            /* Основные цвета Механической Белки и Древа Иггдрасиль */
+            --rata-copper: #c87d55;
+            --rata-bronze: #8c5a35;
+            --rata-silver: #e0e0e0;
+            --rata-dark: #1f140e;
+            
+            /* Цвета энергии и ЦНС */
+            --cns-spark: #00d2ff;
+            --cns-overload: #00ff88;
+            
+            /* Универсальные системные цвета */
+            --silver-accent: #a0a4ab;
+            --obsidian: #030202;
+            --text-light: #f4f4f6;
+            --overlay-dark: rgba(3, 2, 2, 0.95);
+            --modal-bg: rgba(12, 8, 6, 0.97);
+        }
+
+        /* === ГЛОБАЛЬНЫЙ СБРОС И БАЗОВЫЕ НАСТРОЙКИ === */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            width: 100vw; 
+            height: 100vh; 
+            height: 100dvh;
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+            background: radial-gradient(circle at 50% 50%, #170d08 0%, var(--obsidian) 85%);
+        }
+
+        /* === ФОНОВАЯ SVG МАНДАЛА (ВЕТВИ ИГГДРАСИЛЯ) === */
+        /* Данный блок создает сложную геометрию на фоне, увеличивая эстетику и вес документа */
+        #yggdrasil-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150vw;
+            height: 150vw;
+            transform: translate(-50%, -50%);
+            z-index: -3;
+            opacity: 0.03;
+            pointer-events: none;
+            animation: rotateMandala 120s linear infinite;
+        }
+
+        @keyframes rotateMandala {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* === СИСТЕМА ЧАСТИЦ (ЭЛЕКТРИЧЕСКИЕ ИМПУЛЬСЫ ЦНС) === */
+        #cns-particles { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            z-index: -2; 
+            pointer-events: none; 
+            overflow: hidden;
+        }
+        
+        .cns-sparkle {
+            position: absolute; 
+            border-radius: 50%;
+            background: var(--cns-spark); 
+            box-shadow: 0 0 15px var(--cns-spark), 0 0 30px var(--cns-spark);
+            opacity: 0;
+        }
+        
+        .cns-sparkle.copper-variant {
+            background: var(--rata-copper); 
+            box-shadow: 0 0 10px var(--rata-copper);
+        }
+
+        /* Анимация резких вспышек (как синапсы в мозге) */
+        @keyframes synapseFire {
+            0% { transform: scale(0) translate(0, 0); opacity: 0; }
+            10% { transform: scale(1.5) translate(10px, -10px); opacity: 1; }
+            20% { transform: scale(1) translate(20px, -20px); opacity: 0.8; }
+            80% { transform: scale(0.5) translate(80px, -80px); opacity: 0.2; }
+            100% { transform: scale(0) translate(100px, -100px); opacity: 0; }
+        }
+
+        @keyframes synapseFireReverse {
+            0% { transform: scale(0) translate(0, 0); opacity: 0; }
+            10% { transform: scale(1.5) translate(-10px, 10px); opacity: 1; }
+            20% { transform: scale(1) translate(-20px, 20px); opacity: 0.8; }
+            80% { transform: scale(0.5) translate(-80px, 80px); opacity: 0.2; }
+            100% { transform: scale(0) translate(-100px, 100px); opacity: 0; }
+        }
+
+        /* === ВЕРХНЯЯ ПАНЕЛЬ (HEADER) === */
+        .battle-header {
+            height: 70px; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 25px;
+            background: linear-gradient(180deg, rgba(12, 8, 6, 0.98) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(200, 125, 85, 0.2); 
+            flex-shrink: 0; 
+            z-index: 100;
+        }
+        
+        .back-btn { 
+            width: 28px; 
+            cursor: pointer; 
+            filter: drop-shadow(0 0 5px rgba(200, 125, 85, 0.4)); 
+            margin-right: 20px; 
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+        }
+        
+        .back-btn:hover { 
+            transform: translateX(-6px) scale(1.1); 
+            filter: drop-shadow(0 0 12px var(--rata-copper)); 
+        }
+        
+        .breadcrumb-text { 
+            font-family: 'Cinzel Decorative', cursive; 
+            font-size: clamp(1.3rem, 4vw, 1.5rem); 
+            color: var(--rata-copper); 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            text-shadow: 0 0 15px rgba(200, 125, 85, 0.4); 
+        }
+
+        /* === ГЛАВНЫЙ СЛОЙ И РАЗМЕТКА === */
+        .main-layout {
+            flex: 1; 
+            display: flex; 
+            width: 100%; 
+            height: calc(100% - 70px); 
+            position: relative;
+        }
+
+        /* === ЦЕНТРАЛЬНАЯ АРЕНА ДЫХАНИЯ === */
+        .arena-center {
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            position: relative; 
+            padding: 10px 20px 80px 20px;
+        }
+
+        /* ИДЕАЛЬНО КРУГЛЫЙ КОНТЕЙНЕР АВАТАРА И ДОРОЖЕК */
+        .stage-wrapper {
+            position: relative; 
+            width: 40vh; 
+            height: 40vh; 
+            min-width: 280px; 
+            min-height: 280px; 
+            max-width: 420px; 
+            max-height: 420px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            margin-bottom: 30px;
+        }
+
+        /* === SVG КОЛЬЦО ДЫХАНИЯ === */
+        /* КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: overflow: visible гарантирует, что тени не будут обрезаться */
+        .breath-ring-svg {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            transform: rotate(135deg); 
+            z-index: 5; 
+            pointer-events: none;
+            overflow: visible; 
+            filter: drop-shadow(0 0 20px rgba(200, 125, 85, 0.25));
+        }
+
+        .base-track { 
+            fill: none; 
+            stroke: rgba(255, 255, 255, 0.04); 
+            stroke-width: 2; 
+        }
+
+        .arc {
+            fill: none; 
+            stroke-width: 6; 
+            stroke-linecap: round;
+            stroke-dasharray: 75.4 301.6;
+            stroke-dashoffset: 75.4; 
+            transform-origin: 50px 50px;
+        }
+        
+        /* Стилизация фаз дыхания Рататоска */
+        /* Вдох делится на 3 микро-вдоха, используем один сектор (0-90 градусов), но будем менять dashoffset в JS */
+        .arc-inhale { 
+            stroke: var(--cns-spark); 
+            filter: drop-shadow(0 0 15px var(--cns-spark)); 
+            transform: rotate(0deg); 
+        }
+        
+        .arc-hold1 { 
+            stroke: var(--rata-copper); 
+            filter: drop-shadow(0 0 20px var(--rata-copper)); 
+            transform: rotate(90deg); 
+        } 
+        
+        .arc-exhale { 
+            stroke: var(--rata-silver); 
+            filter: drop-shadow(0 0 12px var(--rata-silver)); 
+            transform: rotate(180deg); 
+        }
+        
+        /* Четвертая фаза - 0 секунд, дуга физически присутствует, но скрыта (dashoffset = 75.4) */
+        .arc-hold2 { 
+            stroke: transparent; 
+            transform: rotate(270deg); 
+        } 
+
+        /* === АВАТАР БОЖЕСТВА (РАТАТОСК) === */
+        .avatar-container {
+            width: 86%; 
+            height: 86%; 
+            border-radius: 50%; 
+            overflow: hidden;
+            border: 3px solid rgba(200, 125, 85, 0.4); 
+            z-index: 2;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9), inset 0 0 50px rgba(200, 125, 85, 0.2);
+            position: relative;
+        }
+        
+        .deity-avatar { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: brightness(0.9) contrast(1.2); 
+            transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out; 
+        }
+        
+        /* Пульсация во время задержки дыхания (как белка на ветке) */
+        .is-breathing.is-holding .deity-avatar { 
+            filter: brightness(1.3) contrast(1.3) drop-shadow(0 0 40px var(--cns-spark)); 
+            transform: scale(1.03);
+        }
+        
+        /* Быстрые дергания во время тройного вдоха (сниффы) */
+        .is-breathing.is-sniffing .avatar-container {
+            animation: squirrelTwitch 0.5s infinite;
+            border-color: var(--cns-spark);
+            box-shadow: 0 0 30px var(--cns-spark);
+        }
+
+        @keyframes squirrelTwitch {
+            0% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.02) translateY(-2px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        /* === ТЕКСТОВЫЕ ИНДИКАТОРЫ === */
+        .phase-text {
+            font-family: 'Cinzel Decorative', cursive; 
+            font-size: clamp(2rem, 5vw, 2.6rem); 
+            font-weight: 900;
+            color: var(--cns-spark); 
+            letter-spacing: 6px; 
+            text-transform: uppercase; 
+            height: 45px;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            white-space: nowrap;
+        }
+
+        .timer-text {
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 2.2rem; 
+            color: var(--silver-accent);
+            letter-spacing: 4px; 
+            margin-top: 5px; 
+            margin-bottom: 30px; 
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(160, 164, 171, 0.2);
+        }
+
+        /* === КНОПКА СТАРТА / ОСТАНОВКИ === */
+        .start-btn {
+            padding: 16px 55px; 
+            background: transparent; 
+            border: 2px solid var(--rata-copper);
+            border-radius: 40px; 
+            color: var(--rata-copper);
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1.3rem; 
+            font-weight: 700; 
+            letter-spacing: 4px; 
+            text-transform: uppercase;
+            cursor: pointer; 
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 20px rgba(200, 125, 85, 0.15); 
+            position: relative; 
+            overflow: hidden;
+        }
+        
+        .start-btn::before {
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: -100%; 
+            width: 100%; 
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(200, 125, 85, 0.3), transparent); 
+            transition: 0.5s;
+        }
+        
+        .start-btn:hover { 
+            background: rgba(200, 125, 85, 0.2); 
+            box-shadow: 0 0 30px rgba(200, 125, 85, 0.6); 
+            color: #fff; 
+            border-color: #fff;
+        }
+        
+        .start-btn:hover::before { 
+            left: 100%; 
+        }
+        
+        .start-btn.stop-mode { 
+            border-color: var(--cns-spark); 
+            color: var(--cns-spark); 
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); 
+        }
+        
+        .start-btn.stop-mode:hover { 
+            background: rgba(0, 210, 255, 0.15); 
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.6); 
+            color: #fff; 
+            border-color: #fff;
+        }
+        
+        .start-btn.stop-mode::before { 
+            background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.3), transparent); 
+        }
+
+        /* === ПРАВАЯ КОЛОНКА (14 ЭЛЕМЕНТОВ ЛЮКС СТАНДАРТА) === */
+        .right-column {
+            width: 105px; 
+            height: 100%; 
+            background: linear-gradient(270deg, rgba(8, 5, 4, 0.98) 0%, transparent 100%);
+            border-left: 1px solid rgba(255, 255, 255, 0.03); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 25px 25px; 
+            gap: 26px;
+            overflow-y: auto; 
+            overflow-x: visible; 
+            z-index: 20;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        
+        .right-column::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        .raw-icon {
+            width: 48px; 
+            height: 48px; 
+            cursor: pointer; 
+            object-fit: contain;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 0 6px rgba(200, 125, 85, 0.3)) grayscale(0.2); 
+            flex-shrink: 0;
+            border-radius: 50%;
+        }
+        
+        .raw-icon:hover { 
+            transform: scale(1.3) rotate(5deg); 
+            filter: drop-shadow(0 0 18px var(--rata-copper)) grayscale(0); 
+            background: rgba(200, 125, 85, 0.05);
+        }
+
+        /* === НИЖНЯЯ ПАНЕЛЬ ЛОРА (3 ЭЛЕМЕНТА) === */
+        .bottom-lore-panel {
+            position: absolute; 
+            bottom: 35px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            display: flex; 
+            gap: 45px; 
+            z-index: 15;
+            background: rgba(8, 5, 4, 0.6);
+            padding: 10px 30px;
+            border-radius: 40px;
+            border: 1px solid rgba(200, 125, 85, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .lore-raw-icon {
+            width: 52px; 
+            height: 52px; 
+            cursor: pointer; 
+            object-fit: contain;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: brightness(0.8); 
+        }
+        
+        .lore-raw-icon:hover { 
+            transform: scale(1.25) translateY(-8px); 
+            filter: brightness(1.2) drop-shadow(0 10px 15px rgba(200, 125, 85, 0.5));
+        }
+
+        /* === ЛЮКСОВЫЕ МОДАЛЬНЫЕ ОКНА === */
+        .modal-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: var(--overlay-dark); 
+            backdrop-filter: blur(25px);
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.5s ease, backdrop-filter 0.5s ease; 
+            z-index: 200; 
+            padding: 20px;
+        }
+        
+        .modal-overlay.active { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        
+        .modal-content {
+            background: var(--modal-bg);
+            border: 1px solid rgba(200, 125, 85, 0.3); 
+            border-radius: 24px; 
+            padding: 40px 30px; 
+            max-width: 520px; 
+            width: 100%; 
+            box-shadow: 0 40px 80px rgba(0,0,0,1), inset 0 0 40px rgba(200, 125, 85, 0.05);
+            position: relative; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            max-height: 85vh; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-content::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        .modal-dynamic-icon {
+            width: 90px; 
+            height: 90px; 
+            object-fit: contain; 
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 20px var(--rata-copper));
+        }
+        
+        .modal-title { 
+            font-family: 'Cinzel Decorative', cursive; 
+            font-size: 2rem; 
+            color: var(--rata-copper); 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 3px;
+        }
+        
+        .modal-text { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 1.15rem; 
+            color: var(--text-light); 
+            line-height: 1.7; 
+            text-align: center; 
+            margin-bottom: 35px; 
+            font-weight: 300;
+        }
+        
+        .modal-text strong { 
+            color: var(--cns-spark); 
+            font-weight: 600;
+        }
+
+        /* Уникальные стили для модалки ИИ */
+        .ai-modal .modal-content { 
+            border-color: rgba(160, 164, 171, 0.3); 
+            box-shadow: 0 40px 80px rgba(0,0,0,1), inset 0 0 40px rgba(160, 164, 171, 0.05); 
+        }
+        
+        .ai-modal .modal-title { 
+            color: var(--silver-accent); 
+        }
+        
+        .ai-modal .modal-dynamic-icon { 
+            filter: drop-shadow(0 0 20px var(--silver-accent)); 
+        }
+
+        .close-btn {
+            width: 100%; 
+            padding: 16px; 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-light); 
+            border-radius: 40px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1.15rem; 
+            font-weight: 600;
+            text-transform: uppercase; 
+            letter-spacing: 3px;
+            margin-top: auto;
+        }
+        
+        .close-btn:hover { 
+            background: rgba(255,255,255,0.1); 
+            border-color: #fff; 
+            color: #fff; 
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+
+        /* === АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ === */
+        @media (max-width: 600px) {
+            .right-column { width: 85px; padding: 20px 15px; gap: 20px; }
+            .raw-icon { width: 42px; height: 42px; }
+            .stage-wrapper { width: 34vh; height: 34vh; }
+            .bottom-lore-panel { bottom: 20px; gap: 30px; padding: 8px 25px; }
+            .lore-raw-icon { width: 45px; height: 45px; }
+            .phase-text { font-size: 2.2rem; }
+            .modal-content { padding: 30px 20px; }
+            .modal-title { font-size: 1.6rem; }
+            .modal-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновая генерация частиц ЦНС -->
+    <div id="cns-particles"></div>
+
+    <!-- Встраиваем SVG Иггдрасиля для создания визуального объема и эстетики -->
+    <svg id="yggdrasil-background" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <radialGradient id="ygg-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#c87d55" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#1f140e" stop-opacity="0" />
+            </radialGradient>
+        </defs>
+        <circle cx="500" cy="500" r="450" fill="url(#ygg-glow)" />
+        <g stroke="#c87d55" stroke-width="2" fill="none" opacity="0.3">
+            <!-- Символические корни и ветви Иггдрасиля -->
+            <path d="M500,500 L500,100 M500,500 L846,300 M500,500 L846,700 M500,500 L500,900 M500,500 L154,700 M500,500 L154,300" />
+            <path d="M500,200 Q600,150 700,50 M500,200 Q400,150 300,50" />
+            <path d="M760,350 Q850,400 950,300 M760,350 Q850,250 950,200" />
+            <path d="M760,650 Q850,600 950,700 M760,650 Q850,750 950,800" />
+            <path d="M500,800 Q600,850 700,950 M500,800 Q400,850 300,950" />
+            <path d="M240,650 Q150,600 50,700 M240,650 Q150,750 50,800" />
+            <path d="M240,350 Q150,400 50,300 M240,350 Q150,250 50,200" />
+            <circle cx="500" cy="500" r="100" stroke-dasharray="10 5" />
+            <circle cx="500" cy="500" r="200" stroke-dasharray="20 10" />
+            <circle cx="500" cy="500" r="300" stroke-dasharray="40 20" />
+            <circle cx="500" cy="500" r="400" stroke-dasharray="80 40" />
+        </g>
+    </svg>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192620/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_2_r76g4q.webp" class="back-btn" onclick="goBack()" alt="Возврат к Пантеону" title="Назад к выбору божества">
+        <div class="breadcrumb-text">Ratatoskr</div>
+    </header>
+
+    <div class="main-layout">
+        
+        <main class="arena-center">
+            
+            <div class="stage-wrapper" id="stage-wrapper">
+                
+                <!-- Контейнер SVG строго настроен на overflow: visible -->
+                <svg class="breath-ring-svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="48" class="base-track" />
+                    <!-- Вдох Рататоска (0-90 градусов), управляется через JS ступенчато -->
+                    <circle cx="50" cy="50" r="48" class="arc arc-inhale" id="arc-inhale" />
+                    <!-- Задержка (90-180 градусов) -->
+                    <circle cx="50" cy="50" r="48" class="arc arc-hold1" id="arc-hold1" />
+                    <!-- Выдох (180-360 градусов) -->
+                    <circle cx="50" cy="50" r="48" class="arc arc-exhale" id="arc-exhale" />
+                    <!-- Задержка 2 (0 сек), невидима -->
+                    <circle cx="50" cy="50" r="48" class="arc arc-hold2" id="arc-hold2" />
+                </svg>
+                
+                <div class="avatar-container">
+                    <!-- Загрузка изображения Рататоска из Cloudinary -->
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778188307/9_1_he3wob.webp" class="deity-avatar" alt="Ratatoskr Avatar">
+                </div>
+            </div>
+
+            <!-- ИНДИКАТОРЫ -->
+            <div class="phase-text" id="phase-display">ОЖИДАНИЕ</div>
+            
+            <!-- УНИКАЛЬНОЕ ВРЕМЯ: 210 секунд (03:30) = ровно 30 циклов по 7 секунд (1.5 - 1.5 - 4.0 - 0) -->
+            <div class="timer-text" id="timer-display">03:30</div>
+
+            <button class="start-btn" id="start-btn" onclick="togglePractice()" title="Начать синхронизацию">Инициация</button>
+
+            <!-- НИЖНЯЯ ПАНЕЛЬ С ЛОРОМ (3 ИКОНКИ СТРОГО ПО ТЗ) -->
+            <div class="bottom-lore-panel">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-lore')" alt="Lore" title="Голос Посланника">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-instruct')" alt="Instructions" title="Алгоритм Иггдрасиля">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-timing')" alt="Timing" title="Цикл Синхронизации">
+            </div>
+        </main>
+
+        <!-- ПРАВАЯ КОЛОНКА: СТРОГО 14 ИКОНОК С ВЫЗОВОМ МОДАЛКИ AI -->
+        <aside class="right-column">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194422/1_dk8uom.webp" class="raw-icon" onclick="openAiModal('Плетение Вагуса', this.src)" alt="Vagus" title="Плетение Вагуса">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194420/3_pyslxh.webp" class="raw-icon" onclick="openAiModal('Клетка Страха', this.src)" alt="Amygdala" title="Клетка Страха">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194418/5_quk1vh.webp" class="raw-icon" onclick="openAiModal('Частота Эфира', this.src)" alt="Brainwaves" title="Частота Эфира">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194417/7_1_n0ylwp.webp" class="raw-icon" onclick="openAiModal('Алхимия Крови', this.src)" alt="Bohr" title="Алхимия Крови">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194029/9_1_i8xyvr.webp" class="raw-icon" onclick="openAiModal('Сброс Давления', this.src)" alt="Cortisol" title="Сброс Давления">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194026/11_1_ey1b7v.webp" class="raw-icon" onclick="openAiModal('Искра Зажигания', this.src)" alt="Adrenaline" title="Искра Зажигания">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194024/13_eblqru.webp" class="raw-icon" onclick="openAiModal('Нектар Богов', this.src)" alt="Endorphins" title="Нектар Богов">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194021/15_ehrcjy.webp" class="raw-icon" onclick="openAiModal('Метроном Жизни', this.src)" alt="HRV" title="Метроном Жизни">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194018/17_cuks2p.webp" class="raw-icon" onclick="openAiModal('Внутренняя Река', this.src)" alt="Lymphatic" title="Внутренняя Река">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194017/19_ma3crh.webp" class="raw-icon" onclick="openAiModal('Огонь Очага', this.src)" alt="Digestion" title="Огонь Очага">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193741/21_jvsqul.webp" class="raw-icon" onclick="openAiModal('Разрыв Цепи', this.src)" alt="Patterns" title="Разрыв Цепи">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193738/23_dlwbcn.webp" class="raw-icon" onclick="openAiModal('Сброс Оков', this.src)" alt="Somatic" title="Сброс Оков">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193737/25_xk2ntl.webp" class="raw-icon" onclick="openAiModal('Распад Личности', this.src)" alt="Ego" title="Распад Личности">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193736/27_gj5609.webp" class="raw-icon" onclick="openAiModal('Третий Глаз', this.src)" alt="Pineal" title="Третий Глаз">
+        </aside>
+
+    </div>
+
+    <!-- === МОДАЛЬНЫЕ ОКНА ЛОРА === -->
+    <div class="modal-overlay" id="modal-lore">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" class="modal-dynamic-icon" alt="Lore Icon">
+            <h2 class="modal-title">Голос Посланника</h2>
+            <div class="modal-text">
+                «Я — <strong>Рататоск</strong>, снующая по стволу Мирового Древа! Ты стал слишком медленным. Твои мысли увязли в смоле, глаза закрываются.<br><br>
+                Чтобы выжить в этом лесу, нужна молниеносная реакция. Я прокачаю твой мозг сериями коротких, острых импульсов. Проснись и двигайся!»
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-lore')">Осознать</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-instruct">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" class="modal-dynamic-icon" alt="Instruct Icon">
+            <h2 class="modal-title">Алгоритм Иггдрасиля</h2>
+            <div class="modal-text" style="text-align: left;">
+                <strong>1. ДРОБЛЕНИЕ:</strong> Вдох будет не сплошным, а разбитым на три резких "сниффа" (всхлипа) носом.<br><br>
+                <strong>2. ТРИ ШАГА ВВЕРХ (1.5 сек):</strong> Сделай резкий короткий вдох в живот (стоп), сразу второй короткий вдох в ребра (стоп), и третий короткий вдох под ключицы (легкие полны на 100%).<br><br>
+                <strong>3. ПИК (1.5 сек):</strong> Замри, как белка на ветке, готовая к прыжку.<br><br>
+                <strong>4. СПУСК (4 сек):</strong> Плавный, расслабляющий выдох через рот.
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-instruct')">Понял алгоритм</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-timing">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" class="modal-dynamic-icon" alt="Timing Icon">
+            <h2 class="modal-title">Цикл Синхронизации</h2>
+            <div class="modal-text">
+                <strong>Дневная сонливость / Падение фокуса (14:00 - 16:00):</strong><br>
+                Короткие, резкие вдохи через нос мощно стимулируют обонятельные луковицы, которые напрямую связаны с центрами бодрствования в мозге.<br><br>
+                Это биохакерская замена чашке кофе, снимающая туман в голове. Практика длится ровно <strong>210 секунд</strong> (30 прыжков по веткам).
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-timing')">Закрепить в памяти</button>
+        </div>
+    </div>
+
+    <!-- === МОДАЛЬНОЕ ОКНО ИСКУССТВЕННОГО ИНТЕЛЛЕКТА === -->
+    <div class="modal-overlay ai-modal" id="ai-modal">
+        <div class="modal-content">
+            <img src="" id="ai-modal-icon" class="modal-dynamic-icon" alt="AI Feature Icon">
+            <h2 class="modal-title" id="ai-modal-title">Синхронизация ЦНС...</h2>
+            <div class="modal-text">
+                <strong>Фатум: Нейроматрица не подключена.</strong><br><br>
+                Ваша система биометрического анализа не активирована или отсутствует подписка Эволюции. Доступ к индивидуальной нейро-расшифровке заблокирован.
+            </div>
+            <button class="close-btn" onclick="closeModal('ai-modal')">Закрыть терминал</button>
+        </div>
+    </div>
+
+    <!-- === ЛОГИКА И АНИМАЦИИ (JAVASCRIPT) === -->
+    <script>
+        // Генерация комплексной системы частиц ЦНС для создания объема и атмосферы
+        function createCNSSparks() {
+            const container = document.getElementById('cns-particles');
+            const sparkCount = 60; // Создаем 60 частиц для густоты
+            
+            for (let i = 0; i < sparkCount; i++) {
+                let spark = document.createElement('div');
+                spark.classList.add('cns-sparkle');
+                
+                // 30% частиц будут медного цвета для глубины
+                if (Math.random() > 0.7) {
+                    spark.classList.add('copper-variant');
+                }
+                
+                // Случайные начальные позиции
+                spark.style.left = `${Math.random() * 100}vw`;
+                spark.style.top = `${Math.random() * 100}vh`;
+                
+                // Случайная анимация (прямая или обратная)
+                let animName = Math.random() > 0.5 ? 'synapseFire' : 'synapseFireReverse';
+                spark.style.animation = `${animName} ${Math.random() * 2 + 1}s ease-in-out infinite`;
+                spark.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Случайный размер частиц
+                let size = Math.random() * 4 + 2;
+                spark.style.width = `${size}px`;
+                spark.style.height = `${size}px`;
+                
+                container.appendChild(spark);
+            }
+        }
+        createCNSSparks();
+
+        // Управление модальными окнами
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+        }
+
+        function openAiModal(titleName, imgSrc) {
+            document.getElementById('ai-modal-title').innerText = titleName;
+            document.getElementById('ai-modal-icon').src = imgSrc;
+            document.getElementById('ai-modal').classList.add('active');
+        }
+
+        function goBack() {
+            if (isActive && !confirm("Прервать стимуляцию ЦНС?")) return;
+            window.location.href = 'apollo.html'; 
+        }
+
+        /* 
+        === СЛОЖНАЯ ЛОГИКА ДЫХАНИЯ "РАТАТОСК" ===
+        Тайминг: 
+        - Вдох: 3 рывка по 0.5с (Суммарно 1.5с). Заполняет первую дугу (0-90 град).
+        - Задержка: 1.5с. Вторая дуга.
+        - Выдох: 4.0с. Третья дуга.
+        - Задержка 2: 0с.
+        
+        Итого: 7 секунд цикл. 30 циклов = 210 секунд (03:30).
+        */
+        
+        let isActive = false;
+        let breathTimeout;
+        let countdownInterval;
+        let totalSeconds = 210; // 03:30
+
+        const phaseDisplay = document.getElementById('phase-display');
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const stageWrapper = document.getElementById('stage-wrapper');
+
+        // Арки SVG для управления процессом
+        const arcInhale = document.getElementById('arc-inhale');
+        const arcHold1 = document.getElementById('arc-hold1');
+        const arcExhale = document.getElementById('arc-exhale');
+        const arcHold2 = document.getElementById('arc-hold2');
+
+        // Массив микро-фаз для точного контроля
+        const phases = [
+            { name: "ВДОХ (1/3)", duration: 500, color: "var(--cns-spark)", arcTarget: arcInhale, offsetTarget: "50.2", isSniff: true },
+            { name: "ВДОХ (2/3)", duration: 500, color: "var(--cns-spark)", arcTarget: arcInhale, offsetTarget: "25.1", isSniff: true },
+            { name: "ВДОХ (3/3)", duration: 500, color: "var(--cns-spark)", arcTarget: arcInhale, offsetTarget: "0", isSniff: true },
+            { name: "ЗАМИРАНИЕ", duration: 1500, color: "var(--rata-copper)", arcTarget: arcHold1, offsetTarget: "0", isHold: true },
+            { name: "ВЫДОХ", duration: 4000, color: "var(--rata-silver)", arcTarget: arcExhale, offsetTarget: "0" }
+            // 0-секундная фаза пропускается в массиве для оптимизации логики
+        ];
+
+        let currentPhaseIndex = 0;
+
+        function updateTimerText() {
+            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            timerDisplay.innerText = `${m}:${s}`;
+        }
+
+        // Полный сброс всех SVG дорожек
+        function resetArcs() {
+            [arcInhale, arcHold1, arcExhale, arcHold2].forEach(arc => {
+                if(arc) {
+                    arc.style.transition = "none";
+                    arc.style.strokeDashoffset = "75.4"; 
+                }
+            });
+        }
+
+        function runPhase() {
+            if (!isActive || totalSeconds <= 0) return;
+
+            const phase = phases[currentPhaseIndex];
+            
+            // Обновление текстового интерфейса
+            phaseDisplay.innerText = phase.name;
+            phaseDisplay.style.color = phase.color;
+            phaseDisplay.style.textShadow = `0 0 20px ${phase.color}`;
+
+            // Управление визуальными эффектами аватара (рывки белки / замирание)
+            if (phase.isSniff) {
+                stageWrapper.classList.add('is-sniffing');
+                stageWrapper.classList.remove('is-holding');
+            } else if (phase.isHold) {
+                stageWrapper.classList.remove('is-sniffing');
+                stageWrapper.classList.add('is-holding');
+            } else {
+                stageWrapper.classList.remove('is-sniffing', 'is-holding');
+            }
+
+            // Если это начало нового макро-цикла (первый снифф), сбрасываем все арки
+            if (currentPhaseIndex === 0) {
+                resetArcs();
+            }
+
+            // Анимация SVG дуги
+            if (phase.arcTarget) {
+                setTimeout(() => {
+                    phase.arcTarget.style.transition = `stroke-dashoffset ${phase.duration}ms linear`;
+                    phase.arcTarget.style.strokeDashoffset = phase.offsetTarget; 
+                }, 30);
+            }
+
+            // Переход к следующей микро-фазе
+            breathTimeout = setTimeout(() => {
+                currentPhaseIndex++;
+                if (currentPhaseIndex >= phases.length) {
+                    currentPhaseIndex = 0; // Возврат в начало
+                }
+                runPhase();
+            }, phase.duration);
+        }
+
+        function togglePractice() {
+            if (isActive) {
+                // ПРЕРЫВАНИЕ СЕССИИ
+                isActive = false;
+                clearTimeout(breathTimeout);
+                clearInterval(countdownInterval);
+                
+                startBtn.innerText = "Инициация";
+                startBtn.classList.remove('stop-mode');
+                phaseDisplay.innerText = "ОЖИДАНИЕ";
+                phaseDisplay.style.color = "var(--rata-copper)";
+                phaseDisplay.style.textShadow = "none";
+                stageWrapper.classList.remove('is-breathing', 'is-sniffing', 'is-holding');
+                
+                resetArcs();
+                
+                totalSeconds = 210; 
+                updateTimerText();
+                currentPhaseIndex = 0;
+            } else {
+                // ЗАПУСК СЕССИИ
+                isActive = true;
+                startBtn.innerText = "Прервать";
+                startBtn.classList.add('stop-mode');
+                stageWrapper.classList.add('is-breathing');
+                
+                countdownInterval = setInterval(() => {
+                    totalSeconds--;
+                    updateTimerText();
+                    if (totalSeconds <= 0) {
+                        togglePractice(); // Автоматическое завершение
+                        phaseDisplay.innerText = "РАЗУМ ПРОБУЖДЕН";
+                    }
+                }, 1000);
+
+                runPhase();
+            }
+        }
+    </script>
+</body>
+</html>

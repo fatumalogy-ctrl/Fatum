@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ахау-Кин | Дыхание Солнечного Сплетения</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Rajdhani:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ahau-gold: #ffd700;
+            --ahau-fire: #ff4500;
+            --ahau-blood: #8b0000;
+            --ahau-ember: #ff8c00;
+            --ahau-stone: #1a0f0a;
+            
+            --silver-accent: #a0a4ab;
+            --obsidian: #050302;
+            --text-light: #fff5e6;
+            --overlay-dark: rgba(5, 3, 2, 0.96);
+            --modal-bg: rgba(15, 5, 2, 0.98);
+        }
+
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            width: 100vw; 
+            height: 100vh; 
+            height: 100dvh;
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+            background: radial-gradient(circle at 50% 50%, var(--ahau-stone) 0%, var(--obsidian) 85%);
+        }
+
+        #solar-particles { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            z-index: -2; 
+            pointer-events: none; 
+            overflow: hidden;
+        }
+        
+        .particle-base {
+            position: absolute;
+            border-radius: 50%;
+            will-change: transform, opacity;
+        }
+        
+        .particle-gold {
+            background: var(--ahau-gold);
+            box-shadow: 0 0 12px var(--ahau-gold);
+        }
+
+        .particle-fire {
+            background: var(--ahau-fire);
+            box-shadow: 0 0 15px var(--ahau-fire);
+        }
+
+        .particle-ember {
+            background: var(--ahau-ember);
+            box-shadow: 0 0 10px var(--ahau-ember);
+        }
+
+        .battle-header {
+            height: 70px; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 25px;
+            background: linear-gradient(180deg, rgba(15, 5, 2, 0.98) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255, 69, 0, 0.2); 
+            flex-shrink: 0; 
+            z-index: 100;
+        }
+        
+        .back-btn { 
+            width: 28px; 
+            cursor: pointer; 
+            margin-right: 20px; 
+            transition: all 0.4s ease;
+            filter: drop-shadow(0 0 5px rgba(255, 69, 0, 0.3));
+        }
+        
+        .back-btn:hover { 
+            transform: translateX(-5px); 
+            filter: drop-shadow(0 0 10px var(--ahau-fire));
+        }
+        
+        .breadcrumb-text { 
+            font-family: 'Cinzel Decorative', cursive; 
+            font-size: 1.4rem; 
+            color: var(--ahau-gold); 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .main-layout {
+            flex: 1; 
+            display: flex; 
+            width: 100%; 
+            height: calc(100% - 70px); 
+            position: relative;
+        }
+
+        .arena-center {
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            align-items: center;
+            position: relative; 
+            padding: 20px 20px 30px 20px;
+        }
+
+        .stage-wrapper {
+            position: relative; 
+            width: 40vh; 
+            height: 40vh; 
+            min-width: 280px; 
+            min-height: 280px;
+            max-width: 450px;
+            max-height: 450px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            margin-top: 2vh;
+        }
+
+        .breath-ring-svg {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            transform: rotate(-90deg); 
+            z-index: 5; 
+            pointer-events: none;
+            overflow: visible; 
+            filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.3));
+        }
+
+        .base-track { 
+            fill: none; 
+            stroke: rgba(255, 255, 255, 0.03); 
+            stroke-width: 2.5; 
+        }
+
+        .arc {
+            fill: none; 
+            stroke-width: 7; 
+            stroke-linecap: round;
+            transform-origin: 50px 50px;
+        }
+        
+        .arc-inhale { 
+            stroke: var(--ahau-gold); 
+            stroke-dasharray: 116 301.6;
+            stroke-dashoffset: 116; 
+        }
+        
+        .arc-hold { 
+            stroke: var(--ahau-fire); 
+            transform: rotate(138.46deg); 
+            stroke-dasharray: 69.6 301.6;
+            stroke-dashoffset: 69.6; 
+        } 
+        
+        .arc-exhale { 
+            stroke: var(--ahau-ember); 
+            transform: rotate(221.54deg); 
+            stroke-dasharray: 116 301.6;
+            stroke-dashoffset: 116; 
+        }
+
+        .avatar-container {
+            width: 86%; 
+            height: 86%; 
+            border-radius: 50%; 
+            overflow: hidden;
+            border: 3px solid rgba(255, 69, 0, 0.3); 
+            z-index: 2;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 60px rgba(255, 69, 0, 0.2);
+            position: relative;
+            transition: all 1s ease;
+        }
+        
+        .deity-avatar { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: brightness(0.85);
+            transition: all 1s ease;
+        }
+        
+        .is-inhaling .avatar-container { animation: inhalePulse 5s ease forwards; }
+        .is-inhaling .deity-avatar { transform: scale(1.05); filter: brightness(1.1); }
+
+        .is-holding .avatar-container { animation: holdPulse 3s ease forwards; border-color: var(--ahau-fire); }
+        .is-holding .deity-avatar { transform: scale(1.08); filter: brightness(1.3) drop-shadow(0 0 20px var(--ahau-fire)); }
+
+        .is-exhaling .avatar-container { animation: exhalePulse 5s ease forwards; }
+        .is-exhaling .deity-avatar { transform: scale(1); filter: brightness(0.85); }
+
+        @keyframes inhalePulse { 100% { transform: scale(1.1); border-color: var(--ahau-gold); box-shadow: 0 20px 60px rgba(0,0,0,0.9), inset 0 0 80px rgba(255, 215, 0, 0.4); } }
+        @keyframes holdPulse { 
+            0% { transform: scale(1.1); border-color: var(--ahau-gold); }
+            50% { transform: scale(1.13); border-color: var(--ahau-fire); box-shadow: 0 25px 70px rgba(0,0,0,1), inset 0 0 100px rgba(255, 69, 0, 0.6); } 
+            100% { transform: scale(1.1); border-color: var(--ahau-fire); }
+        }
+        @keyframes exhalePulse { 0% { transform: scale(1.1); border-color: var(--ahau-fire); } 100% { transform: scale(1); border-color: rgba(255, 69, 0, 0.3); } }
+
+        .controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .phase-text {
+            font-family: 'Cinzel Decorative', cursive; 
+            font-size: clamp(2rem, 5vw, 2.6rem); 
+            font-weight: 900;
+            color: var(--ahau-gold); 
+            letter-spacing: 6px; 
+            text-transform: uppercase; 
+            height: 45px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .timer-text {
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 2.2rem; 
+            color: var(--silver-accent);
+            letter-spacing: 4px; 
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .start-btn {
+            padding: 16px 55px; 
+            background: transparent; 
+            border: 2px solid var(--ahau-gold);
+            border-radius: 40px; 
+            color: var(--ahau-gold);
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1.3rem; 
+            font-weight: 700; 
+            letter-spacing: 4px; 
+            text-transform: uppercase;
+            cursor: pointer; 
+            transition: all 0.4s ease;
+            margin-bottom: 30px;
+        }
+        
+        .start-btn:hover { 
+            background: rgba(255, 215, 0, 0.2); 
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5); 
+        }
+        
+        .start-btn.stop-mode { border-color: var(--ahau-fire); color: var(--ahau-fire); }
+        .start-btn.stop-mode:hover { background: rgba(255, 69, 0, 0.2); box-shadow: 0 0 25px rgba(255, 69, 0, 0.5); }
+
+        .bottom-lore-panel {
+            display: flex; 
+            gap: 45px; 
+            z-index: 15;
+            justify-content: center;
+        }
+        
+        .lore-raw-icon {
+            width: 50px; 
+            height: 50px; 
+            cursor: pointer; 
+            transition: all 0.4s ease;
+            filter: brightness(0.85);
+        }
+        
+        .lore-raw-icon:hover { 
+            transform: translateY(-5px); 
+            filter: brightness(1.2) drop-shadow(0 10px 15px rgba(255, 215, 0, 0.5)); 
+        }
+
+        .right-column {
+            width: 105px; 
+            background: linear-gradient(270deg, rgba(15, 5, 2, 0.98) 0%, transparent 100%);
+            border-left: 1px solid rgba(255, 255, 255, 0.04); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 25px 0; 
+            gap: 25px;
+            overflow-y: auto; 
+            scrollbar-width: none;
+        }
+        
+        .right-column::-webkit-scrollbar { display: none; }
+
+        .raw-icon {
+            width: 48px; 
+            height: 48px; 
+            cursor: pointer; 
+            transition: all 0.4s ease;
+            filter: grayscale(0.4) drop-shadow(0 0 5px rgba(255, 69, 0, 0.2)); 
+            flex-shrink: 0;
+            border-radius: 50%;
+        }
+        
+        .raw-icon:hover { 
+            transform: scale(1.2); 
+            filter: grayscale(0) drop-shadow(0 0 15px var(--ahau-gold)); 
+        }
+
+        .modal-overlay {
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay-dark); 
+            backdrop-filter: blur(25px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200; 
+        }
+        
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: var(--modal-bg);
+            border: 1px solid rgba(255, 215, 0, 0.3); 
+            border-radius: 24px; padding: 40px 30px; 
+            max-width: 520px; width: 90%; 
+            text-align: center; display: flex; flex-direction: column; align-items: center;
+            max-height: 85vh; overflow-y: auto; scrollbar-width: none;
+            transform: translateY(20px); transition: transform 0.5s ease;
+        }
+
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .modal-dynamic-icon { width: 90px; height: 90px; margin-bottom: 25px; filter: drop-shadow(0 0 20px var(--ahau-gold)); }
+        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 2rem; color: var(--ahau-gold); margin-bottom: 20px; letter-spacing: 3px; }
+        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.15rem; color: var(--text-light); line-height: 1.7; margin-bottom: 35px; font-weight: 300; }
+        .modal-text strong { color: var(--ahau-fire); font-weight: 600; }
+
+        .ai-modal .modal-content { border-color: rgba(160, 164, 171, 0.4); }
+        .ai-modal .modal-title { color: var(--silver-accent); }
+        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--silver-accent)); }
+
+        .close-btn {
+            width: 100%; padding: 16px; 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-light); border-radius: 40px; cursor: pointer; 
+            transition: all 0.3s ease; font-family: 'Rajdhani', sans-serif; 
+            font-size: 1.15rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+            margin-top: auto;
+        }
+        
+        .close-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+
+        @media (max-width: 600px) {
+            .right-column { width: 85px; padding: 20px 0; gap: 20px; }
+            .raw-icon { width: 42px; height: 42px; }
+            .arena-center { padding: 15px 15px 25px 15px; justify-content: space-between; }
+            .stage-wrapper { width: 32vh; height: 32vh; min-width: 260px; min-height: 260px; margin-top: 1vh; margin-bottom: 20px; }
+            .phase-text { font-size: 2rem; height: 35px; margin-bottom: 5px; }
+            .timer-text { font-size: 1.8rem; margin-bottom: 15px; }
+            .start-btn { padding: 14px 45px; font-size: 1.2rem; margin-bottom: 20px; }
+            .bottom-lore-panel { gap: 35px; }
+            .lore-raw-icon { width: 45px; height: 45px; }
+            .modal-content { padding: 30px 20px; }
+            .modal-title { font-size: 1.6rem; }
+            .modal-text { font-size: 1rem; }
+        }
+        
+        @media (max-height: 700px) {
+            .stage-wrapper { min-width: 240px; min-height: 240px; margin-bottom: 15px; }
+            .phase-text { font-size: 1.8rem; }
+            .timer-text { font-size: 1.6rem; margin-bottom: 15px; }
+            .start-btn { padding: 12px 40px; font-size: 1.1rem; margin-bottom: 15px; }
+            .lore-raw-icon { width: 40px; height: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="solar-particles"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192620/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_2_r76g4q.webp" 
+             class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="breadcrumb-text">Ahau-Kin</div>
+    </header>
+
+    <div class="main-layout">
+        
+        <main class="arena-center">
+            <div class="stage-wrapper" id="stage-wrapper">
+                <svg class="breath-ring-svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="48" class="base-track" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-inhale" id="arc-inhale" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-hold" id="arc-hold" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-exhale" id="arc-exhale" />
+                </svg>
+                <div class="avatar-container">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187588/21_ay6ic1.webp" class="deity-avatar" alt="Ahau-Kin">
+                </div>
+            </div>
+
+            <div class="controls-wrapper">
+                <div class="phase-text" id="phase-display">ОЖИДАНИЕ</div>
+                <div class="timer-text" id="timer-display">10:50</div>
+                <button class="start-btn" id="start-btn" onclick="togglePractice()">Инициация</button>
+                
+                <div class="bottom-lore-panel">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" 
+                         class="lore-raw-icon" onclick="openModal('modal-lore')" alt="Lore">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" 
+                         class="lore-raw-icon" onclick="openModal('modal-instruct')" alt="Instruct">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" 
+                         class="lore-raw-icon" onclick="openModal('modal-timing')" alt="Time">
+                </div>
+            </div>
+        </main>
+
+        <aside class="right-column">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194422/1_dk8uom.webp" class="raw-icon" onclick="openAiModal('Плетение Вагуса', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194420/3_pyslxh.webp" class="raw-icon" onclick="openAiModal('Клетка Страха', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194418/5_quk1vh.webp" class="raw-icon" onclick="openAiModal('Частота Эфира', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194417/7_1_n0ylwp.webp" class="raw-icon" onclick="openAiModal('Алхимия Крови', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194029/9_1_i8xyvr.webp" class="raw-icon" onclick="openAiModal('Сброс Давления', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194026/11_1_ey1b7v.webp" class="raw-icon" onclick="openAiModal('Искра Зажигания', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194024/13_eblqru.webp" class="raw-icon" onclick="openAiModal('Нектар Богов', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194021/15_ehrcjy.webp" class="raw-icon" onclick="openAiModal('Метроном Жизни', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194018/17_cuks2p.webp" class="raw-icon" onclick="openAiModal('Внутренняя Река', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194017/19_ma3crh.webp" class="raw-icon" onclick="openAiModal('Огонь Очага', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193741/21_jvsqul.webp" class="raw-icon" onclick="openAiModal('Разрыв Цепи', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193738/23_dlwbcn.webp" class="raw-icon" onclick="openAiModal('Сброс Оков', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193737/25_xk2ntl.webp" class="raw-icon" onclick="openAiModal('Распад Личности', this.src)">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193736/27_gj5609.webp" class="raw-icon" onclick="openAiModal('Третий Глаз', this.src)">
+        </aside>
+
+    </div>
+
+    <div class="modal-overlay" id="modal-lore">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" class="modal-dynamic-icon">
+            <h2 class="modal-title">Голос Светила</h2>
+            <div class="modal-text">
+                «Я — <strong>Ахау-Кин</strong>, владыка дневного жара. Твоя воля остыла. Ты двигаешься по инерции, словно рептилия, замерзшая в тени. Внутри тебя нет искры, способной сжечь препятствия.<br><br>
+                Я помещу миниатюрное солнце прямо в твое солнечное сплетение. Раздуй этот жар. Пусть твой внутренний огонь расплавит любую апатию и слабость».
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-lore')">Осознать жар</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-instruct">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" class="modal-dynamic-icon">
+            <h2 class="modal-title">Алгоритм Горнила</h2>
+            <div class="modal-text" style="text-align: left;">
+                <strong>1. ВДОХ (5 сек):</strong> Вдыхай через нос, концентрируя всё внимание на точке чуть выше пупка (солнечное сплетение). Визуализируй, как туда втягивается жидкое, раскаленное золото.<br><br>
+                <strong>2. РАЗЖИГАНИЕ (3 сек):</strong> Задержи дыхание. Слегка напряги мышцы пресса. Почувствуй, как тепло начинает пульсировать и физически разливаться по животу.<br><br>
+                <strong>3. ВЫДОХ (5 сек):</strong> Выдыхай через нос, мысленно распределяя этот жар по всем конечностям, до кончиков пальцев.
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-instruct')">Понял алгоритм</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-timing">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" class="modal-dynamic-icon">
+            <h2 class="modal-title">Цикл Синхронизации</h2>
+            <div class="modal-text">
+                <strong>Утро / Отсутствие мотивации:</strong><br>
+                Эта практика прицельно стимулирует энтеральную нервную систему (наш "второй мозг" в кишечнике). Концентрация тепла и легкое напряжение пресса улучшают кровоток в органах ЖКТ и вызывают естественный выброс дофамина, пробуждая волю к действию.<br><br>
+                Практика длится ровно <strong>650 секунд</strong> (50 циклов).
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-timing')">Закрепить в памяти</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay ai-modal" id="ai-modal">
+        <div class="modal-content">
+            <img src="" id="ai-modal-icon" class="modal-dynamic-icon">
+            <h2 class="modal-title" id="ai-modal-title">Синхронизация Светила...</h2>
+            <div class="modal-text">
+                <strong>Фатум: Нейроматрица не подключена.</strong><br><br>
+                Доступ к индивидуальной нейро-расшифровке заблокирован.
+            </div>
+            <button class="close-btn" onclick="closeModal('ai-modal')">Закрыть терминал</button>
+        </div>
+    </div>
+
+    <script>
+        function createSolarParticles() {
+            const container = document.getElementById('solar-particles');
+            for (let i = 0; i < 90; i++) {
+                let p = document.createElement('div');
+                p.classList.add('particle-base');
+                let randType = Math.random();
+                if (randType > 0.7) { p.classList.add('particle-fire'); p.style.width = '4px'; p.style.height = '4px';
+                } else if (randType > 0.4) { p.classList.add('particle-gold'); p.style.width = '6px'; p.style.height = '6px';
+                } else { p.classList.add('particle-ember'); p.style.width = '3px'; p.style.height = '3px'; }
+                p.style.left = `${Math.random() * 100}vw`; p.style.top = `${Math.random() * 100}vh`;
+                p.dataset.speed = Math.random() * 1.5 + 0.5; p.dataset.angle = Math.random() * Math.PI * 2;
+                container.appendChild(p);
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        function animateParticles() {
+            document.querySelectorAll('.particle-base').forEach(p => {
+                let currentTop = parseFloat(p.style.top), speed = parseFloat(p.dataset.speed), angle = parseFloat(p.dataset.angle);
+                currentTop -= speed; p.dataset.angle = angle + 0.02;
+                let currentLeft = parseFloat(p.style.left) + Math.sin(angle) * 0.5;
+                if (currentTop < -10) { currentTop = 110; currentLeft = Math.random() * 100; }
+                p.style.top = `${currentTop}vh`; p.style.left = `${currentLeft}vw`;
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        window.addEventListener('DOMContentLoaded', createSolarParticles);
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openAiModal(title, src) { document.getElementById('ai-modal-title').innerText = title; document.getElementById('ai-modal-icon').src = src; document.getElementById('ai-modal').classList.add('active'); }
+        function goBack() { if (isActive && !confirm("Прервать зажигание светила?")) return; window.location.href = 'apollo.html'; }
+
+        let isActive = false, breathTimeout, countdownInterval, totalSeconds = 650, currentPhaseIndex = 0;
+        const phaseDisplay = document.getElementById('phase-display'), timerDisplay = document.getElementById('timer-display'), startBtn = document.getElementById('start-btn'), stageWrapper = document.getElementById('stage-wrapper'),
+              arcInhale = document.getElementById('arc-inhale'), arcHold = document.getElementById('arc-hold'), arcExhale = document.getElementById('arc-exhale'),
+              phases = [
+                  { name: "ВДОХ", duration: 5000, color: "var(--ahau-gold)", arc: arcInhale, cls: "is-inhaling", off: "116" },
+                  { name: "РАЗЖИГАНИЕ", duration: 3000, color: "var(--ahau-fire)", arc: arcHold, cls: "is-holding", off: "69.6" },
+                  { name: "ВЫДОХ", duration: 5000, color: "var(--ahau-ember)", arc: arcExhale, cls: "is-exhaling", off: "116" }
+              ];
+
+        function updateTimerText() {
+            timerDisplay.innerText = `${Math.floor(totalSeconds / 60).toString().padStart(2, '0')}:${(totalSeconds % 60).toString().padStart(2, '0')}`;
+        }
+        function resetArcs() { phases.forEach(p => { if(p.arc) { p.arc.style.transition = "none"; p.arc.style.strokeDashoffset = p.off; } }); }
+
+        function runPhase() {
+            if (!isActive || totalSeconds <= 0) return;
+            const p = phases[currentPhaseIndex];
+            phaseDisplay.innerText = p.name; phaseDisplay.style.color = p.color;
+            stageWrapper.className = `stage-wrapper ${p.cls}`;
+            if (currentPhaseIndex === 0) resetArcs();
+            if (p.arc) { setTimeout(() => { p.arc.style.transition = `stroke-dashoffset ${p.duration}ms linear`; p.arc.style.strokeDashoffset = "0"; }, 20); }
+            breathTimeout = setTimeout(() => { currentPhaseIndex = (currentPhaseIndex + 1) % phases.length; runPhase(); }, p.duration);
+        }
+
+        function togglePractice() {
+            isActive = !isActive;
+            startBtn.innerText = isActive ? "Прервать" : "Инициация";
+            startBtn.classList.toggle('stop-mode', isActive);
+            if (isActive) {
+                countdownInterval = setInterval(() => { totalSeconds--; updateTimerText(); if (totalSeconds <= 0) togglePractice(); }, 1000);
+                runPhase();
+            } else {
+                clearTimeout(breathTimeout); clearInterval(countdownInterval);
+                phaseDisplay.innerText = "ОЖИДАНИЕ"; phaseDisplay.style.color = "var(--ahau-gold)";
+                stageWrapper.className = "stage-wrapper";
+                totalSeconds = 650; currentPhaseIndex = 0; updateTimerText(); resetArcs();
+            }
+        }
+    </script>
+</body>
+</html>
