@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Геката</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+
+        :root {
+            --hekate-glow: #39ff14;        /* Неоновый зеленый свет факелов */
+            --hekate-shadow: #111b11;      /* Мрак подсознания (Темно-зеленый/черный) */
+            --hekate-core: #b2ffb2;        /* Ядро транса (Бледный зеленый) */
+            --hekate-abyss: #040804;       /* Мрак перекрестка */
+            --obsidian-dark: #000000;      /* Абсолютный мрак */
+            
+            --silver-accent: #a0a4ab;
+            --text-light: #eef2f5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--obsidian-dark);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            width: 100vw; height: 100vh; height: 100dvh;
+            overflow: hidden; 
+            display: flex; flex-direction: column; position: relative;
+            background: radial-gradient(circle at 50% 50%, var(--hekate-abyss) 0%, var(--obsidian-dark) 90%);
+        }
+
+        /* === ЭЛЕГАНТНЫЙ ФОН (Искры и тени факелов) === */
+        #luxury-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+        .lux-ember {
+            position: absolute; border-radius: 50%;
+            animation: floatTrance linear infinite; opacity: 0;
+        }
+        .lux-ember:nth-child(odd) {
+            background: var(--hekate-glow); box-shadow: 0 0 15px var(--hekate-glow);
+            width: 3px; height: 10px; border-radius: 2px;
+        }
+        .lux-ember:nth-child(even) {
+            background: var(--hekate-core); box-shadow: 0 0 15px var(--hekate-core);
+            width: 4px; height: 4px; filter: blur(1px);
+        }
+        .lux-ember:nth-child(3n) {
+            background: transparent; border: 1px solid var(--hekate-shadow); box-shadow: 0 0 15px var(--hekate-glow);
+            width: 5px; height: 5px; transform: rotate(45deg); border-radius: 0;
+        }
+        @keyframes floatTrance {
+            0% { transform: translateY(100vh) translateX(-10px) scale(0.5); opacity: 0; }
+            50% { opacity: 0.5; transform: translateY(50vh) translateX(15px) scale(1.2); }
+            100% { transform: translateY(-10vh) translateX(-15px) scale(0.5); opacity: 0; }
+        }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 80px; display: flex; align-items: center; padding: 0 25px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(57, 255, 20, 0.2); flex-shrink: 0; z-index: 100;
+        }
+        .back-btn { width: 30px; cursor: pointer; filter: drop-shadow(0 0 5px rgba(57, 255, 20, 0.3)); margin-right: 20px; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .back-btn:hover { transform: translateX(-5px); filter: drop-shadow(0 0 12px var(--hekate-glow)); }
+        
+        .header-info { display: flex; flex-direction: column; justify-content: center; }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.2rem, 4vw, 1.4rem); color: var(--hekate-glow); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px rgba(57, 255, 20, 0.4); font-weight: 700; line-height: 1; margin-top: 5px;}
+
+        /* === ГЛАВНЫЙ СЛОЙ === */
+        .main-layout {
+            flex: 1; display: flex; width: 100%; height: calc(100% - 80px); position: relative;
+        }
+
+        /* === АРЕНА ДЫХАНИЯ === */
+        .arena-center {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; padding: 10px 20px 80px 20px;
+        }
+
+        .stage-wrapper {
+            position: relative; width: 38vh; height: 38vh; min-width: 280px; min-height: 280px; max-width: 420px; max-height: 420px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
+        }
+
+        /* SVG Кольцо: Транс Вдох 3с, Выдох 3с. Без пауз. Общий цикл 6с. */
+        .breath-ring-svg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            transform: rotate(-90deg); /* Начинаем с 12 часов */
+            z-index: 5; pointer-events: none;
+            overflow: visible;
+        }
+
+        .base-track { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 2.5; }
+
+        .arc {
+            fill: none; stroke-width: 6; stroke-linecap: round;
+            transform-origin: 50px 50px;
+        }
+        
+        /* ВДОХ (3с) = 150.8 длина. Угол старта: 0° */
+        .arc-inhale { 
+            stroke: var(--hekate-glow); filter: drop-shadow(0 0 12px var(--hekate-glow)); 
+            transform: rotate(0deg); 
+            stroke-dasharray: 150.8 301.6; 
+            stroke-dashoffset: 150.8; 
+        }
+        
+        /* ВЫДОХ (3с) = 150.8 длина. Угол старта: 180° */
+        .arc-exhale { 
+            stroke: var(--hekate-shadow); filter: drop-shadow(0 0 12px var(--hekate-glow)); 
+            transform: rotate(180deg); 
+            stroke-dasharray: 150.8 301.6; 
+            stroke-dashoffset: 150.8; 
+        }
+
+        /* Аватар Божества */
+        .avatar-container {
+            width: 86%; height: 86%; border-radius: 50%; overflow: hidden;
+            border: 3px solid rgba(57, 255, 20, 0.2); z-index: 2;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 50px rgba(57, 255, 20, 0.1);
+            transition: all 0.5s ease-in-out;
+            position: relative;
+        }
+        .deity-avatar { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9) contrast(1.15); transition: all 0.5s ease-in-out; }
+        
+        /* ЦЕНТРАЛЬНЫЙ СЧЕТЧИК ПОВТОРЕНИЙ (ПО СЕРЕДИНЕ) */
+        .center-counter-overlay {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 6rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 0 20px var(--hekate-glow), 0 0 40px var(--hekate-shadow), 0 4px 10px rgba(0,0,0,0.9);
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .is-breathing .center-counter-overlay {
+            opacity: 1;
+        }
+
+        /* Соматические анимации: Дыхание Гекаты */
+        .is-inhaling .avatar-container { animation: tranceInhale 3s ease-in-out forwards; border-color: var(--hekate-glow); }
+        .is-inhaling .deity-avatar { filter: brightness(1.2) drop-shadow(0 0 25px var(--hekate-glow)); transform: scale(1.04); }
+
+        .is-exhaling .avatar-container { animation: tranceExhale 3s ease-in-out forwards; border-color: var(--hekate-shadow); box-shadow: 0 0 60px rgba(17, 27, 17, 0.8); }
+        .is-exhaling .deity-avatar { filter: brightness(0.7) drop-shadow(0 0 20px var(--hekate-shadow)); transform: scale(0.98); }
+
+        @keyframes tranceInhale {
+            0% { transform: scale(0.98); box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(57, 255, 20, 0.2); }
+            100% { transform: scale(1.04); box-shadow: 0 25px 60px rgba(0,0,0,1), inset 0 0 80px rgba(57, 255, 20, 0.6); }
+        }
+        @keyframes tranceExhale {
+            0% { transform: scale(1.04); box-shadow: 0 25px 60px rgba(0,0,0,1), inset 0 0 80px rgba(57, 255, 20, 0.6); }
+            100% { transform: scale(0.98); box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 40px rgba(17, 27, 17, 0.8); }
+        }
+
+        /* Текстовые индикаторы */
+        .phase-text {
+            font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 900;
+            color: var(--hekate-glow); letter-spacing: 4px; text-transform: uppercase; height: 35px;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .counter-text {
+            font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; color: var(--silver-accent);
+            letter-spacing: 3px; font-weight: 600; text-transform: uppercase;
+            margin-top: 5px; text-shadow: 0 0 10px rgba(160, 164, 171, 0.4);
+        }
+
+        .timer-text {
+            font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--silver-accent);
+            letter-spacing: 3px; margin-top: 2px; margin-bottom: 25px; font-weight: 500;
+        }
+
+        /* Кнопка старта */
+        .start-btn {
+            padding: 15px 50px; background: transparent; border: 1px solid var(--hekate-glow);
+            border-radius: 40px; color: var(--hekate-glow);
+            font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2); position: relative; overflow: hidden;
+        }
+        .start-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.3), transparent); transition: 0.5s;
+        }
+        .start-btn:hover { background: rgba(57, 255, 20, 0.15); box-shadow: 0 0 25px rgba(57, 255, 20, 0.6); color: #fff; border-color: #fff;}
+        .start-btn:hover::before { left: 100%; }
+        
+        .start-btn.stop-mode { border-color: var(--hekate-shadow); color: var(--silver-accent); box-shadow: 0 0 15px rgba(17, 27, 17, 0.8); }
+        .start-btn.stop-mode:hover { background: rgba(17, 27, 17, 0.8); box-shadow: 0 0 25px rgba(57, 255, 20, 0.4); color: #fff; border-color: #fff;}
+        .start-btn.stop-mode::before { background: linear-gradient(90deg, transparent, rgba(17, 27, 17, 0.6), transparent); }
+
+        /* === ПРАВАЯ КОЛОНКА === */
+        .right-column {
+            width: 100px; 
+            height: 100%; 
+            background: linear-gradient(270deg, rgba(0, 0, 0, 0.95) 0%, transparent 100%);
+            border-left: 1px solid rgba(57, 255, 20, 0.05); 
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 20px 25px; 
+            gap: 25px;
+            overflow-y: auto; overflow-x: visible; 
+            z-index: 20;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .right-column::-webkit-scrollbar { display: none; }
+
+        .raw-icon {
+            width: 45px; height: 45px; cursor: pointer; object-fit: contain;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 0 5px rgba(57, 255, 20, 0.2)); flex-shrink: 0;
+        }
+        .raw-icon:hover { transform: scale(1.3); filter: drop-shadow(0 0 15px var(--hekate-glow)); }
+
+        /* === НИЖНЯЯ ПАНЕЛЬ ЛОРА === */
+        .bottom-lore-panel {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 40px; z-index: 15;
+        }
+        .lore-raw-icon {
+            width: 50px; height: 50px; cursor: pointer; object-fit: contain;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: none; 
+        }
+        .lore-raw-icon:hover { transform: scale(1.2) translateY(-5px); }
+
+        /* === ЛЮКСОВЫЕ МОДАЛЬНЫЕ ОКНА === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(1, 1, 3, 0.96); backdrop-filter: blur(20px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.5s ease; z-index: 200; padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: rgba(4, 8, 4, 0.95);
+            border: 1px solid rgba(57, 255, 20, 0.3); border-radius: 20px; padding: 35px 25px; 
+            max-width: 520px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(57, 255, 20, 0.05);
+            position: relative; text-align: center; display: flex; flex-direction: column; align-items: center;
+            max-height: 80vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .modal-dynamic-icon {
+            width: 80px; height: 80px; object-fit: contain; margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px var(--hekate-glow));
+        }
+        
+        .modal-title { font-family: 'Cinzel Decorative', cursive; font-size: 1.8rem; color: var(--hekate-glow); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
+        .modal-text { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #eef2f5; line-height: 1.6; text-align: center; margin-bottom: 30px; font-weight: 300;}
+        .modal-text strong { color: var(--hekate-glow); filter: brightness(1.2); font-weight: 600;}
+
+        .ai-modal .modal-content { border-color: rgba(160, 164, 171, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 30px rgba(160, 164, 171, 0.05); }
+        .ai-modal .modal-title { color: var(--silver-accent); }
+        .ai-modal .modal-dynamic-icon { filter: drop-shadow(0 0 15px var(--silver-accent)); }
+
+        .close-btn {
+            width: 100%; padding: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-light); border-radius: 30px; cursor: pointer; transition: 0.3s; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;
+            margin-top: auto;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.05); border-color: #fff; color: #fff; }
+
+        @media (max-width: 600px) {
+            .right-column { width: 85px; padding: 20px 15px; gap: 20px; }
+            .raw-icon { width: 40px; height: 40px; }
+            .stage-wrapper { width: 32vh; height: 32vh; }
+            .bottom-lore-panel { bottom: 20px; gap: 30px; }
+            .lore-raw-icon { width: 45px; height: 45px; }
+            .phase-text { font-size: 1.4rem; }
+            .center-counter-overlay { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="luxury-particles"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192620/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_2_r76g4q.webp" class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="header-info">
+            <div class="breadcrumb-text">Hekate</div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        
+        <main class="arena-center">
+            
+            <div class="stage-wrapper" id="stage-wrapper">
+                
+                <svg class="breath-ring-svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="48" class="base-track" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-inhale" id="arc-inhale" />
+                    <circle cx="50" cy="50" r="48" class="arc arc-exhale" id="arc-exhale" />
+                </svg>
+                
+                <div class="avatar-container">
+                    <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778604864/%D0%A2%D0%B0%D0%BC%D0%BC%D1%83%D0%B7_Tammuz_-_Mesopotamia_Dying-and-Rising_Veget%D0%BF%D0%BFation_Rebirth_jbxy30.webp" class="deity-avatar" alt="Hekate Avatar">
+                    <div class="center-counter-overlay" id="center-counter"></div>
+                </div>
+            </div>
+
+            <div class="phase-text" id="phase-display">ОЖИДАНИЕ</div>
+            <div class="counter-text" id="counter-display">ЦЕЛЕВОЙ ЦИКЛ: 150</div>
+            
+            <div class="timer-text" id="timer-display">15:00</div>
+
+            <button class="start-btn" id="start-btn" onclick="togglePractice()">Инициация</button>
+
+            <div class="bottom-lore-panel">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-lore')" alt="Lore">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-instruct')" alt="Instructions">
+                
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" 
+                     class="lore-raw-icon" onclick="openModal('modal-timing')" alt="Timing">
+            </div>
+        </main>
+
+        <aside class="right-column">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194422/1_dk8uom.webp" class="raw-icon" onclick="openAiModal('Плетение Вагуса', this.src)" alt="Vagus">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194420/3_pyslxh.webp" class="raw-icon" onclick="openAiModal('Клетка Страха', this.src)" alt="Amygdala">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194418/5_quk1vh.webp" class="raw-icon" onclick="openAiModal('Частота Эфира', this.src)" alt="Brainwaves">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194417/7_1_n0ylwp.webp" class="raw-icon" onclick="openAiModal('Алхимия Крови', this.src)" alt="Bohr">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194029/9_1_i8xyvr.webp" class="raw-icon" onclick="openAiModal('Сброс Давления', this.src)" alt="Cortisol">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194026/11_1_ey1b7v.webp" class="raw-icon" onclick="openAiModal('Искра Зажигания', this.src)" alt="Adrenaline">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194024/13_eblqru.webp" class="raw-icon" onclick="openAiModal('Нектар Богов', this.src)" alt="Endorphins">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194021/15_ehrcjy.webp" class="raw-icon" onclick="openAiModal('Метроном Жизни', this.src)" alt="HRV">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194018/17_cuks2p.webp" class="raw-icon" onclick="openAiModal('Внутренняя Река', this.src)" alt="Lymphatic">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778194017/19_ma3crh.webp" class="raw-icon" onclick="openAiModal('Огонь Очага', this.src)" alt="Digestion">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193741/21_jvsqul.webp" class="raw-icon" onclick="openAiModal('Разрыв Цепи', this.src)" alt="Patterns">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193738/23_dlwbcn.webp" class="raw-icon" onclick="openAiModal('Сброс Оков', this.src)" alt="Somatic">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193737/25_xk2ntl.webp" class="raw-icon" onclick="openAiModal('Распад Личности', this.src)" alt="Ego">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778193736/27_gj5609.webp" class="raw-icon" onclick="openAiModal('Третий Глаз', this.src)" alt="Pineal">
+        </aside>
+
+    </div>
+
+    <div class="modal-overlay" id="modal-lore">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192619/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_1_q7w6ok.webp" class="modal-dynamic-icon" alt="Lore Icon">
+            <h2 class="modal-title">Голос Перекрестков</h2>
+            <div class="modal-text">
+                «Я — Геката, смотрящая во тьму перекрестков твоего разума. Твое "я" — лишь малая часть тебя.<br><br>
+                За стальной дверью подсознания скрыты твои истинные демоны и твоя подлинная сила. Не останавливай поток дыхания, и я сорву замки с этих дверей».
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-lore')">Войти во Тьму</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-instruct">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192622/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_3_fmr7dc.webp" class="modal-dynamic-icon" alt="Instruct Icon">
+            <h2 class="modal-title">Алгоритм Транса</h2>
+            <div class="modal-text" style="text-align: left;">
+                <strong>1. ДЫХАНИЕ:</strong> Глубокие вдохи и выдохи через рот без малейших, даже микроскопических пауз. Вдох активно тянет воздух в грудь, выдох просто падает, расслабленно отпуская напряжение.<br><br>
+                <strong>2. ФОКУС:</strong> Цикл должен напоминать непрерывное колесо или волну, где вдох мгновенно перетекает в выдох и наоборот.
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-instruct')">Понял алгоритм</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-timing">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192618/%D0%9F%D0%B0%D0%BF%D0%B0%D1%85%D0%B0%D0%BD%D0%B0%D1%83%D0%BC%D0%BE%D0%BA%D1%83_%D0%93%D0%B0%D0%B2%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%84%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%94%D0%B8%D0%B0%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D0%B4%D1%8B%D1%85%D0%B0%D0%BD%D0%B8%D0%B5._%D0%91%D0%BE%D0%B3%D0%B8%D0%BD%D1%8F-%D0%BC%D0%B0%D1%82%D1%8C_%D0%B7%D0%B5%D0%BC%D0%BB%D0%B8_zx18jh.webp" class="modal-dynamic-icon" alt="Timing Icon">
+            <h2 class="modal-title">Интеграция</h2>
+            <div class="modal-text">
+                <strong>Работа с глубоким подсознанием:</strong><br>
+                Инструмент интеграции (требует 15-40 минут). Отключает дефолт-систему мозга (DMN), вводит кору в трансовое состояние гипоксии, вытаскивая на поверхность скрытые психоэмоциональные блоки и инсайты.<br><br>
+                Внимание: Этот интерфейс настроен на базовую 15-минутную сессию (150 циклов). Не прерывайте поток до истечения таймера.
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-timing')">Закрепить в памяти</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay ai-modal" id="ai-modal">
+        <div class="modal-content">
+            <img src="" id="ai-modal-icon" class="modal-dynamic-icon" alt="AI Icon">
+            <h2 class="modal-title" id="ai-modal-title">Анализ...</h2>
+            <div class="modal-text">
+                <strong>Фатум: Нейроматрица не подключена.</strong><br><br>
+                Ваша система анализа не активирована или отсутствует подписка. Доступ к индивидуальной расшифровке закрыт.
+            </div>
+            <button class="close-btn" onclick="closeModal('ai-modal')">Закрыть терминал</button>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('luxury-particles');
+            for (let i = 0; i < 50; i++) {
+                let p = document.createElement('div');
+                p.classList.add('lux-ember');
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.animationDuration = `${Math.random() * 5 + 4}s`; 
+                p.style.animationDelay = `${Math.random() * 3}s`;
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openAiModal(titleName, imgSrc) {
+            document.getElementById('ai-modal-title').innerText = titleName;
+            document.getElementById('ai-modal-icon').src = imgSrc;
+            document.getElementById('ai-modal').classList.add('active');
+        }
+
+        function goBack() {
+            if (isActive && !confirm("Прервать холотропный сдвиг? Это может вызвать дезориентацию.")) return;
+            window.location.href = 'apollo.html'; 
+        }
+
+        // === ЛОГИКА ДЫХАНИЯ С ПОДСЧЕТОМ ЦИКЛОВ ===
+        // Цикл ТРАНСА: 6 секунд: Вдох(3с), Выдох(3с). Без пауз.
+        // 15 минут (900 секунд) = ровно 150 циклов.
+        
+        let isActive = false;
+        let breathTimeout;
+        let countdownInterval;
+        let totalSeconds = 900; // 15:00 
+        let totalCycles = 150;
+        let currentCycle = 0;
+        
+        let currentPhaseIndex = 0;
+
+        const phaseDisplay = document.getElementById('phase-display');
+        const timerDisplay = document.getElementById('timer-display');
+        const counterDisplay = document.getElementById('counter-display');
+        const centerCounter = document.getElementById('center-counter');
+        const startBtn = document.getElementById('start-btn');
+        const stageWrapper = document.getElementById('stage-wrapper');
+
+        const arcs = [
+            document.getElementById('arc-inhale'),
+            document.getElementById('arc-exhale')
+        ];
+
+        const phases = [
+            { name: "НЕПРЕРЫВНЫЙ ВДОХ", duration: 3000, color: "var(--hekate-glow)", cls: "is-inhaling", off: "150.8" },
+            { name: "ОТПУСКАНИЕ", duration: 3000, color: "var(--hekate-shadow)", cls: "is-exhaling", off: "150.8" }
+        ];
+
+        function updateTimerText() {
+            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            timerDisplay.innerText = `${m}:${s}`;
+        }
+
+        // Прячем все дуги перед началом нового цикла
+        function resetArcs() {
+            arcs.forEach((arc, index) => {
+                arc.style.transition = "none";
+                arc.style.strokeDashoffset = phases[index].off; 
+            });
+        }
+
+        function runPhase() {
+            if (!isActive || totalSeconds <= 0) return;
+
+            // Логика счетчика повторений (инкремент происходит в начале Вдоха)
+            if (currentPhaseIndex === 0) {
+                currentCycle++;
+                if (currentCycle > totalCycles) currentCycle = totalCycles;
+                
+                // Обновляем оба счетчика
+                counterDisplay.innerText = `ЦИКЛ: ${currentCycle} / ${totalCycles}`;
+                centerCounter.innerText = currentCycle;
+                
+                resetArcs();
+            }
+            
+            // Принудительный рефлоу для плавного рестарта SVG
+            void stageWrapper.offsetWidth;
+
+            const phase = phases[currentPhaseIndex];
+            const activeArc = arcs[currentPhaseIndex];
+            
+            // Обновляем текстовый дисплей
+            phaseDisplay.innerText = phase.name;
+            phaseDisplay.style.color = phase.color;
+            phaseDisplay.style.textShadow = `0 0 15px ${phase.color}`;
+            stageWrapper.className = `stage-wrapper is-breathing ${phase.cls}`;
+
+            // Запускаем заполнение текущего сектора
+            activeArc.style.transition = `stroke-dashoffset ${phase.duration}ms linear`;
+            activeArc.style.strokeDashoffset = "0";
+
+            // Планируем следующую фазу
+            breathTimeout = setTimeout(() => {
+                currentPhaseIndex = (currentPhaseIndex + 1) % 2;
+                runPhase();
+            }, phase.duration);
+        }
+
+        function togglePractice() {
+            if (isActive) {
+                isActive = false;
+                clearTimeout(breathTimeout);
+                clearInterval(countdownInterval);
+                
+                startBtn.innerText = "Инициация";
+                startBtn.classList.remove('stop-mode');
+                phaseDisplay.innerText = "ОЖИДАНИЕ";
+                phaseDisplay.style.color = "var(--hekate-glow)";
+                phaseDisplay.style.textShadow = "none";
+                counterDisplay.innerText = "ЦЕЛЕВОЙ ЦИКЛ: 150";
+                centerCounter.innerText = "";
+                stageWrapper.className = "stage-wrapper";
+                
+                resetArcs();
+                
+                totalSeconds = 900; 
+                currentCycle = 0;
+                currentPhaseIndex = 0;
+                updateTimerText();
+            } else {
+                isActive = true;
+                startBtn.innerText = "Прервать";
+                startBtn.classList.add('stop-mode');
+                
+                // Сброс данных при старте
+                currentCycle = 0;
+                
+                countdownInterval = setInterval(() => {
+                    totalSeconds--;
+                    updateTimerText();
+                    if (totalSeconds <= 0) {
+                        togglePractice(); 
+                        phaseDisplay.innerText = "ИНТЕГРАЦИЯ ЗАВЕРШЕНА";
+                        counterDisplay.innerText = "ВОЗВРАЩЕНИЕ В СОЗНАНИЕ";
+                    }
+                }, 1000);
+
+                runPhase();
+            }
+        }
+    </script>
+
+    </body>
+</html>
