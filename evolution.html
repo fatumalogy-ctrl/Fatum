@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Модуль: ЭВОЛЮЦИЯ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Rajdhani:wght@500;600;700;900&display=swap');
+
+        :root {
+            /* Базовая палитра Эфира */
+            --core-cyan: #00f0ff;
+            --core-cyan-glow: rgba(0, 240, 255, 0.6);
+            --metal-dark: #0a0c10;
+            --metal-base: #181b22;
+            --metal-light: #454d59;
+            --text-light: #e6f0ff;
+            --text-muted: #8faec4;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            background-color: var(--metal-dark);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            width: 100vw; min-height: 100vh;
+            overflow-x: hidden; 
+            display: flex; flex-direction: column; position: relative;
+            background: radial-gradient(circle at 50% 10%, #1a202a 0%, var(--metal-dark) 100%);
+        }
+
+        /* === ФОНОВЫЕ ЧАСТИЦЫ === */
+        #aether-particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; }
+        .aether-dust {
+            position: absolute; width: 2px; height: 2px; border-radius: 50%;
+            background: var(--core-cyan); 
+            box-shadow: 0 0 10px var(--core-cyan);
+            animation: floatAether linear infinite; opacity: 0;
+        }
+        @keyframes floatAether {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 80px; display: flex; align-items: center; justify-content: center; position: sticky; top: 0;
+            background: rgba(10, 12, 16, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+        }
+        .header-title { 
+            font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; color: var(--core-cyan); 
+            font-weight: 700; letter-spacing: 6px; text-transform: uppercase; 
+            text-shadow: 0 0 15px var(--core-cyan-glow); margin: 0 auto; 
+        }
+        
+        .back-btn {
+            width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            position: absolute; left: 20px; z-index: 110;
+        }
+        .back-btn img {
+            width: 100%; height: auto; opacity: 0.6; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .back-btn:hover img {
+            opacity: 1; filter: drop-shadow(0 0 8px var(--core-cyan)); transform: translateX(-3px);
+        }
+
+        /* === ТАЙМЛАЙН ЭВОЛЮЦИИ === */
+        .evolution-container {
+            max-width: 900px; margin: 0 auto; padding: 60px 20px;
+            display: flex; flex-direction: column; gap: 40px;
+            position: relative; flex: 1; width: 100%;
+        }
+
+        /* АНИМИРОВАННАЯ ЭНЕРГЕТИЧЕСКАЯ ЛИНИЯ */
+        .animated-timeline {
+            position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 4px; background: rgba(255, 255, 255, 0.05); z-index: 0;
+            overflow: hidden; border-radius: 2px;
+        }
+        .timeline-pulse {
+            position: absolute; top: -200px; left: 0; width: 100%; height: 200px;
+            background: linear-gradient(to bottom, transparent 0%, var(--core-cyan) 80%, #fff 100%);
+            animation: pulseDrop 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            box-shadow: 0 0 20px var(--core-cyan);
+        }
+        @keyframes pulseDrop {
+            0% { top: -200px; opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* Обёртка для карточки и соединителя */
+        .evo-item {
+            display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1;
+            opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .evo-item.in-view { opacity: 1; transform: translateY(0); }
+
+        /* Звезда-коннектор (Цвет задается динамически) */
+        .evo-node {
+            width: 40px; height: 40px; margin-bottom: -20px; z-index: 5;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .evo-star {
+            width: 22px; height: 22px; background: var(--metal-dark);
+            border: 2px solid var(--card-c1); transform: rotate(45deg);
+            box-shadow: 0 0 15px var(--card-c1); transition: 0.5s;
+        }
+        .evo-star::after {
+            content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 1px solid var(--metal-light); transform: rotate(45deg); opacity: 0.5;
+        }
+        .evo-item:hover .evo-star { transform: rotate(135deg); background: var(--card-c2); }
+
+        /* === КАРТОЧКА УРОКА === */
+        .evo-card {
+            width: 100%; position: relative;
+            background: linear-gradient(145deg, rgba(15, 18, 24, 0.95) 0%, rgba(5, 6, 8, 0.95) 100%);
+            border: 1px solid var(--card-c2); border-radius: 20px; padding: 35px 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+            display: grid; grid-template-columns: 150px 1fr; gap: 15px 30px;
+            transition: 0.4s ease; overflow: hidden;
+        }
+        /* Внутреннее свечение под цвет аватара */
+        .evo-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at top left, var(--card-c1), transparent 50%);
+            opacity: 0.05; pointer-events: none; transition: 0.4s;
+        }
+        .evo-card:hover {
+            border-color: var(--card-c1);
+            box-shadow: 0 25px 50px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.5); /* Внешнее свечение */
+            transform: translateY(-5px);
+        }
+        .evo-card:hover::before { opacity: 0.15; }
+
+        /* Логотип наверху карточки */
+        .card-logo {
+            position: absolute; top: 20px; right: 30px; width: 45px; height: auto;
+            opacity: 0.4; filter: grayscale(100%); transition: 0.4s; z-index: 2;
+        }
+        .evo-card:hover .card-logo { opacity: 1; filter: drop-shadow(0 0 8px var(--card-c1)); }
+
+        /* Аватар */
+        .evo-avatar {
+            grid-column: 1 / 2; grid-row: 1 / 5; align-self: center; justify-self: center;
+            width: 140px; height: 140px; border-radius: 50%; position: relative; z-index: 2;
+            border: 3px solid var(--card-c2);
+            box-shadow: 0 0 20px rgba(0,0,0,0.9), inset 0 0 15px #000;
+            overflow: hidden; transition: 0.4s;
+        }
+        .evo-card:hover .evo-avatar { border-color: var(--card-c1); box-shadow: 0 0 30px var(--card-c1); }
+        .evo-avatar img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.85) contrast(1.1) grayscale(15%); transition: 0.5s;
+        }
+        .evo-card:hover .evo-avatar img { filter: brightness(1.1) contrast(1.2) grayscale(0%); transform: scale(1.05); }
+
+        /* Текстовый блок */
+        .evo-header { grid-column: 2 / 3; z-index: 2; padding-right: 40px; }
+        .evo-num { font-family: 'Rajdhani', sans-serif; color: var(--card-c1); font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; transition: 0.3s;}
+        .evo-title { font-family: 'Rajdhani', sans-serif; font-size: 1.9rem; font-weight: 700; color: #fff; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); margin-bottom: 5px;}
+        .evo-subtitle { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; border-left: 2px solid var(--card-c1); padding-left: 10px; line-height: 1.4; transition: 0.3s;}
+
+        /* Блок с рекомендуемым временем */
+        .evo-best-time {
+            grid-column: 2 / 3; z-index: 2;
+            display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; color: #b3c6d6; font-weight: 600;
+        }
+        .time-icon { color: var(--card-c1); font-size: 1rem; transition: 0.3s;}
+
+        .evo-body { grid-column: 2 / 3; z-index: 2; }
+        .evo-desc { font-size: 1rem; color: #d0dde8; line-height: 1.6; margin-bottom: 15px; }
+        
+        /* Плашка времени техники */
+        .evo-time { 
+            display: inline-block; background: rgba(0,0,0,0.4); border: 1px solid var(--card-c2); 
+            padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; color: #fff; font-weight: 500; 
+            transition: 0.3s;
+        }
+        .evo-card:hover .evo-time { border-color: var(--card-c1); box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
+
+        /* Кнопка */
+        .evo-action { grid-column: 2 / 3; justify-self: start; align-self: end; z-index: 2; margin-top: 15px;}
+        .evo-btn {
+            background: linear-gradient(135deg, var(--card-c1) 0%, var(--card-c2) 100%); 
+            border: none; padding: 14px 35px; border-radius: 30px;
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); text-decoration: none; display: inline-block;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+        .evo-btn:hover {
+            box-shadow: 0 10px 30px var(--card-c2); transform: translateY(-2px); filter: brightness(1.1);
+        }
+
+        /* === АДАПТИВНОСТЬ (МОБИЛЬНАЯ ВЕРСИЯ) === */
+        @media (max-width: 768px) {
+            .evolution-container { padding: 40px 15px; }
+            /* Сдвиг линии и узлов влево для мобилок */
+            .animated-timeline { left: 35px; transform: none; }
+            .evo-node { margin-bottom: -15px; align-self: flex-start; margin-left: 5px; }
+            
+            .evo-card {
+                grid-template-columns: 1fr; gap: 20px; text-align: center; padding: 30px 20px;
+            }
+            .card-logo { top: 15px; right: 15px; width: 35px; }
+            .evo-avatar { grid-column: 1; grid-row: 1; width: 120px; height: 120px; margin-bottom: 5px;}
+            .evo-header { grid-column: 1; padding-right: 0; }
+            .evo-subtitle { border-left: none; padding-left: 0; border-bottom: 2px solid var(--card-c1); display: inline-block; padding-bottom: 5px;}
+            .evo-best-time { grid-column: 1; justify-content: center; }
+            .evo-body { grid-column: 1; }
+            .evo-action { grid-column: 1; justify-self: stretch; }
+            .evo-btn { display: block; width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="aether-particles"></div>
+
+    <header class="battle-header">
+        <div class="back-btn" onclick="goBack()">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" alt="Назад">
+        </div>
+        <div class="header-title">ЭВОЛЮЦИЯ</div>
+    </header>
+
+    <main class="evolution-container" id="evo-container">
+        <!-- Анимированная линия -->
+        <div class="animated-timeline">
+            <div class="timeline-pulse"></div>
+        </div>
+        <!-- Контент генерируется через JS -->
+    </main>
+
+    <script>
+        function goBack() { window.location.href = 'index.html'; }
+
+        // === ЧАСТИЦЫ ===
+        function createParticles() {
+            const pContainer = document.getElementById('aether-particles');
+            for (let i = 0; i < 40; i++) {
+                let p = document.createElement('div');
+                p.classList.add('aether-dust');
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.animationDuration = `${Math.random() * 12 + 6}s`;
+                p.style.animationDelay = `${Math.random() * 5}s`;
+                pContainer.appendChild(p);
+            }
+        }
+        createParticles();
+
+        /* === БАЗА ДАННЫХ === 
+           c1: Яркий цвет (свечение, граница, кнопка верх)
+           c2: Темный/вторичный цвет (тень, кнопка низ)
+        */
+        const evolutionData = [
+            { num: 'УРОК 1', name: 'Глиняный Сосуд', subtitle: 'Начало Пути', bestTime: 'Утро', desc: 'Это твой первый шаг в Эволюции. Практика закладывает физиологический фундамент: растягивает межреберные мышцы и приучает нервную систему к симметрии (5-5-5-5). Без прохождения этого этапа дальнейший взлом системы невозможен.', time: 'Практика длится ровно 600 секунд (30 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/1.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192595/1_vniej8.webp', c1: '#00ffff', c2: '#8b5a2b' },
+            { num: 'УРОК 2', name: 'Слышащий Ветер', subtitle: 'Информационный перегруз', bestTime: 'В любое время (после стресса)', desc: 'Идеально применять после долгого скроллинга новостей или работы в шумном офисе. Внутренний звук работает как акустический щит, отрезая фокус внимания от внешних раздражителей и погружая мозг в легкий альфа-ритм.', time: 'Практика длится ровно 960 секунд (60 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/2.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192593/3_mcu22h.webp', c1: '#ffffff', c2: '#a0aab5' },
+            { num: 'УРОК 3', name: 'Walking on Dew', subtitle: 'Перед сложным разговором', bestTime: 'Вечер', desc: 'Растягивание дыхательного цикла до 3 вдохов в минуту колоссально повышает тонус блуждающего нерва. Это ювелирная работа, которая дает эффект "пуленепробиваемости" — тебя будет физически невозможно вывести из себя.', time: 'Практика длится ровно 1200 секунд (60 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/3.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192592/5_tswmus.webp', c1: '#00ccff', c2: '#0033ff' },
+            { num: 'УРОК 4', name: 'Son of Enkidu', subtitle: 'Слабость воли / Нехватка энергии', bestTime: 'При упадке сил', desc: 'Когда нужно пробить стену лени или страха. Контролируемое изометрическое напряжение дает выброс адреналина, а последующее расслабление учит нервную систему сбрасывать стресс по щелчку пальцев.', time: 'Практика длится ровно 1440 секунд (90 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/4.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192592/7_1_qp82am.webp', c1: '#d2691e', c2: '#8b5a2b' },
+            { num: 'УРОК 5', name: 'Chi Catcher', subtitle: 'Перед интеллектуальным штурмом', bestTime: 'Перед работой / Учебой', desc: 'Это техника «упаковки воздуха» (Breath Packing). Она максимизирует альвеолярный газообмен, насыщая кровь кислородом до предела. Мозг получает колоссальный ресурс для решения сложных задач.', time: 'Практика длится ровно 1078 секунд (49 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/5.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190673/9_1_abzq9u.webp', c1: '#00ff00', c2: '#008000' },
+            { num: 'УРОК 6', name: 'Tulpa', subtitle: 'Трансформация сознания', bestTime: 'Выходные', desc: 'Это глубокая биохакерская практика, вызывающая временную гипоксию мозга, что отключает «Дефолт-систему мозга» (DMN). Идеально для разрушения старых травм и переписывания своего отношения к стрессу.', time: 'Практика длится ровно 1220 секунд (10 макроциклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/6.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190617/11_1_vkdyp8.webp', c1: '#8a2be2', c2: '#4b0082' },
+            { num: 'УРОК 7', name: 'Nagual', subtitle: 'Тренировка нейро-адаптивности', bestTime: 'В любое время (Тренировка)', desc: 'Этот контрастный душ для ЦНС тренирует Вариабельность Сердечного Ритма (HRV). Ты учишь свой мозг не застревать в одной эмоции и моментально переходить от боевого режима к глубокому восстановлению.', time: 'Практика длится ровно 1320 секунд (11 макроциклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/7.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190616/13_chvtpx.webp', c1: '#ff0000', c2: '#8b0000' },
+            { num: 'УРОК 8', name: 'Weaver of Threads', subtitle: 'Стратегические решения', bestTime: 'Перед важным выбором', desc: 'Эта техника выравнивает электрическую активность обоих полушарий мозга. Она снимает эмоциональный окрас с проблемы, оставляя только чистую, кристаллическую логику и видение картины в целом.', time: 'Практика длится ровно 1440 секунд (60 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/8.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190598/15_ibw7bw.webp', c1: '#ffaa00', c2: '#0044ff' },
+            { num: 'УРОК 9', name: 'Omphalos', subtitle: 'Эпицентр кризиса', bestTime: 'В момент острого кризиса', desc: 'Применяй, когда всё вокруг рушится и почва уходит из-под ног. Сочетание длинной задержки с мышечными замками перекрывает отток энергии и физиологически "цементирует" твое состояние, даруя пугающее спокойствие.', time: 'Практика длится ровно 1440 секунд (60 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/9.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190596/17_ikqiqn.webp', c1: '#ffffff', c2: '#a0a0a0' },
+            { num: 'УРОК 10', name: 'Alchemist of Pneuma', subtitle: 'Мастерский тест', bestTime: 'Ежедневно', desc: 'Высший пилотаж метода Бутейко. Накопленный на задержках CO2 расширяет сосуды, и минимальный объем кислорода на 100% впитывается в ткани мозга. Эффект — ясный ум, отсутствие тревоги и идеальное здоровье сосудов.', time: 'Практика длится ровно 2100 секунд (150 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/10.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190596/19_bb1j24.webp', c1: '#d2691e', c2: '#8b4513' },
+            { num: 'УРОК 11', name: 'Vammatar', subtitle: 'После эмоциональных травм', bestTime: 'Вечер', desc: 'Жесткая психосоматическая практика. Она принудительно переписывает нейронную реакцию. Вместо паники на раздражитель мозг учится отвечать глубоким парасимпатическим выдохом и расслаблением.', time: 'Практика длится ровно 2160 секунд (108 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/11.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192728/1_x9oeu0.webp', c1: '#dc143c', c2: '#4a0e17' },
+            { num: 'УРОК 12', name: 'Eriu', subtitle: 'Приступы клаустрофобии и тупика', bestTime: 'Утро', desc: 'Практика тотального расширения. Фокус на поверхности кожи стимулирует тактильные рецепторы. Это мгновенно выводит сознание из "туннельного" режима в режим панорамного видения ситуации.', time: 'Практика длится ровно 2400 секунд (150 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/12.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192719/3_y4l2w6.webp', c1: '#00fa9a', c2: '#006400' },
+            { num: 'УРОК 13', name: 'Huaca', subtitle: 'Выход в агрессивную среду', bestTime: 'Перед социумом', desc: 'Практика "защитного купола". Долгая задержка с легким физическим давлением на грудину стимулирует тимус (вилочковую железу). Дает глубокое чувство безопасности перед толпой или конфликтом.', time: 'Практика длится ровно 1260 секунд (70 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/13.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192667/5_pk0bsr.webp', c1: '#20b2aa', c2: '#006666' },
+            { num: 'УРОК 14', name: 'Kami of Depths', subtitle: 'Глубокий стресс и дезориентация', bestTime: 'Ночь', desc: 'Сверхмедленное дыхание без пауз. Мощнейший активатор парасимпатики. Переводит мозговые волны в тета-ритм (состояние глубокой медитации). Идеально для ремонта психики во время сна.', time: 'Практика длится ровно 1440 секунд (90 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/14.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192666/7_1_jam14w.webp', c1: '#00ffff', c2: '#008b8b' },
+            { num: 'УРОК 15', name: 'Agastya', subtitle: 'Подготовка к экстриму', bestTime: 'День / При вялости', desc: 'Жесткая тренировка жизненной емкости легких (ЖЕЛ). Практика "упаковки" воздуха физически разрывает фиброзные спайки в грудине и насыщает ткани гигантской дозой O2. Взрыв энергии обеспечен.', time: 'Практика длится ровно 1600 секунд (80 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/15.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192738/9_1_c5kd2o.webp', c1: '#1e90ff', c2: '#000080' },
+            { num: 'УРОК 16', name: 'Zurvan', subtitle: 'Синдром упущенной выгоды (FOMO)', bestTime: 'В моменты спешки', desc: 'Когда чувствуешь "тайм-тревожность" — ощущение, что жизнь проходит мимо. Асимметричные долгие задержки ломают дофаминовые петли спешки, заставляя мозг принудительно вернуться в "здесь и сейчас".', time: 'Практика длится ровно 1800 секунд (60 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/16.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192736/11_1_ovaqx0.webp', c1: '#ffd700', c2: '#b8860b' },
+            { num: 'УРОК 17', name: 'Apep', subtitle: 'Толерантность к CO2', bestTime: 'В безопасности (сидя/лежа)', desc: 'Жесткая тренировка толерантности к CO2. Спазмы диафрагмы — это не нехватка кислорода, это реакция мозга. Преодолевая эти спазмы, ты "перепрошиваешь" центр страха. Стрессоустойчивость взлетает до небес.', time: 'Практика длится ровно 1920 секунд (16 макро-циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/17.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192735/13_tcxaxv.webp', c1: '#ff4500', c2: '#8b0000' },
+            { num: 'УРОК 18', name: 'Namtaru', subtitle: 'Паралич решений / Отчаяние', bestTime: 'В безвыходной ситуации', desc: 'Когда ты столкнулся с ситуацией, которую не можешь изменить. Эта "машинная" практика деактивирует лимбическую систему (центр эмоций), позволяя психике хладнокровно принять реальность и сохранить энергию.', time: 'Практика длится ровно 2400 секунд (150 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/18.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192734/15_opeq3x.webp', c1: '#9370db', c2: '#2c3e50' },
+            { num: 'УРОК 19', name: 'Tiamat', subtitle: 'Крайняя степень истощения', bestTime: 'При сильном выгорании', desc: 'Практика тотального "размягчения". Активирует парасимпатическую нервную систему на 100%. Идеально для снятия мышечного панциря и подготовки психики к переходу на финальный уровень.', time: 'Практика длится ровно 2700 секунд (225 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/19.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192732/17_rxg2om.webp', c1: '#00ced1', c2: '#0000cd' },
+            { num: 'УРОК 20', name: 'Purusha', subtitle: 'Глубокая медитация', bestTime: 'Ежедневно (Ритуал)', desc: 'Состояние Самадхи (Дзен). Випассана в чистом виде. Ты возвращаешь нервной системе ее природный, эталонный ритм, не вмешиваясь в него своим эго. Это высшая форма отдыха для мозга.', time: 'Практика длится ровно 3000 секунд.', link: 'https://fatumalogy-ctrl.github.io/Fatum/20.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192731/19_wohcat.webp', c1: '#ffffff', c2: '#696969' },
+            { num: 'УРОК 21', name: 'Apeiron', subtitle: 'Потеря смыслов', bestTime: 'При полном истощении', desc: 'Практика замкнутого контура. Она отключает потерю фокуса и заставляет нейроны работать в идеальном кольцевом ритме. Восстанавливает автономный ресурс ЦНС, когда кажется, что сил больше нет ни на что.', time: 'Практика длится ровно 3300 секунд (330 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/21.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192768/1_kachf2.webp', c1: '#483d8b', c2: '#191970' },
+            { num: 'УРОК 22', name: 'Ginnungagap', subtitle: 'Биполярные состояния', bestTime: 'Эмоциональные качели', desc: 'Идеально выравнивает вегетативную нервную систему. Холод (парасимпатика) и жар (симпатика) искусственно сталкиваются в теле, обнуляя гормональные перекосы. Дарует состояние "железобетонного" равновесия.', time: 'Практика длится ровно 3600 секунд (225 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/22.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192766/3_dtibqq.webp', c1: '#ff4500', c2: '#1e90ff' },
+            { num: 'УРОК 23', name: 'Wuji', subtitle: 'Бессонница высшего уровня', bestTime: 'Глубокая ночь', desc: 'Практика полного подавления микро-мышечных спазмов. Дыхание на грани остановки переводит мозг в дельта-ритм (состояние глубочайшего сна без сновидений). Психика полностью перезагружается.', time: 'Практика длится ровно 3900 секунд (195 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/23.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192765/5_vihpux.webp', c1: '#555555', c2: '#111111' },
+            { num: 'УРОК 24', name: 'Ein Sof', subtitle: 'Депрессия / Период мрака', bestTime: 'Утро', desc: 'Нейрофизиологический эквивалент светотерапии. Мощная визуализация яркого света в сочетании с глубоким дыханием стимулирует шишковидную железу. Подавляет остаточный мелатонин и вырабатывает серотонин.', time: 'Практика длится ровно 2400 секунд (120 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/24.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192763/7_1_mjyiek.webp', c1: '#fff8dc', c2: '#ffd700' },
+            { num: 'УРОК 25', name: 'Brahman', subtitle: 'Экзистенциальный кризис', bestTime: 'Чувство одиночества', desc: 'Практика "расширения Я". Разрушает нейронные сети, отвечающие за чувство изоляции. Человек физиологически перестает чувствовать себя уязвимой точкой и обретает монолитную уверенность макро-объекта.', time: 'Практика длится ровно 2160 секунд (90 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/25.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192762/9_1_dhhvn7.webp', c1: '#ffd700', c2: '#000080' },
+            { num: 'УРОК 26', name: 'Nun', subtitle: 'Подавленные воспоминания', bestTime: 'Глубокая терапия (ПТСР)', desc: 'Глубинная вибрационная терапия. Низкочастотный звук резонирует в блуждающем нерве и грудной полости. Физически расслабляет фасциальные ткани. Способна растворить древние эмоциональные блоки.', time: 'Практика длится ровно 2160 секунд (120 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/26.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192760/11_1_a3gzsh.webp', c1: '#00ffff', c2: '#008080' },
+            { num: 'УРОК 27', name: 'Thaumasios', subtitle: 'В состоянии застоя', bestTime: 'Перед важным прорывом', desc: 'Техника жесткого нейро-программирования. Задержка дыхания повышает уровень норадреналина, делая мозг супер-пластичным. Визуализация выжигает старые нейронные связи и формирует новые, меняя поведение.', time: 'Практика длится ровно 2394 секунды (114 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/27.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192759/13_azbp8g.webp', c1: '#e0ffff', c2: '#87ceeb' },
+            { num: 'УРОК 28', name: 'Mahashunya', subtitle: 'Перезагрузка жизни', bestTime: 'Тотальный кризис', desc: 'Экстремальная гипоксия на выдохе — это биологический "Control+Alt+Delete". Принудительно обнуляет миндалевидное тело (центр страха) и стирает сиюминутные стрессовые паттерны. Возвращение в чистоту.', time: 'Практика длится ровно 2400 секунд (100 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/28.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192757/15_uynxpf.webp', c1: '#555555', c2: '#222222' },
+            { num: 'УРОК 29', name: 'Hiranyagarbha', subtitle: 'Создание новой личности', bestTime: 'Старт нового этапа', desc: 'Классическая, мощнейшая пропорция 1:4:2. Максимально насыщает ткани кислородом, тренирует сердце и переводит мозг в состояние высочайшей, "богоподобной" ясности. Старт великого этапа в жизни.', time: 'Практика длится ровно 2240 секунд (80 циклов).', link: 'https://fatumalogy-ctrl.github.io/Fatum/29.html', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192772/17_wozw35.webp', c1: '#ffcc00', c2: '#d2691e' },
+            { num: 'FINAL LEVEL', name: 'Fatum Singularity', subtitle: 'Абсолютная интеграция', bestTime: 'Вечность', desc: 'Это не практика на 10 минут. Это перенесенное в реальную жизнь состояние абсолютной интеграции. Вершина нейро-эволюции, где вегетативная нервная система работает идеально, а разум находится в перманентном потоке.', time: 'Истинное состояние Сингулярности длится вечно.', link: '#', img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778192769/19_dj4bkt.webp', c1: '#ffd700', c2: '#b8860b' }
+        ];
+
+        // === ГЕНЕРАЦИЯ HTML И АНИМАЦИЯ ===
+        const container = document.getElementById('evo-container');
+        
+        evolutionData.forEach((item, index) => {
+            const btnText = (index === 29) ? 'ДОСТИЧЬ СИНГУЛЯРНОСТИ' : 'ПЕРЕЙТИ НА УРОК';
+            
+            // Внедряем динамические CSS переменные прямо в стиль карточки
+            const colorVars = `--card-c1: ${item.c1}; --card-c2: ${item.c2};`;
+
+            const htmlNode = `
+                <div class="evo-item" style="${colorVars}">
+                    ${index !== 0 ? `
+                    <div class="evo-node">
+                        <div class="evo-star"></div>
+                    </div>` : ''}
+                    
+                    <div class="evo-card">
+                        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="card-logo" alt="Fatum Logo">
+                        
+                        <div class="evo-avatar">
+                            <img src="${item.img}" alt="${item.name}">
+                        </div>
+                        
+                        <div class="evo-header">
+                            <div class="evo-num">${item.num}</div>
+                            <div class="evo-title">${item.name}</div>
+                            <div class="evo-subtitle">${item.subtitle}</div>
+                        </div>
+
+                        <div class="evo-best-time">
+                            <span class="time-icon">⏳</span> ${item.bestTime}
+                        </div>
+                        
+                        <div class="evo-body">
+                            <div class="evo-desc">${item.desc}</div>
+                            <div class="evo-time">${item.time}</div>
+                        </div>
+                        
+                        <div class="evo-action">
+                            <a href="${item.link}" class="evo-btn">${btnText}</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += htmlNode;
+        });
+
+        // Плавное появление при скролле (Intersection Observer)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    // Можно закомментить строку ниже, если хочешь чтобы они анимировались при каждом скролле туда-сюда
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        document.querySelectorAll('.evo-item').forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
