@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Мэн По | Отвар Забвения</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --jade-dark: #06140e;
+            --jade-mid: #0d3827;
+            --jade-glow: #00ffaa; /* Кислотный нефрит */
+            --jade-smoke: #1eb882;
+            --dark-bg: #030806;
+            --text-light: #e6f0ff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            /* Градиент подземного царства: черный сверху, изумрудный мрак снизу */
+            background: radial-gradient(circle at 50% 100%, var(--jade-dark) 0%, var(--dark-bg) 80%);
+        }
+
+        /* === ЭФФЕКТ ДЫМА ОТ КОТЛА НА ФОНЕ === */
+        #smoke-particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; pointer-events: none; opacity: 0.6; }
+        .smoke { position: absolute; background: var(--jade-glow); border-radius: 50%; filter: blur(8px); animation: riseSmoke linear infinite; opacity: 0; }
+        @keyframes riseSmoke {
+            0% { transform: translateY(110vh) scale(1) translateX(0); opacity: 0; }
+            20% { opacity: 0.4; }
+            50% { transform: translateY(50vh) scale(2) translateX(20px); opacity: 0.2; }
+            100% { transform: translateY(-10vh) scale(3) translateX(-20px); opacity: 0; }
+        }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 60px; display: flex; align-items: center; padding: 0 20px;
+            background: linear-gradient(180deg, rgba(3, 8, 6, 0.95) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(0, 255, 170, 0.15); flex-shrink: 0; z-index: 100;
+        }
+        .back-btn { width: 22px; height: auto; cursor: pointer; filter: drop-shadow(0 0 5px rgba(0, 255, 170, 0.4)); margin-right: 15px; transition: 0.3s; }
+        .back-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--jade-glow)); }
+        
+        .breadcrumb-container { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 30px; height: auto; filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.5)); border-radius: 50%;}
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: 1rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
+        .breadcrumb-text span { color: var(--jade-smoke); opacity: 0.7; margin: 0 6px; }
+
+        /* === АРЕНА МЭН ПО === */
+        .arena-main {
+            flex: 1; display: flex; flex-direction: column; justify-content: flex-start;
+            align-items: center; padding: 2vh 20px; max-width: 800px; margin: 0 auto; width: 100%; position: relative;
+        }
+
+        /* === АВАТАР МЭН ПО И КОТЕЛ === */
+        .mengpo-stage {
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 15px; position: relative;
+        }
+        
+        .mengpo-avatar-wrapper {
+            width: 25vmin; height: 25vmin; min-width: 120px; min-height: 120px; max-width: 180px; max-height: 180px;
+            border-radius: 50%; position: relative; z-index: 2;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0, 255, 170, 0.3);
+            border: 2px solid rgba(0, 255, 170, 0.4);
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+            animation: floatAvatar 4s ease-in-out infinite;
+        }
+        .mengpo-avatar { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1) brightness(0.9); }
+
+        /* Свечение за аватаром */
+        .cauldron-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
+            width: 150%; height: 150%; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,255,170,0.15) 0%, transparent 70%);
+            z-index: 1; pointer-events: none;
+            animation: pulseGlow 3s alternate infinite ease-in-out;
+        }
+
+        @keyframes floatAvatar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulseGlow { 0% { opacity: 0.5; transform: translate(-50%, -40%) scale(0.9); } 100% { opacity: 1; transform: translate(-50%, -40%) scale(1.1); } }
+
+        .mengpo-title { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.5rem, 5vw, 2.2rem); color: var(--jade-glow); text-shadow: 0 0 20px rgba(0, 255, 170, 0.5); margin-top: 10px; letter-spacing: 3px; text-transform: uppercase;}
+        .mengpo-subtitle { font-size: clamp(0.9rem, 3vw, 1.1rem); color: #8a9ba8; font-style: italic; max-width: 550px; text-align: center; margin-top: 5px; line-height: 1.4; }
+
+        /* === ПОЛЕ ВВОДА (КОТЕЛ) === */
+        .mengpo-altar {
+            width: 100%; max-width: 650px; position: relative;
+            background: linear-gradient(180deg, rgba(6, 20, 14, 0.6) 0%, rgba(3, 8, 6, 0.9) 100%);
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            border-radius: 15px; padding: 20px; 
+            box-shadow: inset 0 -20px 40px rgba(0, 255, 170, 0.05), 0 15px 30px rgba(0,0,0,0.8);
+            transition: all 0.5s ease; z-index: 10; margin-top: 10px;
+        }
+        .mengpo-altar:focus-within { 
+            border-color: var(--jade-glow); 
+            box-shadow: 0 0 30px rgba(0, 255, 170, 0.2), inset 0 -20px 40px rgba(0, 255, 170, 0.1); 
+        }
+
+        .mengpo-textarea {
+            width: 100%; height: 22vh; min-height: 150px; background: transparent; border: none;
+            color: #e6f0ff; font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 3vw, 1.3rem);
+            line-height: 1.6; resize: none; outline: none;
+            transition: all 2s ease;
+        }
+        .mengpo-textarea::placeholder { color: rgba(138, 155, 168, 0.4); font-style: italic; }
+
+        /* === НОВАЯ АНИМАЦИЯ: ИСПАРЕНИЕ В ДЫМ === */
+        .text-evaporating {
+            animation: evaporateSmoke 3.5s forwards ease-in;
+            pointer-events: none;
+        }
+
+        @keyframes evaporateSmoke {
+            0% { 
+                filter: blur(0); opacity: 1; transform: translateY(0) scale(1); 
+                color: #e6f0ff; letter-spacing: normal;
+            }
+            30% { 
+                /* Текст накаляется изумрудом */
+                filter: blur(2px); opacity: 0.9; transform: translateY(-10px) scale(1.02); 
+                color: var(--jade-glow); text-shadow: 0 0 15px var(--jade-glow); letter-spacing: 1px;
+            }
+            60% { 
+                /* Превращается в пар и поднимается */
+                filter: blur(8px); opacity: 0.6; transform: translateY(-30px) scale(1.05); 
+                color: var(--jade-smoke); text-shadow: 0 0 30px var(--jade-glow); letter-spacing: 3px;
+            }
+            100% { 
+                /* Полностью растворяется во мраке */
+                filter: blur(20px); opacity: 0; transform: translateY(-60px) scale(1.1); 
+                color: #000; letter-spacing: 6px;
+            }
+        }
+
+        /* === КНОПКА ЗАБВЕНИЯ === */
+        .oblivion-btn {
+            margin-top: 25px; padding: 15px 40px; background: transparent;
+            border: 1px solid var(--jade-smoke); border-radius: 30px;
+            color: var(--jade-glow); font-family: 'Cinzel Decorative', cursive; font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            letter-spacing: 2px; cursor: pointer; transition: all 0.4s ease;
+            position: relative; overflow: hidden; outline: none; z-index: 10; text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 255, 170, 0.1);
+        }
+        
+        .oblivion-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 170, 0.2), transparent);
+            transition: all 0.5s ease; z-index: -1;
+        }
+
+        .oblivion-btn:hover { background: rgba(0, 255, 170, 0.1); box-shadow: 0 0 25px rgba(0, 255, 170, 0.4); color: #fff; border-color: var(--jade-glow); }
+        .oblivion-btn:hover::before { left: 100%; }
+        .oblivion-btn:disabled { opacity: 0; pointer-events: none; transform: scale(0.9); }
+
+        /* === СООБЩЕНИЕ ПОСЛЕ ОЧИЩЕНИЯ === */
+        .success-message {
+            position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; width: 100%; opacity: 0; pointer-events: none;
+            transition: opacity 2s ease; z-index: 5;
+        }
+        .success-message.visible { opacity: 1; transition-delay: 1.5s; }
+        .success-text { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.5rem, 5vw, 2rem); color: var(--jade-glow); text-shadow: 0 0 20px rgba(0, 255, 170, 0.6); margin-bottom: 10px; letter-spacing: 2px; text-transform: uppercase; }
+        .success-sub { font-size: clamp(1rem, 3vw, 1.2rem); color: #8a9ba8; font-style: italic; }
+
+    </style>
+</head>
+<body>
+    <!-- Генерация изумрудного дыма на фоне -->
+    <div id="smoke-particles"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="breadcrumb-container">
+            <!-- Иконка Мэн По в шапке -->
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777890682/%D0%BF%D1%80%D0%B0%D0%B2_1_1_1_m5pmdy.webp" class="logo-icon" alt="Meng Po Icon">
+            <div class="breadcrumb-text">Фатум <span>/</span> Пантеон <span>/</span> Мэн По</div>
+        </div>
+    </header>
+
+    <main class="arena-main">
+        
+        <div class="mengpo-stage" id="header-text">
+            <div class="cauldron-glow"></div>
+            <div class="mengpo-avatar-wrapper">
+                <!-- СЮДА ВСТАВЬ ТУ САМУЮ КАРТИНКУ МЭН ПО, КОТОРУЮ ТЫ ПРИКРЕПИЛ В ЧАТЕ -->
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777890682/%D0%BF%D1%80%D0%B0%D0%B2_1_1_1_m5pmdy.webp" class="mengpo-avatar" alt="Meng Po">
+            </div>
+            <h1 class="mengpo-title">Отвар Забвения</h1>
+            <p class="mengpo-subtitle">Брось в котел тревоги, гнев и навязчивые мысли. Отвар растворит их в изумрудном тумане Диюя. Твой дух будет очищен.</p>
+        </div>
+
+        <div class="mengpo-altar" id="altar">
+            <textarea class="mengpo-textarea" id="dump-input" placeholder="Напиши всё, что тяготит твой разум. Здесь это превратится в пар..."></textarea>
+        </div>
+
+        <button class="oblivion-btn" id="cast-btn" onclick="castIntoOblivion()">Выпить Отвар</button>
+
+        <div class="success-message" id="success-msg">
+            <div class="success-text">Память Стерта</div>
+            <div class="success-sub">Твой разум снова кристально чист.</div>
+        </div>
+
+    </main>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        let fatumDeviceId = localStorage.getItem('fatum_device_id');
+        const REAL_USER_ID = tg?.initDataUnsafe?.user?.id || new URLSearchParams(window.location.search).get('tg_id') || fatumDeviceId;
+
+        function goBack() {
+            window.location.href = `apollo.html`; 
+        }
+
+        // Генерация поднимающегося дыма (вместо капель воды)
+        function createSmokeParticles() {
+            const container = document.getElementById('smoke-particles');
+            const particleCount = 25; 
+            
+            for (let i = 0; i < particleCount; i++) {
+                let smoke = document.createElement('div');
+                smoke.classList.add('smoke');
+                
+                let size = Math.random() * 60 + 20; // Огромные размытые клубы дыма
+                let posX = Math.random() * 100; 
+                let duration = Math.random() * 15 + 10; // Медленно поднимаются
+                let delay = Math.random() * 10; 
+                
+                smoke.style.width = `${size}px`;
+                smoke.style.height = `${size}px`; 
+                smoke.style.left = `${posX}vw`;
+                smoke.style.animationDuration = `${duration}s`;
+                smoke.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(smoke);
+            }
+        }
+        createSmokeParticles();
+
+        // Логика Забвения
+        const inputArea = document.getElementById('dump-input');
+        const castBtn = document.getElementById('cast-btn');
+        const successMsg = document.getElementById('success-msg');
+        const headerText = document.getElementById('header-text');
+        const altar = document.getElementById('altar');
+
+        function castIntoOblivion() {
+            if (inputArea.value.trim() === '') {
+                inputArea.placeholder = "Котел ждет твою жертву. Напиши свои мысли...";
+                return;
+            }
+
+            inputArea.disabled = true;
+            castBtn.disabled = true;
+            
+            // Прячем верхний блок с аватаром
+            headerText.style.transition = "opacity 1.5s ease";
+            headerText.style.opacity = "0";
+
+            // Запуск анимации ИСПАРЕНИЯ текста
+            inputArea.classList.add('text-evaporating');
+
+            // Растворение рамки котла
+            altar.style.borderColor = "transparent";
+            altar.style.background = "transparent";
+            altar.style.boxShadow = "none";
+
+            // Показываем сообщение
+            successMsg.classList.add('visible');
+
+            // Восстановление через 8 секунд
+            setTimeout(() => {
+                inputArea.value = '';
+                inputArea.classList.remove('text-evaporating');
+                inputArea.disabled = false;
+                castBtn.disabled = false;
+                
+                headerText.style.opacity = "1";
+                successMsg.classList.remove('visible');
+                
+                altar.style.borderColor = "rgba(0, 255, 170, 0.3)";
+                altar.style.background = "linear-gradient(180deg, rgba(6, 20, 14, 0.6) 0%, rgba(3, 8, 6, 0.9) 100%)";
+                altar.style.boxShadow = "inset 0 -20px 40px rgba(0, 255, 170, 0.05), 0 15px 30px rgba(0,0,0,0.8)";
+                inputArea.placeholder = "Напиши всё, что тяготит твой разум. Здесь это превратится в пар...";
+            }, 8000); 
+        }
+    </script>
+</body>
+</html>

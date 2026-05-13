@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Орфей | Акустическая Матрица</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --neon-cyan: #00e5ff;
+            --dark-bg: #04060a;
+            --card-bg: rgba(10, 15, 25, 0.85);
+            --text-light: #e6f0ff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === ЖИВЫЕ ЗВЕЗДЫ С ДРЕЙФОМ === */
+        #stars-layer-1, #stars-layer-2, #stars-layer-3 { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; pointer-events: none; }
+        
+        #stars-layer-1 { background: transparent url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='45' cy='123' r='1' fill='%23ffffff' opacity='0.5'/%3E%3Ccircle cx='234' cy='45' r='1.5' fill='%2300e5ff' opacity='0.4'/%3E%3C/svg%3E") repeat; animation: twinkle 4s infinite alternate linear, starDrift 100s linear infinite; }
+        
+        #stars-layer-2 { background: transparent url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='100' cy='150' r='1.5' fill='%23d4af37' opacity='0.3'/%3E%3Ccircle cx='300' cy='50' r='2' fill='%2300e5ff' opacity='0.2'/%3E%3C/svg%3E") repeat; animation: twinkle 5s infinite alternate linear 1.5s, starDrift 150s linear infinite; }
+        
+        #stars-layer-3 { background: transparent url("data:image/svg+xml,%3Csvg width='600' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='200' cy='400' r='1' fill='%23ffffff' opacity='0.6'/%3E%3Ccircle cx='500' cy='100' r='2' fill='%23d4af37' opacity='0.4'/%3E%3Ccircle cx='50' cy='550' r='1.5' fill='%2300e5ff' opacity='0.5'/%3E%3C/svg%3E") repeat; animation: twinkle 6s infinite alternate linear 3s, starDrift 200s linear infinite; }
+
+        @keyframes twinkle { 0% { opacity: 0.1; } 100% { opacity: 0.8; } }
+        @keyframes starDrift { from { background-position: 0 0; } to { background-position: 1000px 1000px; } }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 70px; display: flex; align-items: center; padding: 0 30px;
+            background: linear-gradient(180deg, rgba(4, 6, 10, 0.95) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.15); flex-shrink: 0; z-index: 100;
+        }
+        .back-btn { width: 25px; height: auto; cursor: pointer; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4)); margin-right: 20px; transition: 0.3s; }
+        .back-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8)); }
+        
+        .breadcrumb-container { display: flex; align-items: center; gap: 15px; }
+        .logo-icon { width: 35px; height: auto; filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: 1.1rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
+        .breadcrumb-text span { color: var(--neon-cyan); opacity: 0.7; margin: 0 8px; }
+
+        /* === ГЛАВНАЯ АРЕНА === */
+        .arena-main {
+            flex: 1; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; gap: 30px;
+        }
+
+        /* ЦЕНТРАЛЬНАЯ СТРЕЛА С КОЛЬЦАМИ */
+        .orpheus-stage { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        
+        .arrow-image-wrapper {
+            width: 30vmin; max-width: 200px; aspect-ratio: 1/1; position: relative;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 50%; z-index: 2; transition: transform 2s ease-in-out;
+        }
+        
+        .arrow-image { width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.3)); }
+
+        .acoustic-ring {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--neon-cyan);
+            opacity: 0; z-index: 1; pointer-events: none;
+        }
+
+        .is-playing .arrow-image-wrapper { animation: floatImage 4s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(0, 229, 255, 0.6)); }
+        @keyframes floatImage { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .is-playing .ring-1 { animation: pulseRing 3s linear infinite; }
+        .is-playing .ring-2 { animation: pulseRing 3s linear infinite 1s; }
+        .is-playing .ring-3 { animation: pulseRing 3s linear infinite 2s; }
+        
+        @keyframes pulseRing {
+            0% { width: 100%; height: 100%; opacity: 0.8; border-width: 3px; }
+            100% { width: 250%; height: 250%; opacity: 0; border-width: 1px; }
+        }
+
+        /* ТАЙМЕР */
+        .timer-display { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; color: #8a9ba8; position: absolute; bottom: -30px; opacity: 0; transition: opacity 0.3s; letter-spacing: 2px;}
+        .timer-display.active { opacity: 1; color: var(--text-light); text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);}
+
+        /* ПАНЕЛЬ УПРАВЛЕНИЯ */
+        .controls-panel { width: 100%; max-width: 600px; background: rgba(10, 15, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 20px; padding: 25px; display: flex; flex-direction: column; gap: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); z-index: 10;}
+
+        /* НОВЫЙ ЛЕЙАУТ: Слева частота/таймер, Справа громкость */
+        .panel-layout { display: flex; gap: 30px; align-items: stretch; }
+        
+        .left-controls { flex: 1; display: flex; flex-direction: column; gap: 20px; justify-content: center; }
+        
+        .right-volume { display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 15px; padding: 15px 10px; width: 80px; }
+
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        
+        .control-header { display: flex; justify-content: space-between; align-items: flex-end; }
+        .control-title { font-family: 'Cinzel Decorative', cursive; font-size: 0.9rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+        
+        /* Стили для полей ввода чисел */
+        .number-input-wrapper { display: flex; align-items: baseline; justify-content: center; gap: 5px; }
+        .number-input { background: transparent; border: none; border-bottom: 2px solid var(--neon-cyan); color: var(--neon-cyan); font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700; width: 90px; text-align: center; outline: none; transition: 0.3s; text-shadow: 0 0 15px rgba(0, 229, 255, 0.4);}
+        .number-input:focus { border-bottom-color: var(--gold); color: var(--gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);}
+        
+        .vol-input { width: 50px; font-size: 1.3rem; } /* Уменьшенный инпут для громкости */
+        
+        .input-suffix { color: #8a9ba8; font-size: 1rem; font-family: 'Cormorant Garamond', serif; }
+
+        /* Стили для ползунков */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(0, 229, 255, 0.2); border-radius: 2px; border: none; }
+        input[type=range]::-moz-range-track { width: 100%; height: 4px; background: rgba(0, 229, 255, 0.2); border-radius: 2px; border: none; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: var(--neon-cyan); margin-top: -7px; box-shadow: 0 0 15px var(--neon-cyan); transition: 0.2s; }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); background: var(--gold); box-shadow: 0 0 15px var(--gold); }
+        input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--neon-cyan); border: none; box-shadow: 0 0 15px var(--neon-cyan); transition: 0.2s; }
+        input[type=range]::-moz-range-thumb:hover { transform: scale(1.2); background: var(--gold); box-shadow: 0 0 15px var(--gold); }
+
+        /* ВЕРТИКАЛЬНЫЙ ПОЛЗУНОК */
+        .vol-slider-wrapper { height: 120px; display: flex; align-items: center; justify-content: center; }
+        .vertical-slider { transform: rotate(-90deg); width: 120px; margin: 0; }
+
+        /* КНОПКА PLAY */
+        .play-btn-wrapper { display: flex; justify-content: center; margin-top: 5px; }
+        .play-btn { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(0,0,0,0.8)); border: 2px solid var(--neon-cyan); color: var(--neon-cyan); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 20px rgba(0,229,255,0.2); outline: none; }
+        .play-btn:hover { transform: scale(1.1); background: rgba(0,229,255,0.2); box-shadow: 0 0 30px rgba(0,229,255,0.5); }
+        .play-icon { width: 24px; height: 24px; fill: currentColor; transition: 0.3s; margin-left: 4px;}
+        #icon-pause { margin-left: 0; }
+        
+        .is-playing .play-btn { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 30px rgba(212,175,55,0.4); }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        @media (max-width: 600px) {
+            .battle-header { padding: 0 15px; height: 60px; }
+            .arena-main { padding: 15px; gap: 20px; justify-content: flex-start; padding-top: 3vh;}
+            .controls-panel { padding: 20px 15px; gap: 15px;}
+            .panel-layout { gap: 15px; }
+            .right-volume { width: 70px; padding: 15px 5px; }
+            .number-input { font-size: 1.5rem; width: 70px;}
+            .vol-input { width: 40px; font-size: 1.1rem; }
+            .play-btn { width: 55px; height: 55px; }
+            .arrow-image-wrapper { width: 35vmin; }
+        }
+    </style>
+</head>
+<body>
+    <div id="stars-layer-1"></div>
+    <div id="stars-layer-2"></div>
+    <div id="stars-layer-3"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="breadcrumb-container">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="logo-icon" alt="Logo">
+            <div class="breadcrumb-text">Фатум <span>/</span> Пантеон <span>/</span> Орфей</div>
+        </div>
+    </header>
+
+    <main class="arena-main">
+        
+        <div class="orpheus-stage" id="orpheus-stage">
+            <div class="acoustic-ring ring-1"></div>
+            <div class="acoustic-ring ring-2"></div>
+            <div class="acoustic-ring ring-3"></div>
+            
+            <div class="arrow-image-wrapper">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777850204/ultra_realistic_high-detail_CGI_futuristic_mythological_arrow_of_intellect_and_precision_designed_as_a_weapon_of_Apollo_sleek_and_perfectly_symmetrical_arrow_made_of_polished_metallic_silver_an_1_1_sihuis.webp" class="arrow-image" alt="Arrow of Intellect">
+            </div>
+            
+            <div class="timer-display" id="timer-display">Осталось: --:--</div>
+        </div>
+
+        <div class="controls-panel">
+            
+            <div class="panel-layout">
+                <!-- ЛЕВАЯ КОЛОНКА (Частота и Время) -->
+                <div class="left-controls">
+                    <!-- Блок Частоты -->
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-title">Резонанс</span>
+                            <div class="number-input-wrapper">
+                                <input type="number" id="freq-input" class="number-input" value="432" min="0.01" max="1000" step="0.01">
+                                <span class="input-suffix">Hz</span>
+                            </div>
+                        </div>
+                        <input type="range" id="freq-slider" min="0.01" max="1000" step="0.01" value="432">
+                    </div>
+
+                    <!-- Блок Таймера -->
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-title">Время</span>
+                            <div class="number-input-wrapper">
+                                <input type="number" id="timer-input" class="number-input" value="15" min="1" max="180">
+                                <span class="input-suffix">Мин</span>
+                            </div>
+                        </div>
+                        <input type="range" id="timer-slider" min="1" max="120" value="15">
+                    </div>
+                </div>
+
+                <!-- ПРАВАЯ КОЛОНКА (Громкость вертикально) -->
+                <div class="right-volume">
+                    <span class="control-title">VOL</span>
+                    <div class="vol-slider-wrapper">
+                        <input type="range" id="vol-slider" class="vertical-slider" min="0" max="100" value="30">
+                    </div>
+                    <div class="number-input-wrapper">
+                        <input type="number" id="vol-input" class="number-input vol-input" value="30" min="0" max="100">
+                        <span class="input-suffix">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="play-btn-wrapper">
+                <button class="play-btn" id="play-btn" onclick="toggleAudio()">
+                    <svg class="play-icon" id="icon-play" viewBox="0 0 24 24" style="display:block;"><path d="M8 5v14l11-7z"/></svg>
+                    <svg class="play-icon" id="icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        // === ЛОГИКА АУДИО ДВИЖКА (WEB AUDIO API) ===
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+        
+        let currentFreq = 432;
+        let currentVolume = 0.3; // 30% по умолчанию
+        let isPlaying = false;
+        
+        let timerDurationMinutes = 15;
+        let remainingSeconds = 0;
+        let countdownInterval = null;
+
+        const stage = document.getElementById('orpheus-stage');
+        const playBtnIcon = document.getElementById('icon-play');
+        const pauseBtnIcon = document.getElementById('icon-pause');
+        const timerDisplay = document.getElementById('timer-display');
+        
+        const freqSlider = document.getElementById('freq-slider');
+        const freqInput = document.getElementById('freq-input');
+        
+        const volSlider = document.getElementById('vol-slider');
+        const volInput = document.getElementById('vol-input');
+
+        const timerSlider = document.getElementById('timer-slider');
+        const timerInput = document.getElementById('timer-input');
+
+        function goBack() {
+            if (isPlaying) stopAudio();
+            window.location.href = `apollo.html`; 
+        }
+
+        // --- ЧАСТОТА (с плавающей точкой) ---
+        function updateFrequency(val) {
+            let parsedVal = parseFloat(val);
+            if (isNaN(parsedVal)) return;
+            
+            if (parsedVal < 0.01) parsedVal = 0.01;
+            if (parsedVal > 1000) parsedVal = 1000;
+
+            currentFreq = parsedVal;
+            freqSlider.value = currentFreq;
+            freqInput.value = currentFreq;
+
+            if (isPlaying && oscillator) {
+                oscillator.frequency.setTargetAtTime(currentFreq, audioCtx.currentTime, 0.1);
+            }
+        }
+        freqSlider.addEventListener('input', (e) => updateFrequency(e.target.value));
+        freqInput.addEventListener('change', (e) => updateFrequency(e.target.value));
+
+        // --- ГРОМКОСТЬ ---
+        function updateVolume(val) {
+            let parsedVal = parseInt(val);
+            if (isNaN(parsedVal)) return;
+
+            if (parsedVal < 0) parsedVal = 0;
+            if (parsedVal > 100) parsedVal = 100;
+
+            currentVolume = parsedVal / 100; 
+            volSlider.value = parsedVal;
+            volInput.value = parsedVal;
+
+            if (isPlaying && gainNode) {
+                gainNode.gain.setTargetAtTime(currentVolume, audioCtx.currentTime, 0.1);
+            }
+        }
+        volSlider.addEventListener('input', (e) => updateVolume(e.target.value));
+        volInput.addEventListener('change', (e) => updateVolume(e.target.value));
+
+        // --- ТАЙМЕР ---
+        function updateTimer(val) {
+            let parsedVal = parseInt(val);
+            if (isNaN(parsedVal)) return;
+
+            if (parsedVal < 1) parsedVal = 1;
+            if (parsedVal > 180) parsedVal = 180;
+
+            timerDurationMinutes = parsedVal;
+            timerSlider.value = timerDurationMinutes;
+            timerInput.value = timerDurationMinutes;
+
+            if (isPlaying) startCountdown();
+        }
+        timerSlider.addEventListener('input', (e) => updateTimer(e.target.value));
+        timerInput.addEventListener('change', (e) => updateTimer(e.target.value));
+
+        // --- УПРАВЛЕНИЕ ЗВУКОМ ---
+        function toggleAudio() {
+            if (isPlaying) stopAudio();
+            else startAudio();
+        }
+
+        function startAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            oscillator = audioCtx.createOscillator();
+            gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.value = currentFreq;
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(currentVolume, audioCtx.currentTime + 2); 
+
+            oscillator.start();
+            isPlaying = true;
+
+            stage.classList.add('is-playing');
+            playBtnIcon.style.display = 'none';
+            pauseBtnIcon.style.display = 'block';
+
+            startCountdown();
+        }
+
+        function stopAudio() {
+            if (!oscillator || !gainNode) return;
+
+            isPlaying = false;
+            clearInterval(countdownInterval);
+            timerDisplay.classList.remove('active');
+
+            gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2);
+
+            stage.classList.remove('is-playing');
+            playBtnIcon.style.display = 'block';
+            pauseBtnIcon.style.display = 'none';
+
+            setTimeout(() => {
+                if (oscillator) {
+                    oscillator.stop();
+                    oscillator.disconnect();
+                }
+            }, 2000);
+        }
+
+        function startCountdown() {
+            clearInterval(countdownInterval);
+            remainingSeconds = timerDurationMinutes * 60;
+            timerDisplay.classList.add('active');
+            updateTimerText();
+
+            countdownInterval = setInterval(() => {
+                remainingSeconds--;
+                updateTimerText();
+
+                if (remainingSeconds <= 0) stopAudio();
+            }, 1000);
+        }
+
+        function updateTimerText() {
+            const m = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
+            const s = (remainingSeconds % 60).toString().padStart(2, '0');
+            timerDisplay.innerText = `${m}:${s}`;
+        }
+    </script>
+</body>
+</html>

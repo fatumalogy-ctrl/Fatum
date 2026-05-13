@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Фемида | Весы Рефлексии</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --white-armor: #f0f5f9;
+            --cyan-glow: #00e5ff;
+            --red-glow: #ff2a2a;
+            --dark-metal: #050709;
+            --text-light: #e6f0ff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--dark-metal);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* === ФОН: ЗАЛ ПРАВОСУДИЯ === */
+        #themis-sanctum {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -3;
+            background-color: #030406;
+            /* Золотая кибер-сетка и центральное свечение */
+            background-image: 
+                radial-gradient(circle at 50% 40%, rgba(0, 229, 255, 0.08) 0%, rgba(212, 175, 55, 0.05) 30%, transparent 60%),
+                linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center center;
+        }
+        /* Световые колонны на фоне */
+        #themis-sanctum::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent 15%, rgba(255, 255, 255, 0.03) 20%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 80%, transparent 85%);
+            pointer-events: none;
+        }
+
+        /* Плавающие частицы Света и Тьмы */
+        #particles-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; }
+        .particle {
+            position: absolute; width: 4px; height: 4px; border-radius: 50%;
+            animation: riseParticle linear infinite;
+        }
+        @keyframes riseParticle {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 60px; display: flex; align-items: center; padding: 0 20px;
+            background: linear-gradient(180deg, rgba(3, 4, 6, 0.95) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15); flex-shrink: 0; z-index: 100;
+        }
+        .back-btn { width: 22px; height: auto; cursor: pointer; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4)); margin-right: 15px; transition: 0.3s; }
+        .back-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8)); }
+        
+        .breadcrumb-container { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 30px; height: auto; filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.5)); border-radius: 50%; }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: 1rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
+        .breadcrumb-text span { color: var(--gold); opacity: 0.7; margin: 0 6px; }
+
+        /* === ГЛАВНАЯ АРЕНА === */
+        .arena-main {
+            flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+            align-items: center; padding: 2vh 20px; width: 100%; max-width: 800px; margin: 0 auto;
+        }
+
+        /* === ЦЕНТР: АВАТАР И ВЕСЫ === */
+        .themis-stage {
+            position: relative; width: 100%; display: flex; flex-direction: column; align-items: center;
+            flex-grow: 1; justify-content: center; margin-top: 10px;
+        }
+
+        /* Гексагональный аватар */
+        .avatar-hex-wrapper {
+            position: relative; width: 30vh; height: 34.64vh; max-width: 250px; max-height: 288px; min-width: 150px; min-height: 173px;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            border: 2px solid var(--gold); background: #000;
+            display: flex; justify-content: center; align-items: center; z-index: 5;
+            box-shadow: 0 0 30px rgba(0,0,0,1); transition: 0.5s;
+        }
+        .avatar-hex-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 32vh; height: 36.95vh; max-width: 270px; max-height: 311px; min-width: 165px; min-height: 190px;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: linear-gradient(135deg, rgba(212,175,55,0.4), rgba(0,229,255,0.3));
+            z-index: 4; filter: blur(12px);
+        }
+        .themis-avatar { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1) brightness(0.95); }
+
+        /* ВЕСЫ (Идеальная физика) */
+        .scales-container {
+            position: absolute; top: 55%; left: 50%; transform: translate(-50%, 0);
+            width: 80vw; max-width: 400px; height: 100px; z-index: 6;
+        }
+        
+        .scales-pivot {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 20px; border-radius: 50%;
+            background: radial-gradient(circle, var(--white-armor), var(--gold));
+            box-shadow: 0 0 15px rgba(212,175,55,0.8); z-index: 10;
+        }
+
+        .scales-beam {
+            position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: linear-gradient(90deg, rgba(212,175,55,0.2) 0%, var(--white-armor) 10%, var(--white-armor) 90%, rgba(212,175,55,0.2) 100%);
+            border-radius: 3px; 
+            transform-origin: center center; /* Якорь ровно по центру */
+            transform: rotate(0deg); 
+            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* Чаши весов */
+        .pan {
+            position: absolute; top: 3px; width: 50px; height: 80px;
+            display: flex; flex-direction: column-reverse; align-items: center;
+            padding: 5px; gap: 3px; transform-origin: top center;
+            transform: rotate(0deg); 
+            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        /* Жесткие U-образные крепления чаш */
+        .pan::before {
+            content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+            width: 100%; height: 100%; 
+            border-left: 2px solid rgba(255,255,255,0.4); 
+            border-right: 2px solid rgba(255,255,255,0.4); 
+            border-bottom: 4px solid rgba(255,255,255,0.7); 
+            border-radius: 0 0 10px 10px; z-index: -1;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+        
+        /* Индивидуальное свечение дна для каждой чаши */
+        .pan-left::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--red-glow); box-shadow: 0 0 15px var(--red-glow); border-radius: 50%; opacity: 0.3; transition: 0.5s; }
+        .pan-right::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--cyan-glow); box-shadow: 0 0 15px var(--cyan-glow); border-radius: 50%; opacity: 0.3; transition: 0.5s; }
+
+        .pan-left { left: 0; transform: translateX(-50%); }
+        .pan-right { right: 0; transform: translateX(50%); }
+
+        /* Энергетические блоки */
+        .weight-block {
+            width: 90%; height: 12px; border-radius: 2px;
+            animation: dropWeight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .weight-sin { background: var(--red-glow); filter: drop-shadow(0 0 8px rgba(255, 42, 42, 0.8)); }
+        .weight-victory { background: var(--cyan-glow); filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.8)); }
+
+        @keyframes dropWeight {
+            0% { transform: translateY(-60px) scale(1.5); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        /* === ПАНЕЛЬ ВВОДА ДАННЫХ === */
+        .judgement-panel {
+            width: 100%; max-width: 500px; background: rgba(5, 7, 9, 0.9);
+            border: 1px solid rgba(240, 245, 249, 0.15); border-radius: 15px;
+            padding: 15px; display: flex; flex-direction: column; gap: 15px;
+            backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(212,175,55,0.05);
+            flex-shrink: 0; z-index: 10;
+        }
+
+        .action-hologram {
+            text-align: center; font-style: italic; color: #8a9ba8;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem); min-height: 24px;
+            transition: 0.3s;
+        }
+
+        .action-input {
+            width: 100%; background: transparent; border: none; border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            color: #fff; font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 3vw, 1.4rem);
+            padding: 5px; outline: none; text-align: center; transition: 0.3s;
+        }
+        .action-input:focus { border-bottom-color: var(--white-armor); box-shadow: 0 10px 15px -10px rgba(240, 245, 249, 0.3); }
+        .action-input::placeholder { color: rgba(138, 155, 168, 0.4); }
+
+        .judgement-buttons { display: flex; gap: 10px; }
+        
+        .j-btn {
+            flex: 1; padding: 10px 5px; border-radius: 8px; font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(1rem, 2.5vw, 1.2rem); font-weight: 700; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; outline: none;
+        }
+        .btn-sin { background: rgba(255, 42, 42, 0.05); border: 1px solid rgba(255, 42, 42, 0.4); color: var(--red-glow); }
+        .btn-sin:hover { background: rgba(255, 42, 42, 0.2); box-shadow: 0 0 15px rgba(255, 42, 42, 0.4); color: #fff; }
+        
+        .btn-victory { background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.4); color: var(--cyan-glow); }
+        .btn-victory:hover { background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); color: #fff; }
+
+        .verdict-btn {
+            width: 100%; max-width: 500px; padding: 15px; margin-top: 15px;
+            background: linear-gradient(90deg, rgba(212,175,55,0.1), rgba(240,245,249,0.1), rgba(212,175,55,0.1));
+            border: 1px solid var(--gold); border-radius: 12px;
+            color: var(--gold); font-family: 'Cinzel Decorative', cursive; font-size: clamp(1rem, 3vw, 1.2rem);
+            letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); flex-shrink: 0;
+        }
+        .verdict-btn:hover { background: rgba(212,175,55,0.2); color: #fff; box-shadow: 0 0 25px rgba(212,175,55,0.5); }
+
+        /* === ОКНО ВЕРДИКТА === */
+        .verdict-modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 4, 6, 0.98); backdrop-filter: blur(15px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
+        }
+        .verdict-modal.active { opacity: 1; pointer-events: auto; }
+        
+        .verdict-title { font-family: 'Cinzel Decorative', cursive; font-size: clamp(2rem, 8vw, 3rem); text-align: center; text-transform: uppercase; text-shadow: 0 0 20px rgba(0,0,0,1); }
+        .verdict-desc { font-size: clamp(1.2rem, 4vw, 1.5rem); font-style: italic; color: #8a9ba8; margin-top: 15px; text-align: center; max-width: 80%; line-height: 1.4;}
+        
+        .verdict-success { color: var(--cyan-glow); text-shadow: 0 0 30px var(--cyan-glow); }
+        .verdict-fail { color: var(--red-glow); text-shadow: 0 0 30px var(--red-glow); }
+        .verdict-balance { color: var(--white-armor); text-shadow: 0 0 30px #fff; }
+
+        .close-modal-btn {
+            margin-top: 40px; padding: 10px 30px; background: transparent; border: 1px solid var(--text-light);
+            color: var(--text-light); border-radius: 20px; cursor: pointer; transition: 0.3s; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .close-modal-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff;}
+
+        @media (max-width: 600px) {
+            .battle-header { padding: 0 15px; height: 60px; }
+            .arena-main { padding: 2vh 15px; }
+            .scales-container { width: 90vw; top: 58%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фон: Зал Правосудия -->
+    <div id="themis-sanctum"></div>
+    <div id="particles-container"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="breadcrumb-container">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777892519/ultra_realistic_high-detail_CGI_futuristic_mythological_arrow_of_intellect_and_precision_designed_as_a_weapon_of_Apollo_sleek_and_perfectly_symmetrical_arrow_made_of_polished_m%D0%B0%D1%80%D0%BB%D1%8Cetallic_silver_an_1_1_1_pfbwpl.webp" class="logo-icon" alt="Themis Icon">
+            <div class="breadcrumb-text">Фатум <span>/</span> Пантеон <span>/</span> Фемида</div>
+        </div>
+    </header>
+
+    <main class="arena-main">
+        
+        <!-- ЦЕНТР: Аватар и физические Весы -->
+        <div class="themis-stage">
+            <div class="avatar-hex-glow"></div>
+            <div class="avatar-hex-wrapper">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777892519/ultra_realistic_high-detail_CGI_futuristic_mythological_arrow_of_intellect_and_precision_designed_as_a_weapon_of_Apollo_sleek_and_perfectly_symmetrical_arrow_made_of_polished_m%D0%B0%D1%80%D0%BB%D1%8Cetallic_silver_an_1_1_1_pfbwpl.webp" class="themis-avatar" alt="Themis">
+            </div>
+
+            <!-- Интерактивные Весы -->
+            <div class="scales-container">
+                <div class="scales-pivot"></div>
+                <div class="scales-beam" id="scales-beam">
+                    <div class="pan pan-left" id="pan-left"></div>
+                    <div class="pan pan-right" id="pan-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПАНЕЛЬ ВВОДА -->
+        <div class="judgement-panel">
+            <div class="action-hologram" id="action-hologram">Что ты положишь на весы сегодня?</div>
+            <input type="text" class="action-input" id="action-input" placeholder="Впиши свой поступок..." autocomplete="off">
+            <div class="judgement-buttons">
+                <button class="j-btn btn-sin" onclick="addWeight('sin')">Слабость</button>
+                <button class="j-btn btn-victory" onclick="addWeight('victory')">Триумф</button>
+            </div>
+        </div>
+
+        <button class="verdict-btn" onclick="submitVerdict()">Вынести Вердикт</button>
+    </main>
+
+    <!-- Окно Финального Вердикта -->
+    <div class="verdict-modal" id="verdict-modal">
+        <h1 class="verdict-title" id="verdict-title">Вердикт</h1>
+        <p class="verdict-desc" id="verdict-desc">Описание.</p>
+        <button class="close-modal-btn" onclick="closeVerdict()">Осознать и закрыть</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        let fatumDeviceId = localStorage.getItem('fatum_device_id');
+        const REAL_USER_ID = tg?.initDataUnsafe?.user?.id || new URLSearchParams(window.location.search).get('tg_id') || fatumDeviceId;
+
+        function goBack() {
+            window.location.href = `apollo.html`; 
+        }
+
+        // Анимация плавающих кибер-светлячков на фоне
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 20; i++) {
+                let p = document.createElement('div');
+                p.classList.add('particle');
+                
+                // Чередуем циановые и красные искры
+                p.style.background = Math.random() > 0.5 ? 'var(--cyan-glow)' : 'var(--red-glow)';
+                p.style.boxShadow = `0 0 10px ${p.style.background}`;
+                
+                let posX = Math.random() * 100;
+                let duration = Math.random() * 15 + 10;
+                let delay = Math.random() * 10;
+                
+                p.style.left = `${posX}vw`;
+                p.style.animationDuration = `${duration}s`;
+                p.style.animationDelay = `${delay}s`;
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        // === ИДЕАЛЬНАЯ ФИЗИКА ВЕСОВ ===
+        let balanceScore = 0; 
+        let sinsCount = 0;
+        let victoriesCount = 0;
+
+        const beam = document.getElementById('scales-beam');
+        const panLeft = document.getElementById('pan-left');
+        const panRight = document.getElementById('pan-right');
+        const actionInput = document.getElementById('action-input');
+        const hologram = document.getElementById('action-hologram');
+
+        function addWeight(type) {
+            const text = actionInput.value.trim();
+            if (!text) {
+                actionInput.placeholder = "Назови поступок, прежде чем класть его на весы...";
+                return;
+            }
+
+            const block = document.createElement('div');
+            block.classList.add('weight-block');
+
+            if (type === 'sin') {
+                block.classList.add('weight-sin');
+                panLeft.appendChild(block);
+                balanceScore -= 1;
+                sinsCount++;
+                panLeft.style.opacity = '1'; // Усиливаем свечение дна
+                hologram.innerText = `«${text}» падает грузом слабости.`;
+                hologram.style.color = 'var(--red-glow)';
+                hologram.style.textShadow = '0 0 10px rgba(255,42,42,0.5)';
+            } else {
+                block.classList.add('weight-victory');
+                panRight.appendChild(block);
+                balanceScore += 1;
+                victoriesCount++;
+                panRight.style.opacity = '1';
+                hologram.innerText = `«${text}» сияет как триумф.`;
+                hologram.style.color = 'var(--cyan-glow)';
+                hologram.style.textShadow = '0 0 10px rgba(0,229,255,0.5)';
+            }
+
+            actionInput.value = '';
+            actionInput.placeholder = "Впиши следующий поступок...";
+            
+            updateScalesPhysics();
+        }
+
+        function updateScalesPhysics() {
+            let angle = balanceScore * 4; 
+            if (angle > 20) angle = 20;
+            if (angle < -20) angle = -20;
+
+            // ИСПРАВЛЕННЫЙ JS: Наклоняем балку без сбивания центровки
+            beam.style.transform = `rotate(${angle}deg)`;
+            
+            // Чаши крутятся в обратную сторону, чтобы гравитация тянула их ровно вниз
+            panLeft.style.transform = `translateX(-50%) rotate(${-angle}deg)`;
+            panRight.style.transform = `translateX(50%) rotate(${-angle}deg)`;
+            
+            hologram.style.transform = "scale(1.05)";
+            setTimeout(() => { hologram.style.transform = "scale(1)"; }, 300);
+        }
+
+        // === ВЕРДИКТ ===
+        const modal = document.getElementById('verdict-modal');
+        const vTitle = document.getElementById('verdict-title');
+        const vDesc = document.getElementById('verdict-desc');
+
+        function submitVerdict() {
+            if (sinsCount === 0 && victoriesCount === 0) {
+                hologram.innerText = "Весы пусты. Твой день не имел веса.";
+                hologram.style.color = '#8a9ba8';
+                hologram.style.textShadow = 'none';
+                return;
+            }
+
+            vTitle.className = 'verdict-title';
+
+            if (balanceScore > 0) {
+                vTitle.innerText = "Триумф Воли";
+                vTitle.classList.add('verdict-success');
+                vDesc.innerText = "Твои победы перевесили. День прожит не зря. Ты укрепляешь свою матрицу.";
+            } else if (balanceScore < 0) {
+                vTitle.innerText = "Тяжесть Поражения";
+                vTitle.classList.add('verdict-fail');
+                vDesc.innerText = "Слабости утянули тебя вниз. Завтрашний день потребует стальной дисциплины.";
+            } else {
+                vTitle.innerText = "Абсолютный Баланс";
+                vTitle.classList.add('verdict-balance');
+                vDesc.innerText = "Свет и тьма уравновешены. Статус-кво сохранен.";
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeVerdict() {
+            modal.classList.remove('active');
+            
+            setTimeout(() => {
+                panLeft.innerHTML = '';
+                panRight.innerHTML = '';
+                balanceScore = 0;
+                sinsCount = 0;
+                victoriesCount = 0;
+                panLeft.style.opacity = '0.3';
+                panRight.style.opacity = '0.3';
+                updateScalesPhysics();
+                hologram.innerText = "Что ты положишь на весы сегодня?";
+                hologram.style.color = '#8a9ba8';
+                hologram.style.textShadow = 'none';
+            }, 500);
+        }
+
+        actionInput.addEventListener('keypress', function (e) { 
+            if (e.key === 'Enter') { 
+                actionInput.blur(); 
+                hologram.innerText = "Выбери сторону весов...";
+            } 
+        });
+    </script>
+</body>
+</html>

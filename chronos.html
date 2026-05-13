@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Кронос | Матрица Фокуса</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --bronze: #b08d5b;
+            --bronze-dark: #3a2817;
+            --ember-glow: #ff9d00;
+            --dark-metal: #0f0b08;
+            --chronos-red: #8a0303;
+            --text-light: #e6f0ff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--dark-metal);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            /* ЖЕСТКАЯ ФИКСАЦИЯ НА 1 ЭКРАН */
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* === МИР МЕТАЛЛОЛОМА И ШЕСТЕРЕНОК (ФОН) === */
+        #mechanical-background {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2;
+            /* Сложный CSS-паттерн, имитирующий металлические плиты и шестерни */
+            background-color: #080605;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(58, 40, 23, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 10% 20%, rgba(176, 141, 91, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 157, 0, 0.03) 0%, transparent 50%),
+                repeating-radial-gradient(rgba(0,0,0,0.5) 0, rgba(0,0,0,0.5) 2px, transparent 3px, transparent 15px),
+                repeating-linear-gradient(45deg, rgba(20, 15, 10, 0.4) 0%, rgba(20, 15, 10, 0.4) 5px, transparent 5px, transparent 20px);
+            opacity: 0.8;
+        }
+
+        /* Летящие искры из кузни */
+        #sparks-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; pointer-events: none; opacity: 0.6; }
+        .spark { position: absolute; background: var(--ember-glow); border-radius: 50%; filter: blur(1px); animation: riseSparks linear infinite; box-shadow: 0 0 10px var(--ember-glow); }
+        @keyframes riseSparks {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* === ШАПКА === */
+        .battle-header {
+            height: 60px; display: flex; align-items: center; padding: 0 20px;
+            background: linear-gradient(180deg, rgba(15, 11, 8, 0.95) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(176, 141, 91, 0.2); flex-shrink: 0; z-index: 100;
+        }
+        .back-btn { width: 24px; height: auto; cursor: pointer; filter: drop-shadow(0 0 5px rgba(176, 141, 91, 0.4)); margin-right: 15px; transition: 0.3s; }
+        .back-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(176, 141, 91, 0.8)); }
+        
+        .breadcrumb-container { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 30px; height: auto; filter: drop-shadow(0 0 8px rgba(176, 141, 91, 0.5)); }
+        .breadcrumb-text { font-family: 'Cinzel Decorative', cursive; font-size: 1.1rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
+        .breadcrumb-text span { color: var(--bronze); opacity: 0.7; margin: 0 8px; }
+
+        /* === ГЛАВНАЯ АРЕНА (ФЛЕКС, ЧТОБЫ ВСЕ ВЛЕЗАЛО БЕЗ СКРОЛЛА) === */
+        .arena-main {
+            flex: 1; display: flex; flex-direction: column; justify-content: space-evenly;
+            align-items: center; padding: 10px 20px; max-width: 800px; margin: 0 auto; width: 100%;
+        }
+
+        /* Цель на экране во время фокуса */
+        .active-intention {
+            font-size: clamp(1.2rem, 4vw, 1.6rem); color: #fff; font-style: italic;
+            text-align: center; width: 100%; height: 30px;
+            text-shadow: 0 0 15px rgba(255,157,0,0.5);
+            opacity: 0; transition: 0.5s; pointer-events: none;
+        }
+
+        /* === МЕХАНИЗМ ТАЙМЕРА (ЦЕНТР) === */
+        .chronos-wrapper {
+            position: relative;
+            /* Размеры зависят от высоты экрана (vh), чтобы на маленьких экранах круг сам сжимался */
+            width: 35vh; height: 35vh; 
+            max-width: 350px; max-height: 350px;
+            min-width: 240px; min-height: 240px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Внешняя шестеренка */
+        .gear-outer {
+            position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            border: 4px dashed rgba(176, 141, 91, 0.4);
+            animation: spinRight 30s linear infinite; z-index: 1;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        /* Внутренняя шестеренка */
+        .gear-inner {
+            position: absolute; width: 85%; height: 85%; border-radius: 50%;
+            border: 3px dotted rgba(255, 157, 0, 0.5);
+            animation: spinLeft 20s linear infinite; z-index: 2;
+        }
+
+        @keyframes spinRight { 100% { transform: rotate(360deg); } }
+        @keyframes spinLeft { 100% { transform: rotate(-360deg); } }
+
+        /* Аватар Кроноса */
+        .chronos-avatar-wrapper {
+            position: absolute; width: 70%; height: 70%;
+            border-radius: 50%; overflow: hidden; z-index: 3;
+            box-shadow: 0 0 40px rgba(0,0,0,1), inset 0 0 20px rgba(255, 157, 0, 0.4);
+            border: 3px solid var(--bronze);
+            background: #000;
+        }
+        .chronos-avatar { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1) brightness(0.9); }
+
+        /* Круговой прогресс бар (Раскаленное лезвие/кольцо). Сделан БОЛЬШЕ контейнера, чтобы не обрезался квадратом */
+        .progress-ring { 
+            position: absolute; 
+            width: 110%; height: 110%; 
+            top: -5%; left: -5%;
+            transform: rotate(-90deg); z-index: 4; 
+            pointer-events: none; overflow: visible; /* ИСПРАВЛЕНИЕ ОБРЕЗАНИЯ КВАДРАТОМ */
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+            stroke: var(--ember-glow); stroke-width: 6; fill: transparent;
+            filter: drop-shadow(0 0 15px rgba(255, 157, 0, 1));
+            stroke-linecap: round;
+        }
+
+        /* Текст таймера под Механизмом */
+        .timer-display {
+            display: flex; flex-direction: column; align-items: center;
+            z-index: 5; margin-top: 10px;
+        }
+        .time-text {
+            font-family: 'Rajdhani', sans-serif; font-size: clamp(3.5rem, 8vh, 5rem); font-weight: 700;
+            color: var(--bronze); line-height: 1; letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(176, 141, 91, 0.5); transition: color 0.5s ease;
+        }
+        .status-text {
+            font-family: 'Cinzel Decorative', cursive; font-size: clamp(0.7rem, 2vh, 0.9rem); color: #8a9ba8;
+            letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; transition: color 0.5s;
+        }
+
+        /* === ПАНЕЛЬ НАСТРОЙКИ (КОМПАКТНАЯ) === */
+        .setup-panel {
+            width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px;
+            background: rgba(15, 11, 8, 0.85); border: 1px solid rgba(176, 141, 91, 0.3);
+            border-radius: 20px; padding: 20px; backdrop-filter: blur(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 15px rgba(0,0,0,0.9);
+            flex-shrink: 0; /* Не дает панели сжаться до неузнаваемости */
+        }
+
+        .intention-input {
+            width: 100%; background: transparent; border: none; border-bottom: 2px solid rgba(176, 141, 91, 0.4);
+            color: #fff; font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 3vh, 1.4rem);
+            padding: 5px; outline: none; text-align: center; transition: 0.3s;
+        }
+        .intention-input:focus { border-bottom-color: var(--ember-glow); box-shadow: 0 10px 15px -10px rgba(255, 157, 0, 0.5); }
+        .intention-input::placeholder { color: rgba(138, 155, 168, 0.4); font-style: italic; }
+
+        .time-controls-wrapper { display: flex; flex-direction: column; gap: 10px; }
+        
+        .time-presets { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+        .time-btn {
+            background: rgba(176, 141, 91, 0.05); border: 1px solid rgba(176, 141, 91, 0.4);
+            border-radius: 8px; color: #e6f0ff; font-family: 'Rajdhani', sans-serif; font-size: clamp(1.1rem, 2.5vh, 1.3rem);
+            padding: 6px 12px; cursor: pointer; transition: all 0.3s; flex-grow: 1; text-align: center;
+        }
+        .time-btn:hover, .time-btn.active { background: rgba(255, 157, 0, 0.2); border-color: var(--ember-glow); color: #fff; box-shadow: 0 0 15px rgba(255, 157, 0, 0.4); }
+
+        .custom-time-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 10px;}
+        .custom-time-input {
+            background: rgba(0,0,0,0.8); border: 1px solid rgba(176, 141, 91, 0.5); border-radius: 8px;
+            color: var(--ember-glow); font-family: 'Rajdhani', sans-serif; font-size: clamp(1.2rem, 3vh, 1.5rem); font-weight: 700;
+            width: 70px; text-align: center; padding: 4px; outline: none; transition: 0.3s;
+            box-shadow: inset 0 0 10px #000;
+        }
+        .custom-time-input:focus { border-color: var(--ember-glow); box-shadow: 0 0 15px rgba(255, 157, 0, 0.5), inset 0 0 10px #000; }
+        .custom-time-input::-webkit-outer-spin-button, .custom-time-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .custom-suffix { color: #8a9ba8; font-family: 'Cormorant Garamond', serif; font-size: clamp(1rem, 2vh, 1.1rem); }
+
+        .action-btn {
+            width: 100%; padding: 12px; border: 1px solid var(--bronze); border-radius: 12px;
+            background: linear-gradient(90deg, rgba(176, 141, 91, 0.15), rgba(176, 141, 91, 0.05), rgba(176, 141, 91, 0.15));
+            color: var(--bronze); font-family: 'Cinzel Decorative', cursive; font-size: clamp(1rem, 2.5vh, 1.2rem); font-weight: bold;
+            letter-spacing: 2px; cursor: pointer; transition: all 0.3s; outline: none; margin-top: 5px; text-transform: uppercase;
+        }
+        .action-btn:hover { background: rgba(255, 157, 0, 0.2); border-color: var(--ember-glow); box-shadow: 0 0 25px rgba(255, 157, 0, 0.6); color: #fff; }
+
+        /* Кнопка "Сдаться" (Спрятана, появляется вместо панели настроек) */
+        .surrender-btn {
+            position: absolute; bottom: 5%; left: 50%; transform: translate(-50%, 20px);
+            padding: 12px 35px; border: 1px solid var(--chronos-red); border-radius: 30px; background: rgba(15, 0, 0, 0.8);
+            color: var(--chronos-red); font-family: 'Cinzel Decorative', cursive; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; opacity: 0; pointer-events: none; z-index: 10;
+        }
+        .surrender-btn:hover { background: rgba(138, 3, 3, 0.4); box-shadow: 0 0 20px rgba(138, 3, 3, 0.8); color: #fff; }
+
+        /* === СОСТОЯНИЯ АНИМАЦИИ ВО ВРЕМЯ РАБОТЫ ТАЙМЕРА === */
+        /* Фокус */
+        body.is-focused .setup-panel { opacity: 0; pointer-events: none; transform: scale(0.9); position: absolute; } 
+        body.is-focused .active-intention { opacity: 1; }
+        body.is-focused .surrender-btn { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); transition-delay: 0.5s;}
+        
+        body.is-focused .gear-outer { border-color: rgba(255, 157, 0, 0.6); border-width: 6px; animation: spinRight 15s linear infinite; box-shadow: 0 0 40px rgba(255,157,0,0.3); } 
+        body.is-focused .gear-inner { border-color: rgba(255, 157, 0, 0.8); border-width: 4px; animation: spinLeft 10s linear infinite; }
+        body.is-focused .chronos-avatar-wrapper { border-color: var(--ember-glow); box-shadow: 0 0 50px rgba(255,157,0,0.8), inset 0 0 30px rgba(255, 157, 0, 0.7); animation: pulseAvatar 2s ease-in-out infinite; }
+        body.is-focused .time-text { color: var(--ember-glow); text-shadow: 0 0 40px rgba(255, 157, 0, 0.8); }
+        body.is-focused .status-text { color: var(--ember-glow); }
+
+        @keyframes pulseAvatar { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.05); filter: brightness(1.3); } }
+
+        /* Провал */
+        body.is-failed .progress-ring__circle { stroke: var(--chronos-red); filter: drop-shadow(0 0 20px var(--chronos-red)); }
+        body.is-failed .time-text { color: var(--chronos-red); text-shadow: 0 0 30px var(--chronos-red); }
+        body.is-failed .status-text { color: var(--chronos-red); }
+        body.is-failed .gear-outer, body.is-failed .gear-inner { animation-play-state: paused; border-color: #333; }
+        body.is-failed .chronos-avatar-wrapper { border-color: var(--chronos-red); filter: grayscale(1); box-shadow: 0 0 30px var(--chronos-red); animation: none; }
+
+        /* Успех */
+        body.is-success .progress-ring__circle { stroke: var(--gold); filter: drop-shadow(0 0 25px var(--gold)); }
+        body.is-success .time-text { color: var(--gold); text-shadow: 0 0 40px var(--gold); }
+        body.is-success .status-text { color: var(--gold); }
+        body.is-success .chronos-avatar-wrapper { border-color: var(--gold); box-shadow: 0 0 60px rgba(212,175,55,0.8); animation: none; }
+
+    </style>
+</head>
+<body>
+    <!-- Фон из металлолома и шестерней -->
+    <div id="mechanical-background"></div>
+    <!-- Искры из горнила -->
+    <div id="sparks-particles"></div>
+
+    <header class="battle-header">
+        <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" class="back-btn" onclick="goBack()" alt="Назад">
+        <div class="breadcrumb-container">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="logo-icon" alt="Logo">
+            <div class="breadcrumb-text">Фатум <span>/</span> Пантеон <span>/</span> Кронос</div>
+        </div>
+    </header>
+
+    <main class="arena-main">
+        
+        <!-- Надпись во время таймера -->
+        <div class="active-intention" id="display-intention">"Намерение"</div>
+
+        <!-- Центральный Механизм Времени -->
+        <div class="chronos-wrapper">
+            <!-- Внешние шестерни -->
+            <div class="gear-outer"></div>
+            <div class="gear-inner"></div>
+            
+            <!-- Аватар Кроноса в центре -->
+            <div class="chronos-avatar-wrapper">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777854770/ultra_realistic_high-detail_CGI_futuristic_mythological_arrow_of_intellect_and_precision_designed_as_a_weapon_of_Apollo_sleek_and_%D1%81symmetrical_arrow_made_of_polished_metallic_silver_an_1_1_1_1_pg3f4u.webp" class="chronos-avatar" alt="Chronos">
+            </div>
+
+            <!-- Идеальный SVG Круг (Раскаленная коса) -->
+            <!-- viewBox 0 0 100 100 позволяет кругу автоматически сжиматься под любой экран -->
+            <svg class="progress-ring" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                <!-- Длина окружности (2 * PI * r) -> 2 * 3.1415 * 48 = ~301.6 -->
+                <circle class="progress-ring__circle" id="progress-circle"
+                        stroke-dasharray="301.6" stroke-dashoffset="0"
+                        cx="50" cy="50" r="48" fill="transparent" />
+            </svg>
+        </div>
+
+        <div class="timer-display">
+            <div class="time-text" id="time-display">25:00</div>
+            <div class="status-text" id="status-display">Ожидание фокуса</div>
+        </div>
+
+        <!-- Панель Настройки (При запуске исчезает) -->
+        <div class="setup-panel" id="setup-panel">
+            <input type="text" class="intention-input" id="intention-input" placeholder="Назови свою цель Кроносу..." autocomplete="off">
+            
+            <div class="time-controls-wrapper">
+                <div class="time-presets">
+                    <button class="time-btn" onclick="selectTime(15, this)">15</button>
+                    <button class="time-btn active" onclick="selectTime(25, this)">25</button>
+                    <button class="time-btn" onclick="selectTime(45, this)">45</button>
+                    <button class="time-btn" onclick="selectTime(60, this)">60</button>
+                    <button class="time-btn" onclick="selectTime(90, this)">90</button>
+                    <button class="time-btn" onclick="selectTime(120, this)">120</button>
+                </div>
+
+                <div class="custom-time-wrapper">
+                    <span class="custom-suffix">Или свой:</span>
+                    <input type="number" id="custom-time-input" class="custom-time-input" placeholder="00" min="1" max="720">
+                    <span class="custom-suffix">мин.</span>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="startFocus()">Запустить Механизм</button>
+        </div>
+
+        <!-- Кнопка "Сдаться" (Появляется при запуске) -->
+        <button class="surrender-btn" id="surrender-btn" onclick="surrenderFocus()">Прервать Ритуал</button>
+
+    </main>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        let fatumDeviceId = localStorage.getItem('fatum_device_id');
+        const REAL_USER_ID = tg?.initDataUnsafe?.user?.id || new URLSearchParams(window.location.search).get('tg_id') || fatumDeviceId;
+
+        function goBack() {
+            if (isTimerRunning) {
+                if (!confirm("Механизм запущен. Если вы уйдете, фокус будет разорван. Покинуть зал Кроноса?")) {
+                    return;
+                }
+            }
+            window.location.href = `apollo.html`; 
+        }
+
+        // Искры на фоне
+        function createSparks() {
+            const container = document.getElementById('sparks-particles');
+            for (let i = 0; i < 30; i++) {
+                let spark = document.createElement('div');
+                spark.classList.add('spark');
+                let size = Math.random() * 3 + 1; 
+                let posX = Math.random() * 100; 
+                let duration = Math.random() * 8 + 4; 
+                let delay = Math.random() * 5; 
+                
+                spark.style.width = `${size}px`;
+                spark.style.height = `${size}px`;
+                spark.style.left = `${posX}vw`;
+                spark.style.animationDuration = `${duration}s`;
+                spark.style.animationDelay = `${delay}s`;
+                container.appendChild(spark);
+            }
+        }
+        createSparks();
+
+        // Логика Таймера
+        let selectedMinutes = 25;
+        let totalSeconds = selectedMinutes * 60;
+        let remainingSeconds = totalSeconds;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        const circle = document.getElementById('progress-circle');
+        const timeDisplay = document.getElementById('time-display');
+        const statusDisplay = document.getElementById('status-display');
+        const intentionInput = document.getElementById('intention-input');
+        const displayIntention = document.getElementById('display-intention');
+        const customTimeInput = document.getElementById('custom-time-input');
+        const setupPanel = document.getElementById('setup-panel');
+
+        // Константа из CSS (Длина окружности радиусом 48)
+        const currentCircumference = 301.6;
+
+        function selectTime(minutes, btnElement) {
+            if (isTimerRunning) return;
+            selectedMinutes = minutes;
+            updateLogicFromMinutes();
+
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            customTimeInput.value = ''; 
+        }
+
+        customTimeInput.addEventListener('input', (e) => {
+            if (isTimerRunning) return;
+            let val = parseInt(e.target.value);
+            if (isNaN(val) || val < 1) return;
+            
+            selectedMinutes = val;
+            updateLogicFromMinutes();
+            
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+        });
+
+        function updateLogicFromMinutes() {
+            totalSeconds = selectedMinutes * 60;
+            remainingSeconds = totalSeconds;
+            updateTimeDisplay(remainingSeconds);
+            circle.style.strokeDashoffset = 0;
+        }
+
+        function updateTimeDisplay(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            timeDisplay.innerText = `${m}:${s}`;
+        }
+
+        function updateProgressCircle() {
+            const progress = remainingSeconds / totalSeconds;
+            const offset = currentCircumference - (progress * currentCircumference);
+            circle.style.strokeDashoffset = offset;
+        }
+
+        function startFocus() {
+            const intention = intentionInput.value.trim();
+            if (!intention) {
+                intentionInput.placeholder = "Кронос требует назвать цель...";
+                intentionInput.focus();
+                return;
+            }
+
+            document.body.classList.remove('is-failed', 'is-success');
+            circle.style.strokeDashoffset = 0;
+            
+            displayIntention.innerText = `"${intention}"`;
+            statusDisplay.innerText = "Глубокое погружение";
+            
+            document.body.classList.add('is-focused');
+            
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateTimeDisplay(remainingSeconds);
+                updateProgressCircle();
+
+                if (remainingSeconds <= 0) {
+                    completeFocus();
+                }
+            }, 1000);
+        }
+
+        function surrenderFocus() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            
+            document.body.classList.remove('is-focused');
+            document.body.classList.add('is-failed');
+            
+            statusDisplay.innerText = "Фокус разорван";
+            
+            setTimeout(resetPanel, 4000);
+        }
+
+        function completeFocus() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            
+            document.body.classList.remove('is-focused');
+            document.body.classList.add('is-success');
+            
+            statusDisplay.innerText = "Время покорено";
+            
+            setTimeout(resetPanel, 5000);
+        }
+
+        function resetPanel() {
+            document.body.classList.remove('is-failed', 'is-success');
+            statusDisplay.innerText = "Ожидание фокуса";
+            remainingSeconds = totalSeconds;
+            updateTimeDisplay(remainingSeconds);
+            circle.style.strokeDashoffset = 0;
+        }
+    </script>
+</body>
+</html>
