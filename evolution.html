@@ -335,12 +335,8 @@
 
     <script>
         // === УМНАЯ НАВИГАЦИЯ НАЗАД ===
-        function goBack() { 
-            if (window.history.length > 1 && document.referrer) {
-                window.history.back();
-            } else {
-                window.location.href = 'index.html'; // Резервный путь, если истории нет
-            }
+        function goBack() {
+            window.location.href = 'terminal.html'; 
         }
 
         // === АУДИО ===
