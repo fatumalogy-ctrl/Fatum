@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Модуль: АРСЕНАЛ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Rajdhani:wght@500;600;700;900&display=swap');
+
+        :root {
+            /* Палитра из референса (Сингулярность Эфира) */
+            --core-cyan: #00f0ff;
+            --core-cyan-dim: rgba(0, 240, 255, 0.3);
+            --core-cyan-glow: rgba(0, 240, 255, 0.6);
+            --metal-dark: #0a0c10;
+            --metal-base: #181b22;
+            --metal-light: #454d59;
+            --locked-gold: #cca300;
+            --text-light: #e6f0ff;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            background-color: var(--metal-dark);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            width: 100vw; min-height: 100vh;
+            overflow-x: hidden; 
+            display: flex; flex-direction: column; position: relative;
+            background: radial-gradient(circle at 50% 10%, #1a202a 0%, var(--metal-dark) 80%);
+        }
+
+        /* === ФОНОВЫЕ ЧАСТИЦЫ ЭФИРА === */
+        #aether-particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; }
+        .aether-dust {
+            position: absolute; width: 3px; height: 3px; border-radius: 50%;
+            background: var(--core-cyan); 
+            box-shadow: 0 0 12px var(--core-cyan);
+            animation: floatAether linear infinite; opacity: 0;
+        }
+        @keyframes floatAether {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* === ШАПКА В СТИЛЕ HUD === */
+        .battle-header {
+            height: 80px; display: flex; align-items: center; justify-content: center; position: relative;
+            background: linear-gradient(180deg, rgba(10, 12, 16, 0.95) 0%, rgba(10, 12, 16, 0.4) 100%);
+            border-bottom: 2px solid var(--metal-light); 
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+        .header-title { 
+            font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; color: var(--core-cyan); 
+            font-weight: 700; letter-spacing: 6px; text-transform: uppercase; 
+            text-shadow: 0 0 15px var(--core-cyan-glow); margin: 0 auto; 
+        }
+        
+        .back-btn {
+            width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            position: absolute; left: 20px; z-index: 110;
+        }
+        .back-btn img {
+            width: 100%; height: auto; opacity: 0.6; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .back-btn:hover img {
+            opacity: 1; filter: drop-shadow(0 0 8px var(--core-cyan)); transform: translateX(-3px);
+        }
+
+        /* === СЕТКА БОГОВ === */
+        .gods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 35px; padding: 40px 20px 80px 20px;
+            max-width: 800px; margin: 0 auto;
+            flex: 1;
+        }
+
+        /* КАРТОЧКА БОГА В СЕТКЕ */
+        .god-item {
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .avatar-wrap {
+            width: 115px; height: 115px; border-radius: 50%; position: relative;
+            background: #000;
+            border: 4px solid var(--metal-light); 
+            box-shadow: 0 0 15px rgba(0,0,0,0.8), inset 0 0 10px #000;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden;
+        }
+        
+        .god-item:hover .avatar-wrap { 
+            border-color: var(--core-cyan); 
+            box-shadow: 0 0 25px var(--core-cyan-glow), inset 0 0 20px var(--core-cyan-dim); 
+            transform: translateY(-5px) scale(1.05); 
+        }
+        
+        .god-avatar {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+            filter: brightness(0.85) contrast(1.1) grayscale(20%);
+            transition: 0.4s;
+        }
+        .god-item:hover .god-avatar {
+            filter: brightness(1.1) contrast(1.2) grayscale(0%);
+        }
+
+        .god-name {
+            margin-top: 15px; font-family: 'Rajdhani', sans-serif; font-size: 1.15rem;
+            color: var(--text-light); text-align: center; letter-spacing: 1.5px; font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            transition: 0.3s;
+        }
+        .god-item:hover .god-name { color: var(--core-cyan); text-shadow: 0 0 10px var(--core-cyan-glow); }
+
+        /* Анимация прокрутки "Монеты" */
+        @keyframes coinFlip {
+            0% { transform: perspective(800px) rotateY(0deg); }
+            100% { transform: perspective(800px) rotateY(360deg); }
+        }
+        .flip-active { animation: coinFlip 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955); }
+
+        /* ЗАКРЫТЫЙ БОГ (ЗАМОК) */
+        .locked-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 12, 16, 0.75); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2rem; text-shadow: 0 0 10px rgba(0,0,0,0.9);
+            backdrop-filter: blur(2px);
+        }
+        .god-item.locked .avatar-wrap { 
+            border-color: rgba(69, 77, 89, 0.5); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.9);
+        }
+        .god-item.locked:hover .avatar-wrap { 
+            border-color: var(--locked-gold); 
+            box-shadow: 0 0 25px rgba(204, 163, 0, 0.4), inset 0 0 15px rgba(204, 163, 0, 0.2); 
+            transform: translateY(-5px);
+        }
+        .god-item.locked .god-name { color: #6a7482; }
+        .god-item.locked:hover .god-name { color: var(--locked-gold); text-shadow: 0 0 10px rgba(204, 163, 0, 0.5); }
+
+        /* === МОДАЛЬНЫЕ ОКНА === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 6, 8, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s ease; z-index: 200; padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: rgba(15, 18, 24, 0.95);
+            border: 1px solid var(--metal-light); border-radius: 20px; padding: 35px 25px; 
+            max-width: 480px; width: 100%; 
+            max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 40px rgba(0, 0, 0, 0.8);
+            text-align: center; display: flex; flex-direction: column; align-items: center;
+            position: relative;
+        }
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .modal-logo { width: 65px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 12px var(--core-cyan-glow)); }
+        
+        .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700; color: var(--core-cyan); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--core-cyan-dim);}
+        .modal-subtitle { font-size: 0.95rem; color: var(--metal-light); margin-bottom: 25px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+        
+        .modal-text { font-size: 1.05rem; color: #d0dde8; line-height: 1.6; margin-bottom: 30px; font-weight: 400;}
+
+        /* СТИЛЬ БЛОКИРОВКИ В МОДАЛКЕ */
+        .lock-notice {
+            background: rgba(204, 163, 0, 0.05); border: 1px solid rgba(204, 163, 0, 0.3);
+            border-radius: 15px; padding: 20px; margin-bottom: 30px;
+            box-shadow: inset 0 0 20px rgba(204, 163, 0, 0.05);
+        }
+        .lock-notice-title { color: var(--locked-gold); font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 8px rgba(204, 163, 0, 0.3);}
+        .lock-notice-text { color: #f0f5f9; font-size: 0.95rem; line-height: 1.5; }
+
+        /* КНОПКИ */
+        .action-btn {
+            width: 100%; padding: 18px; background: rgba(0, 240, 255, 0.05); border: 1px solid var(--core-cyan);
+            color: var(--core-cyan); border-radius: 30px; cursor: pointer; transition: 0.3s; 
+            font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 15px; box-shadow: 0 0 15px var(--core-cyan-dim);
+        }
+        .action-btn:hover { background: rgba(0, 240, 255, 0.15); box-shadow: 0 0 30px var(--core-cyan-glow); color: #fff; text-shadow: 0 0 5px #fff; }
+
+        .action-btn.gold-btn { border-color: var(--locked-gold); color: var(--locked-gold); background: rgba(204, 163, 0, 0.05); box-shadow: 0 0 15px rgba(204, 163, 0, 0.2); }
+        .action-btn.gold-btn:hover { background: rgba(204, 163, 0, 0.15); box-shadow: 0 0 30px rgba(204, 163, 0, 0.4); color: #fff; }
+
+        .close-btn { color: #6a7482; font-size: 0.9rem; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Montserrat', sans-serif; padding: 10px; transition: 0.3s; }
+        .close-btn:hover { color: #fff; }
+
+        @media (max-width: 500px) {
+            .gods-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; padding-bottom: 60px; }
+            .avatar-wrap { width: 105px; height: 105px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="aether-particles"></div>
+
+    <header class="battle-header">
+        <div class="back-btn" onclick="goBack()">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" alt="Назад">
+        </div>
+        <div class="header-title">АРСЕНАЛ</div>
+    </header>
+
+    <main class="gods-grid" id="gods-container"></main>
+
+    <!-- ДИНАМИЧЕСКОЕ МОДАЛЬНОЕ ОКНО -->
+    <div class="modal-overlay" id="god-modal">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="modal-logo" alt="Fatum Logo">
+            
+            <h2 class="modal-title" id="m-title">Имя Бога</h2>
+            <div class="modal-subtitle" id="m-subtitle">Название техники</div>
+            
+            <div class="modal-text" id="m-desc">Описание техники и лора.</div>
+            
+            <!-- Блок блокировки (скрыт по умолчанию) -->
+            <div class="lock-notice" id="m-lock-box" style="display: none;">
+                <div class="lock-notice-title">🔒 Врата Эфира Закрыты</div>
+                <div class="lock-notice-text">
+                    Эта техника недоступна. Чтобы открыть <strong>ВСЕ</strong> алгоритмы дыхания и активировать Личный Профиль (Нейроматрицу) со сканированием состояния, требуется разовая инициация.
+                </div>
+            </div>
+
+            <button class="action-btn" id="m-action-btn" onclick="executeAction()">Инициировать</button>
+            <button class="close-btn" onclick="closeModal()">Закрыть терминал</button>
+        </div>
+    </div>
+
+    <script>
+        // === ЛОГИКА ВОЗВРАТА ===
+        function goBack() {
+            window.location.href = 'pantheon.html'; 
+        }
+
+        // === АУДИО ЭФФЕКТ ПРОКРУТКИ ===
+        const flipSound = new Audio('https://actions.google.com/sounds/v1/foley/whoosh_heavy.ogg');
+        flipSound.volume = 0.5;
+
+        // === БАЗА ДАННЫХ РАЗДЕЛА АРСЕНАЛ (ВСЕ 16 БОГОВ ЗАКРЫТЫ) ===
+        const godsData = [
+            {
+                id: 'brizo',
+                name: 'Brizo',
+                type: 'Глубокая ночь / Бессонница',
+                desc: 'Выполняй строго лежа в кровати с закрытыми глазами. Длинный выдох физиологически замедляет сердечный ритм и отключает «словомешалку» в голове. На 4-5 цикле наступает сон. Погружение рассчитано ровно на 380 секунд (20 циклов штиля).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163397/23_ugjmtt.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Brizo.html'
+            },
+            {
+                id: 'xbalanque',
+                name: 'Xbalanque',
+                type: 'В момент агрессии',
+                desc: 'Выполняй сразу после триггера (ссора, подрезали на дороге, бесящее письмо). Растянутый в два раза выдох принудительно гасит вспышку симпатической нервной системы (бей-или-беги). Ровно 280 секунд (20 ледяных циклов) вернут тебе абсолютный контроль.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162730/25_unrskv.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Xbalanque.html'
+            },
+            {
+                id: 'tir',
+                name: 'Tir',
+                type: 'Перед сложной задачей',
+                desc: 'Используй перед глубокой работой (Deep Work), экзаменом или аналитикой. Задержка на вдохе мягко стимулирует мозг, улучшая кровоток в префронтальной коре. Идеальный цикл длится ровно 320 секунд (20 лучей фокуса).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162729/27_ejwouk.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Tir.html'
+            },
+            {
+                id: 'ogma',
+                name: 'Ogma',
+                type: 'Утро / Творческий тупик',
+                desc: 'Идеально перед мозговым штурмом, написанием текста или питчем. Вызывает легкую гипокапнию, что обостряет восприятие и снимает "когнитивный блок". Фаза разгона длится ровно 60 секунд (20 непрерывных циклов).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162729/29_jlkpvw.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ogma.html'
+            },
+            {
+                id: 'ajaka',
+                name: 'Ajaka',
+                type: 'Во время панической атаки',
+                desc: 'Не пытайся "успокоиться". Просто переведи фокус с колотящегося сердца на тяжесть в ногах и симметричный, медленный ритм (5 на 5). Идеально выверенный цикл длится ровно 300 секунд (30 циклов опоры).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162728/31_vjagdi.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ajaka.html'
+            },
+            {
+                id: 'verdandi',
+                name: 'Verdandi',
+                type: 'Фоновая тревога / Вечер',
+                desc: 'Когда мозг начинает генерировать негативные сценарии "А что, если...". Практика возвращает сенсорное восприятие в текущий момент. Идеальный цикл длится ровно 300 секунд (25 идеальных циклов).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162728/33_fjzztn.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Verdandi.html'
+            },
+            {
+                id: 'ogun',
+                name: 'Ogun',
+                type: 'Перед тяжелой тренировкой',
+                desc: 'Использовать перед подходом с тяжелым весом, спринтом или физическим экстримом. Снабжает ткани кислородом и повышает болевой порог. Идеальный боевой транс длится ровно 200 секунд (40 силовых циклов).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162726/35_bmakb8.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ogun.html'
+            },
+            {
+                id: 'heyoka',
+                name: 'Heyoka',
+                type: 'Синдром самозванца / Ошибка',
+                desc: 'Когда ты облажался, сказал глупость или загнал себя в угол требованиями идеальности. Эта техника ломает нейронный паттерн самобичевания через физиологический разрыв привычного ритма. Идеальный хаос длится ровно 280 секунд (20 циклов освобождения).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162727/37_c9qmsa.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Heyoka.html'
+            },
+            {
+                id: 'bormanus',
+                name: 'Bormanus',
+                type: 'Выгорание / Выходные',
+                desc: 'Практика глубокого восстановления. Активирует блуждающий нерв в режиме максимальной мощности, запуская процессы клеточного восстановления. Погружение длится ровно 600 секунд (50 исцеляющих циклов).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162727/39_kxadst.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Bormanus.html'
+            },
+            {
+                id: 'tengri',
+                name: 'Tengri',
+                type: 'Перед конфликтом / Жестким разговором',
+                desc: 'Практика создает физиологический панцирь. Долгая задержка на полном вдохе стимулирует уверенность и снижает реактивность (ты перестанешь зеркалить чужую агрессию). Практика длится ровно 320 секунд (20 куполов защиты).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162724/41_zbrztd.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Tengri.html'
+            },
+            {
+                id: 'aceso',
+                name: 'Aceso',
+                type: 'После острого шока / Плохих новостей',
+                desc: 'Использовать через 10-15 минут после того, как случился сильный стресс. Это принудительный биохимический смыв гормонов стресса. Цикл рассчитан ровно на 300 секунд (25 циклов очищения), чтобы полностью обновить кровоток.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162725/43_nntzd1.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Aceso.html'
+            },
+            {
+                id: 'shennong',
+                name: 'Shennong',
+                type: 'При соматических болях / Зажимах',
+                desc: 'Идеально применять при головной боли, спазме в желудке или зажиме в шее. Техника направленной проприоцепции снимает фокус с паники и расслабляет фасции. Цикл длится ровно 300 секунд (20 циклов исцеления).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162728/45_pu5shg.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Shennong.html'
+            },
+            {
+                id: 'cardea',
+                name: 'Cardea',
+                type: 'Конец рабочего дня / Возвращение домой',
+                desc: 'Ритуал-рубильник. Делай это дыхание в машине перед тем, как зайти в дом, или закрывая крышку ноутбука. Оно разграничивает роли: из "достигатора" в "человека". Цикл длится ровно 320 секунд (20 переходов границы).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162729/47_phfbeg.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Cardea.html'
+            },
+            {
+                id: 'ningishzida',
+                name: 'Ningishzida',
+                type: 'Физическая скованность / Долгая работа сидя',
+                desc: 'Выполнять при синдроме "компьютерной шеи". Длинный выдох со звуком физически расслабляет связки гортани и снимает спазм с трапециевидных мышц. Идеальный змеиный цикл длится ровно 320 секунд (20 плавных скольжений).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162720/49_s7egn7.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ningishzida.html'
+            },
+            {
+                id: 'forseti',
+                name: 'Forseti',
+                type: 'После конфликта / Агрессивного диалога',
+                desc: 'Практика выводит из состояния аффекта. Идеальная симметрия вдоха и выдоха восстанавливает разорванный ритм пульса и возвращает способность мыслить объективно. Баланс длится ровно 280 секунд (20 циклов правосудия).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162718/51_tkuvln.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Forseti.html'
+            },
+            {
+                id: 'bes',
+                name: 'Bes',
+                type: 'Вечер / Навязчивые мысли о работе',
+                desc: 'Использовать, когда мозг не может перестать планировать и решать чужие проблемы. Техника искусственно симулирует паттерн "сброса груза", обманывая нервную систему и заставляя ее расслабиться. Цикл длится ровно 300 секунд (25 циклов свободы).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778162717/53_ttjsb1.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Bes.html'
+            }
+        ];
+
+        // === ИДЕАЛЬНАЯ ГЕНЕРАЦИЯ СЕТКИ БЕЗ БАГОВ ===
+        const container = document.getElementById('gods-container');
+        let htmlBuilder = '';
+        
+        godsData.forEach((god, index) => {
+            htmlBuilder += `
+                <div class="god-item ${god.locked ? 'locked' : ''}" onclick="handleGodClick(${index}, this)">
+                    <div class="avatar-wrap">
+                        <img src="${god.img}" class="god-avatar" alt="${god.name}">
+                        ${god.locked ? '<div class="locked-overlay">🔒</div>' : ''}
+                    </div>
+                    <div class="god-name">${god.name}</div>
+                </div>
+            `;
+        });
+        // Вставляем все элементы разом
+        container.innerHTML = htmlBuilder;
+
+        // === ЧАСТИЦЫ НА ФОНЕ ===
+        function createParticles() {
+            const pContainer = document.getElementById('aether-particles');
+            for (let i = 0; i < 35; i++) {
+                let p = document.createElement('div');
+                p.classList.add('aether-dust');
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                p.style.animationDelay = `${Math.random() * 5}s`;
+                pContainer.appendChild(p);
+            }
+        }
+        createParticles();
+
+        // === ЛОГИКА КЛИКА (ПРОКРУТКА + МОДАЛКА) ===
+        let currentTargetLink = '';
+        let isAnimating = false;
+
+        function handleGodClick(index, element) {
+            // Защита от двойного клика и краша во время анимации
+            if (isAnimating) return; 
+            isAnimating = true;
+
+            const god = godsData[index];
+            const wrap = element.querySelector('.avatar-wrap');
+            
+            // Звук
+            flipSound.currentTime = 0;
+            flipSound.play().catch(e => console.log('Аудио заблокировано до первого клика'));
+            
+            // Анимация
+            wrap.classList.remove('flip-active');
+            void wrap.offsetWidth; // Reflow
+            wrap.classList.add('flip-active');
+
+            // Ожидание конца анимации монеты
+            setTimeout(() => {
+                openModal(god);
+                wrap.classList.remove('flip-active');
+                isAnimating = false;
+            }, 500);
+        }
+
+        function openModal(god) {
+            document.getElementById('m-title').innerText = god.name;
+            document.getElementById('m-subtitle').innerText = god.type;
+            document.getElementById('m-desc').innerText = god.desc;
+            
+            const actionBtn = document.getElementById('m-action-btn');
+            const lockBox = document.getElementById('m-lock-box');
+            
+            // Если бог платный (а тут они все платные), мы перенаправляем на aetherdoor.html
+            currentTargetLink = god.locked ? 'https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html' : god.link;
+
+            if (god.locked) {
+                lockBox.style.display = 'block';
+                actionBtn.innerText = 'УЗНАТЬ ПОДРОБНЕЕ';
+                actionBtn.className = 'action-btn gold-btn';
+                document.querySelector('.modal-content').style.borderColor = 'rgba(204, 163, 0, 0.4)';
+                document.querySelector('.modal-content').style.boxShadow = '0 30px 60px rgba(0,0,0,1), inset 0 0 40px rgba(204, 163, 0, 0.15)';
+            } else {
+                lockBox.style.display = 'none';
+                actionBtn.innerText = 'Перейти к практике';
+                actionBtn.className = 'action-btn';
+                document.querySelector('.modal-content').style.borderColor = 'var(--metal-light)';
+                document.querySelector('.modal-content').style.boxShadow = '0 30px 60px rgba(0,0,0,1), inset 0 0 40px rgba(0, 0, 0, 0.8)';
+            }
+
+            document.getElementById('god-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('god-modal').classList.remove('active');
+        }
+
+        function executeAction() {
+            window.location.href = currentTargetLink;
+        }
+    </script>
+</body>
+</html>

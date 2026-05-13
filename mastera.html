@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Модуль: МАСТЕРА</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Rajdhani:wght@500;600;700;900&display=swap');
+
+        :root {
+            /* Палитра из референса (Сингулярность Эфира) */
+            --core-cyan: #00f0ff;
+            --core-cyan-dim: rgba(0, 240, 255, 0.3);
+            --core-cyan-glow: rgba(0, 240, 255, 0.6);
+            --metal-dark: #0a0c10;
+            --metal-base: #181b22;
+            --metal-light: #454d59;
+            --locked-gold: #cca300;
+            --text-light: #e6f0ff;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            background-color: var(--metal-dark);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            width: 100vw; min-height: 100vh;
+            overflow-x: hidden; 
+            display: flex; flex-direction: column; position: relative;
+            background: radial-gradient(circle at 50% 10%, #1a202a 0%, var(--metal-dark) 80%);
+        }
+
+        /* === ФОНОВЫЕ ЧАСТИЦЫ ЭФИРА === */
+        #aether-particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; pointer-events: none; }
+        .aether-dust {
+            position: absolute; width: 3px; height: 3px; border-radius: 50%;
+            background: var(--core-cyan); 
+            box-shadow: 0 0 12px var(--core-cyan);
+            animation: floatAether linear infinite; opacity: 0;
+        }
+        @keyframes floatAether {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* === ШАПКА В СТИЛЕ HUD === */
+        .battle-header {
+            height: 80px; display: flex; align-items: center; justify-content: center; position: relative;
+            background: linear-gradient(180deg, rgba(10, 12, 16, 0.95) 0%, rgba(10, 12, 16, 0.4) 100%);
+            border-bottom: 2px solid var(--metal-light); 
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+        .header-title { 
+            font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; color: var(--core-cyan); 
+            font-weight: 700; letter-spacing: 6px; text-transform: uppercase; 
+            text-shadow: 0 0 15px var(--core-cyan-glow); margin: 0 auto; 
+        }
+        
+        .back-btn {
+            width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            position: absolute; left: 20px; z-index: 110;
+        }
+        .back-btn img {
+            width: 100%; height: auto; opacity: 0.6; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .back-btn:hover img {
+            opacity: 1; filter: drop-shadow(0 0 8px var(--core-cyan)); transform: translateX(-3px);
+        }
+
+        /* === СЕТКА БОГОВ === */
+        .gods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 35px; padding: 40px 20px 80px 20px;
+            max-width: 800px; margin: 0 auto;
+            flex: 1;
+        }
+
+        /* КАРТОЧКА БОГА В СЕТКЕ */
+        .god-item {
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .avatar-wrap {
+            width: 115px; height: 115px; border-radius: 50%; position: relative;
+            background: #000;
+            border: 4px solid var(--metal-light); 
+            box-shadow: 0 0 15px rgba(0,0,0,0.8), inset 0 0 10px #000;
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden;
+        }
+        
+        .god-item:hover .avatar-wrap { 
+            border-color: var(--core-cyan); 
+            box-shadow: 0 0 25px var(--core-cyan-glow), inset 0 0 20px var(--core-cyan-dim); 
+            transform: translateY(-5px) scale(1.05); 
+        }
+        
+        .god-avatar {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+            filter: brightness(0.85) contrast(1.1) grayscale(20%);
+            transition: 0.4s;
+        }
+        .god-item:hover .god-avatar {
+            filter: brightness(1.1) contrast(1.2) grayscale(0%);
+        }
+
+        .god-name {
+            margin-top: 15px; font-family: 'Rajdhani', sans-serif; font-size: 1.15rem;
+            color: var(--text-light); text-align: center; letter-spacing: 1.5px; font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            transition: 0.3s;
+        }
+        .god-item:hover .god-name { color: var(--core-cyan); text-shadow: 0 0 10px var(--core-cyan-glow); }
+
+        /* Анимация прокрутки "Монеты" */
+        @keyframes coinFlip {
+            0% { transform: perspective(800px) rotateY(0deg); }
+            100% { transform: perspective(800px) rotateY(360deg); }
+        }
+        .flip-active { animation: coinFlip 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955); }
+
+        /* ЗАКРЫТЫЙ БОГ (ЗАМОК) */
+        .locked-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 12, 16, 0.75); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2rem; text-shadow: 0 0 10px rgba(0,0,0,0.9);
+            backdrop-filter: blur(2px);
+        }
+        .god-item.locked .avatar-wrap { 
+            border-color: rgba(69, 77, 89, 0.5); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.9);
+        }
+        .god-item.locked:hover .avatar-wrap { 
+            border-color: var(--locked-gold); 
+            box-shadow: 0 0 25px rgba(204, 163, 0, 0.4), inset 0 0 15px rgba(204, 163, 0, 0.2); 
+            transform: translateY(-5px);
+        }
+        .god-item.locked .god-name { color: #6a7482; }
+        .god-item.locked:hover .god-name { color: var(--locked-gold); text-shadow: 0 0 10px rgba(204, 163, 0, 0.5); }
+
+        /* === МОДАЛЬНЫЕ ОКНА === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 6, 8, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s ease; z-index: 200; padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: rgba(15, 18, 24, 0.95);
+            border: 1px solid var(--metal-light); border-radius: 20px; padding: 35px 25px; 
+            max-width: 480px; width: 100%; 
+            max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 0 40px rgba(0, 0, 0, 0.8);
+            text-align: center; display: flex; flex-direction: column; align-items: center;
+            position: relative;
+        }
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .modal-logo { width: 65px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 12px var(--core-cyan-glow)); }
+        
+        .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700; color: var(--core-cyan); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--core-cyan-dim);}
+        .modal-subtitle { font-size: 0.95rem; color: var(--metal-light); margin-bottom: 25px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+        
+        .modal-text { font-size: 1.05rem; color: #d0dde8; line-height: 1.6; margin-bottom: 30px; font-weight: 400;}
+
+        /* СТИЛЬ БЛОКИРОВКИ В МОДАЛКЕ */
+        .lock-notice {
+            background: rgba(204, 163, 0, 0.05); border: 1px solid rgba(204, 163, 0, 0.3);
+            border-radius: 15px; padding: 20px; margin-bottom: 30px;
+            box-shadow: inset 0 0 20px rgba(204, 163, 0, 0.05);
+        }
+        .lock-notice-title { color: var(--locked-gold); font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 8px rgba(204, 163, 0, 0.3);}
+        .lock-notice-text { color: #f0f5f9; font-size: 0.95rem; line-height: 1.5; }
+
+        /* КНОПКИ */
+        .action-btn {
+            width: 100%; padding: 18px; background: rgba(0, 240, 255, 0.05); border: 1px solid var(--core-cyan);
+            color: var(--core-cyan); border-radius: 30px; cursor: pointer; transition: 0.3s; 
+            font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 15px; box-shadow: 0 0 15px var(--core-cyan-dim);
+        }
+        .action-btn:hover { background: rgba(0, 240, 255, 0.15); box-shadow: 0 0 30px var(--core-cyan-glow); color: #fff; text-shadow: 0 0 5px #fff; }
+
+        .action-btn.gold-btn { border-color: var(--locked-gold); color: var(--locked-gold); background: rgba(204, 163, 0, 0.05); box-shadow: 0 0 15px rgba(204, 163, 0, 0.2); }
+        .action-btn.gold-btn:hover { background: rgba(204, 163, 0, 0.15); box-shadow: 0 0 30px rgba(204, 163, 0, 0.4); color: #fff; }
+
+        .close-btn { color: #6a7482; font-size: 0.9rem; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Montserrat', sans-serif; padding: 10px; transition: 0.3s; }
+        .close-btn:hover { color: #fff; }
+
+        @media (max-width: 500px) {
+            .gods-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; padding-bottom: 60px; }
+            .avatar-wrap { width: 105px; height: 105px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="aether-particles"></div>
+
+    <header class="battle-header">
+        <div class="back-btn" onclick="goBack()">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" alt="Назад">
+        </div>
+        <div class="header-title">МАСТЕРА</div>
+    </header>
+
+    <main class="gods-grid" id="gods-container"></main>
+
+    <!-- ДИНАМИЧЕСКОЕ МОДАЛЬНОЕ ОКНО -->
+    <div class="modal-overlay" id="god-modal">
+        <div class="modal-content">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="modal-logo" alt="Fatum Logo">
+            
+            <h2 class="modal-title" id="m-title">Имя Бога</h2>
+            <div class="modal-subtitle" id="m-subtitle">Название техники</div>
+            
+            <div class="modal-text" id="m-desc">Описание техники и лора.</div>
+            
+            <!-- Блок блокировки (скрыт по умолчанию) -->
+            <div class="lock-notice" id="m-lock-box" style="display: none;">
+                <div class="lock-notice-title">🔒 Врата Эфира Закрыты</div>
+                <div class="lock-notice-text">
+                    Эта техника недоступна. Чтобы открыть <strong>ВСЕ</strong> алгоритмы дыхания и активировать Личный Профиль (Нейроматрицу) со сканированием состояния, требуется разовая инициация.
+                </div>
+            </div>
+
+            <button class="action-btn" id="m-action-btn" onclick="executeAction()">Инициировать</button>
+            <button class="close-btn" onclick="closeModal()">Закрыть терминал</button>
+        </div>
+    </div>
+
+    <script>
+        // === ЛОГИКА ВОЗВРАТА ===
+        function goBack() {
+            window.location.href = 'pantheon.html'; 
+        }
+
+        // === АУДИО ЭФФЕКТ ПРОКРУТКИ ===
+        const flipSound = new Audio('https://actions.google.com/sounds/v1/foley/whoosh_heavy.ogg');
+        flipSound.volume = 0.5;
+
+        // === ПОЛНАЯ БАЗА ДАННЫХ РАЗДЕЛА МАСТЕРА (30 БОГОВ - ВСЕ ЗАКРЫТЫ, ТАЙМИНГИ УДАЛЕНЫ) ===
+        const godsData = [
+            {
+                id: 'camazotz',
+                name: 'Camazotz',
+                type: 'Сенсорный перегруз / Поздняя ночь',
+                desc: 'Практика отключает зрительную кору мозга, давая нервной системе колоссальный отдых. Использовать после часов непрерывной работы за монитором или пребывания в шумной толпе.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163454/1_nhxjsc.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Camazotz.html'
+            },
+            {
+                id: 'ereshkigal',
+                name: 'Ereshkigal',
+                type: 'Закостенелый стресс / Утрата контроля',
+                desc: 'Когда ты пытаешься контролировать то, что от тебя не зависит. Экстремальная гипоксия на выдохе запускает мощнейший рефлекс расслабления — мозг понимает, что сопротивляться бесполезно, и отпускает ментальную хватку.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163454/3_vglxyd.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ereshkigal.html'
+            },
+            {
+                id: 'viracocha',
+                name: 'Viracocha',
+                type: 'Утро / Перед стартом нового проекта',
+                desc: 'Это практика экспансии. Она физически растягивает межреберные мышцы и увеличивает жизненную емкость легких, давая чувство масштабности и готовности к великим делам.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163450/5_mtpnog.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Viracocha.html'
+            },
+            {
+                id: 'svetovid',
+                name: 'Svetovid',
+                type: 'Середина рабочего дня',
+                desc: 'Это мощнейший соматический инструмент. Физические повороты шеи в сочетании с дыханием снимают компрессию с блуждающего нерва, который проходит вдоль шейного отдела. Убирает "деревянность" мышц после компьютера и дает ясность ума.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163452/7_1_hy0qk4.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Svetovid.html'
+            },
+            {
+                id: 'nuada',
+                name: 'Nuada',
+                type: 'После тяжелых травм',
+                desc: 'Это адаптация нервно-мышечной релаксации по Джекобсону. Мозг не умеет расслаблять мышцы по команде, но если довести мышцу до пикового спазма (на задержке), она рефлекторно расслабляется на выдохе.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163467/9_1_yoicr0.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Nuada.html'
+            },
+            {
+                id: 'radegast',
+                name: 'Radegast',
+                type: 'Вечер / Чувство изоляции',
+                desc: 'Медленный, теплый выдох через открытый рот физически согревает тело, расширяя кровеносные сосуды (вазодилатация). Снимает озноб, вызванный выбросом адреналина и тревожностью. Дает чувство безопасности.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163457/11_1_v3gu7p.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Radegast.html'
+            },
+            {
+                id: 'maahes',
+                name: 'Maahes',
+                type: 'Скрытая агрессия / Бруксизм',
+                desc: 'Это вариация йоговской Симхасаны. Вытягивание языка физически растягивает связки гортани и снимает спазм височно-нижнечелюстного сустава (ТНЧС), в котором копится большинство невыраженного гнева.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163462/13_qerdi2.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Maahes.html'
+            },
+            {
+                id: 'mamakilla',
+                name: 'Mama Killa',
+                type: 'Ночь / Сильное раздражение',
+                desc: 'В нейробиологии доказано, что дыхание исключительно через левую ноздрю стимулирует правое полушарие мозга и активирует парасимпатическую нервную систему (эффект охлаждения и торможения ЦНС). Идеально для остановки "беличьего колеса" мыслей.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163454/15_sapvll.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/MamaKilla.html'
+            },
+            {
+                id: 'ilamatecuhtli',
+                name: 'Ilamatecuhtli',
+                type: 'Сложные жизненные этапы',
+                desc: 'Сужение гортани (техника Уджайи) замедляет поток воздуха, позволяя легким усвоить больше кислорода. Сам звук океана в голове работает как белый шум, мгновенно отсекая внешние раздражители и даруя глубокий фокус.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163442/17_d1tmf5.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ilamatecuhtli.html'
+            },
+            {
+                id: 'tupa',
+                name: 'Tupã',
+                type: 'Мигрени / Потеря концентрации',
+                desc: 'Это древняя техника Бхрамари (дыхание пчелы). Звуковая вибрация буквально "массирует" блуждающий нерв в области гортани и стимулирует выработку оксида азота в носовых пазухах (что резко расширяет сосуды и снимает головную боль).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163442/19_xn4cyv.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Tup%C3%A3.html'
+            },
+            {
+                id: 'tammuz',
+                name: 'Tammuz',
+                type: 'Застой / Эмоциональное онемение',
+                desc: 'Эта техника (связное дыхание) убирает психологические блоки. Когда ты дышишь без пауз, мозг лишается возможности "зависать" на негативных мыслях, а тело получает мощный, ровный поток кислорода, пробивающий любую апатию.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190568/1_qiemhl.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Tammuz.html'
+            },
+            {
+                id: 'alkonost',
+                name: 'Alkonost',
+                type: 'Жесткая перезагрузка',
+                desc: 'Это вариация холотропного дыхания. Практика вызывает контролируемую гипокапнию, сужая сосуды мозга на короткое время, что после возвращения к нормальному дыханию дает мощный выброс эндорфинов и чувство эйфории.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190566/3_btuxsg.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Alkonost.html'
+            },
+            {
+                id: 'amma',
+                name: 'Amma',
+                type: 'Стрессовый разфокус / Тремор',
+                desc: 'Гениальный соматический хак. Когда ты находишься в панике или расфокусе, мозг шлет хаотичные сигналы в мышцы. Изометрическое (тотальное) сжатие на задержке перехватывает этот контроль, а последующий выдох принудительно обнуляет нервную систему.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190566/5_bjvaxu.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Amma.html'
+            },
+            {
+                id: 'mavulisa',
+                name: 'Mavu-Lisa',
+                type: 'Внутренний конфликт / Усталость',
+                desc: 'Когда нужно принять важное решение, но мозг и интуиция говорят разное. Эта сложная координационная практика заставляет левое и правое полушария мозга работать синхронно, выстраивая новые нейронные связи и давая объективный взгляд на вещи.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778190565/7_1_peszo8.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/MavuLisa.html'
+            },
+            {
+                id: 'ratatoskr',
+                name: 'Ratatoskr',
+                type: 'Дневная сонливость / Падение фокуса',
+                desc: 'Короткие, резкие вдохи через нос мощно стимулируют обонятельные луковицы, которые напрямую связаны с центрами бодрствования в мозге. Это биохакерская замена чашке кофе, снимающая туман в голове.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778188307/9_1_he3wob.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ratatoskr.html'
+            },
+            {
+                id: 'hundun',
+                name: 'Hundun',
+                type: 'Гиперконтроль / Нервный тик / ОКР',
+                desc: 'Идеально для людей с тревожно-перфекционистским складом ума. Отказ от навязанного ритма учит психику доверять своему телу и находиться в зоне непредсказуемости без паники.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187823/11_1_rq6ebf.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Hundun.html'
+            },
+            {
+                id: 'tephnut',
+                name: 'Tephnut',
+                type: 'Приливы гнева / Физическая жара',
+                desc: 'Это древняя техника "Ситаали". Физическое прохождение воздуха по влажному языку резко снижает температуру вдыхаемого кислорода. Нервная система считывает это охлаждение как сигнал к снижению агрессии и воспалительных процессов.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187822/13_vphbj9.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Tephnut.html'
+            },
+            {
+                id: 'tsmok',
+                name: 'Tsmok',
+                type: 'Спазмы ЖКТ / Страх потери почвы',
+                desc: 'Экстремальная работа животом — это глубокий висцеральный массаж внутренних органов. Практика стимулирует перистальтику кишечника (где находится 70% серотонина) и физически возвращает чувство безопасности и "заземленности".',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187749/15_rfrk8g.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Tsmok.html'
+            },
+            {
+                id: 'rongo',
+                name: 'Rongo',
+                type: 'Чувство пустоты / Апатия / Тревога',
+                desc: 'Глотательный рефлекс на пике вдоха стимулирует вагус (блуждающий нерв) в области пищевода, посылая в мозг мощнейший сигнал: "Мы сыты, мы в безопасности, ресурса достаточно".',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187626/17_hquh6s.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Rongo.html'
+            },
+            {
+                id: 'silvanus',
+                name: 'Silvanus',
+                type: 'Клаустрофобия / Ощущение тупика',
+                desc: 'Когда кажется, что на тебя давят обстоятельства или люди. Растяжение грудной клетки в сочетании с мощной визуализацией дикой природы снижает уровень нейровоспаления и дает психике необходимое "пространство для маневра".',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187589/19_diwscm.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Silvanus.html'
+            },
+            {
+                id: 'ahaukin',
+                name: 'Ahau-Kin',
+                type: 'Утро / Отсутствие мотивации',
+                desc: 'Эта практика прицельно стимулирует энтеральную нервную систему (наш "второй мозг" в кишечнике). Концентрация тепла и легкое напряжение пресса улучшают кровоток в органах ЖКТ и вызывают естественный выброс дофамина, пробуждая волю к действию.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187588/21_ay6ic1.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/AhauKin.html'
+            },
+            {
+                id: 'chugaister',
+                name: 'Chugaister',
+                type: 'Длительная работа сидя / Оцепенение',
+                desc: 'Соматический хак. Движение позвоночника (сгибание и разгибание) механически стимулирует спинномозговые нервы и симпатический ствол. Снимает синдром "заморозки" (реакция "Замри" при страхе) и моментально разгоняет лимфу.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187587/23_qva0m3.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Chugaister.html'
+            },
+            {
+                id: 'ceridwen',
+                name: 'Ceridwen',
+                type: 'При проживании обиды / Тоски',
+                desc: 'Удлиненный выдох снижает сердечный ритм, а мощная направленная визуализация (перемещение фокуса с мыслей на физические ощущения в животе) разрывает нейронную петлю страдания, выводя психику из позиции жертвы.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187587/25_lw7oho.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Ceridwen.html'
+            },
+            {
+                id: 'ukupacha',
+                name: 'Uku-Pacha',
+                type: 'Дереализация / Сильная тревога',
+                desc: 'Это мягкий вариант маневра Вальсальвы. Создание внутрибрюшного давления механически воздействует на блуждающий нерв и барорецепторы. После выдоха происходит мгновенное рефлекторное снижение пульса и жесткое "заземление" психики.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187587/27_r9icrx.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Uku-Pacha.html'
+            },
+            {
+                id: 'jizo',
+                name: 'Jizo',
+                type: 'Ненависть к себе / Чувство вины',
+                desc: 'Сверхмедленное, бесшумное дыхание (менее 4 циклов в минуту) переводит мозг в дельта- и тета-ритмы. Оно стирает кортизоловый след вины и дает психике глубинный, материнский сигнал абсолютной безопасности и принятия.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778187587/29_kr755s.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Jizo.html'
+            },
+            {
+                id: 'shiva',
+                name: 'Shiva',
+                type: 'Биохимический хакинг',
+                desc: 'Мощнейший инструмент управления иммунитетом. Резко защелачивает кровь, вызывает контролируемый выброс адреналина, убивает внутренние воспаления и учит тело генерировать автономное тепло.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778604864/%D0%A2%D0%B0%D0%BC%D0%BC%D1%83%D0%B7_Tammuz_-_Mesopotamia_Dying-and-Rising_Vegetation_Rebirth_hphchs.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Shiva.html'
+            },
+            {
+                id: 'hekate',
+                name: 'Hekate',
+                type: 'Работа с глубоким подсознанием',
+                desc: 'Отключает дефолт-систему мозга (DMN), вводит кору в трансовое состояние гипоксии, вытаскивая на поверхность скрытые психоэмоциональные блоки и инсайты.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778604864/%D0%A2%D0%B0%D0%BC%D0%BC%D1%83%D0%B7_Tammuz_-_Mesopotamia_Dying-and-Rising_Veget%D0%BF%D0%BFation_Rebirth_jbxy30.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Hekate.html'
+            },
+            {
+                id: 'anubis',
+                name: 'Anubis',
+                type: 'Клеточный апгрейд',
+                desc: 'Симуляция высотных тренировок. Мощная шоковая встряска организма: повышает толерантность мозга к CO2, запускает выработку эритропоэтина (EPO) и провоцирует выброс стволовых клеток в кровь.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778604863/%D0%A2%D0%B0%D0%BC%D0%BC%D1%83%D0%B7_Tammuz_-_Mesopotamia_Dying-and-Rising_Vegetation%D0%BF%D0%B0_Rebirth_deh2yg.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Anubis.html'
+            },
+            {
+                id: 'horus',
+                name: 'Horus',
+                type: 'Стимуляция Эпифиза',
+                desc: 'Сильное механическое давление спинномозговой жидкости на эпифиз. Вызывает состояние эйфории, вспышки фрактального света перед закрытыми глазами и стимулирует микро-выброс эндогенных триптаминов (DMT).',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778604863/%D0%A2%D0%B0%D0%BC%D0%BC%D1%83%D0%B7_Tammuz_-_Mesopotamia_Dying-and-Rising_Vegetation_Reb%D0%BC%D1%81%D1%87irth_tcgtld.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Horus.html'
+            },
+            {
+                id: 'nyx',
+                name: 'Nyx',
+                type: 'Архитектура Бездны',
+                desc: 'Снижение частоты волн мозга до тета- и дельта-ритмов при сохранении кристального сознания. Полностью очищает рецепторы дофамина, сбрасывая уровень стресса до фундаментального нуля.',
+                img: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778604862/%D1%87%D1%81%D1%87%D1%81_njtc8i.webp',
+                locked: true,
+                link: 'https://fatumalogy-ctrl.github.io/Fatum/Nyx.html'
+            }
+        ];
+
+        // === ИДЕАЛЬНАЯ ГЕНЕРАЦИЯ СЕТКИ БЕЗ БАГОВ ===
+        const container = document.getElementById('gods-container');
+        let htmlBuilder = '';
+        
+        godsData.forEach((god, index) => {
+            htmlBuilder += `
+                <div class="god-item ${god.locked ? 'locked' : ''}" onclick="handleGodClick(${index}, this)">
+                    <div class="avatar-wrap">
+                        <img src="${god.img}" class="god-avatar" alt="${god.name}">
+                        ${god.locked ? '<div class="locked-overlay">🔒</div>' : ''}
+                    </div>
+                    <div class="god-name">${god.name}</div>
+                </div>
+            `;
+        });
+        // Вставляем все элементы разом
+        container.innerHTML = htmlBuilder;
+
+        // === ЧАСТИЦЫ НА ФОНЕ ===
+        function createParticles() {
+            const pContainer = document.getElementById('aether-particles');
+            for (let i = 0; i < 35; i++) {
+                let p = document.createElement('div');
+                p.classList.add('aether-dust');
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                p.style.animationDelay = `${Math.random() * 5}s`;
+                pContainer.appendChild(p);
+            }
+        }
+        createParticles();
+
+        // === ЛОГИКА КЛИКА (ПРОКРУТКА + МОДАЛКА) ===
+        let currentTargetLink = '';
+        let isAnimating = false;
+
+        function handleGodClick(index, element) {
+            if (isAnimating) return; 
+            isAnimating = true;
+
+            const god = godsData[index];
+            const wrap = element.querySelector('.avatar-wrap');
+            
+            // Звук
+            flipSound.currentTime = 0;
+            flipSound.play().catch(e => console.log('Аудио заблокировано до первого клика'));
+            
+            // Анимация
+            wrap.classList.remove('flip-active');
+            void wrap.offsetWidth; // Reflow
+            wrap.classList.add('flip-active');
+
+            // Ожидание конца анимации монеты
+            setTimeout(() => {
+                openModal(god);
+                wrap.classList.remove('flip-active');
+                isAnimating = false;
+            }, 500);
+        }
+
+        function openModal(god) {
+            document.getElementById('m-title').innerText = god.name;
+            document.getElementById('m-subtitle').innerText = god.type;
+            document.getElementById('m-desc').innerText = god.desc;
+            
+            const actionBtn = document.getElementById('m-action-btn');
+            const lockBox = document.getElementById('m-lock-box');
+            
+            currentTargetLink = god.locked ? 'https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html' : god.link;
+
+            if (god.locked) {
+                lockBox.style.display = 'block';
+                actionBtn.innerText = 'УЗНАТЬ ПОДРОБНЕЕ';
+                actionBtn.className = 'action-btn gold-btn';
+                document.querySelector('.modal-content').style.borderColor = 'rgba(204, 163, 0, 0.4)';
+                document.querySelector('.modal-content').style.boxShadow = '0 30px 60px rgba(0,0,0,1), inset 0 0 40px rgba(204, 163, 0, 0.15)';
+            } else {
+                lockBox.style.display = 'none';
+                actionBtn.innerText = 'Перейти к практике';
+                actionBtn.className = 'action-btn';
+                document.querySelector('.modal-content').style.borderColor = 'var(--metal-light)';
+                document.querySelector('.modal-content').style.boxShadow = '0 30px 60px rgba(0,0,0,1), inset 0 0 40px rgba(0, 0, 0, 0.8)';
+            }
+
+            document.getElementById('god-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('god-modal').classList.remove('active');
+        }
+
+        function executeAction() {
+            window.location.href = currentTargetLink;
+        }
+    </script>
+</body>
+</html>
