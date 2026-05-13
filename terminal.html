@@ -83,6 +83,20 @@
             50% { filter: drop-shadow(0 0 15px var(--aether-cyan)) brightness(1.2); }
         }
 
+        /* === КНОПКА НАЗАД === */
+        .back-btn {
+            position: absolute; left: 20px; top: 30px;
+            width: 35px; height: 35px; z-index: 110;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+        }
+        .back-btn img {
+            width: 100%; height: auto; opacity: 0.6; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .back-btn:hover img {
+            opacity: 1; filter: drop-shadow(0 0 8px var(--aether-cyan)); transform: translateX(-3px);
+        }
+
         /* === ЦЕНТРАЛЬНЫЙ УЗЕЛ И ОРБИТА === */
         .nexus-container {
             flex: 1; position: relative; z-index: 10;
@@ -222,6 +236,7 @@
         /* === АДАПТИВНОСТЬ (МОБИЛЬНЫЕ УСТРОЙСТВА И TELEGRAM MINI APP) === */
         @media (max-width: 768px) {
             .terminal-title { font-size: 1.3rem; letter-spacing: 5px; }
+            .back-btn { left: 15px; top: 20px; width: 30px; height: 30px; }
             .aether-core { width: 150px; height: 150px; }
             .aether-core::before { top: -10px; left: -10px; right: -10px; bottom: -10px; }
             .aether-core::after { top: -20px; left: -20px; right: -20px; bottom: -20px; }
@@ -255,6 +270,9 @@
     <div id="particles-container"></div>
 
     <header class="terminal-header">
+        <a href="https://fatumalogy-ctrl.github.io/Fatum/" class="back-btn">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" alt="Назад">
+        </a>
         <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="logo-small" alt="Fatum Logo">
         <div class="terminal-title">AETHER TERMINAL</div>
         <div class="terminal-subtitle">Neural Synchronization: Active</div>
