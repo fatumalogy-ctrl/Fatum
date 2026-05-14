@@ -53,7 +53,6 @@
             font-weight: 400;
         }
 
-        /* === БЛОК АВТОРИЗАЦИИ В ШАПКЕ === */
         .auth-container {
             position: absolute; top: 20px; right: 20px;
             display: flex; align-items: center; gap: 10px;
@@ -65,7 +64,7 @@
         }
 
         #user-profile-btn {
-            display: none; /* Скрыто по умолчанию, пока не залогинится */
+            display: none;
             align-items: center; gap: 10px;
             cursor: pointer;
             padding: 5px 15px 5px 5px;
@@ -90,17 +89,11 @@
             transition: 0.4s;
         }
 
-        #user-profile-btn:hover .profile-avatar {
-            border-color: #00f0ff;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-        }
-
         .profile-name {
             font-family: 'Cinzel Decorative', cursive;
             color: #fff; font-size: 0.9rem; letter-spacing: 1px;
         }
 
-        /* === ВСПЛЫВАЮЩЕЕ МЕНЮ ПРОФИЛЯ === */
         #profile-modal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(5, 7, 10, 0.8); backdrop-filter: blur(10px);
@@ -110,9 +103,7 @@
             transition: opacity 0.4s ease;
         }
 
-        #profile-modal.active {
-            opacity: 1; pointer-events: all;
-        }
+        #profile-modal.active { opacity: 1; pointer-events: all; }
 
         .modal-box {
             background: radial-gradient(circle at center, #12161e 0%, #05070a 100%);
@@ -126,30 +117,22 @@
             position: relative;
         }
 
-        #profile-modal.active .modal-box {
-            transform: translateY(0) scale(1);
-        }
+        #profile-modal.active .modal-box { transform: translateY(0) scale(1); }
 
         .close-modal {
             position: absolute; top: 15px; right: 20px;
             background: none; border: none; color: #8a9ba8;
             font-size: 1.5rem; cursor: pointer; transition: 0.3s;
         }
-        .close-modal:hover { color: #d4af37; text-shadow: 0 0 10px #d4af37; }
 
-        .modal-logo {
-            width: 80px; filter: drop-shadow(0 0 10px #00f0ff);
-            animation: pulseLogo 3s infinite;
-        }
+        .modal-logo { width: 80px; filter: drop-shadow(0 0 10px #00f0ff); animation: pulseLogo 3s infinite; }
 
         @keyframes pulseLogo {
             0%, 100% { filter: drop-shadow(0 0 5px #00f0ff); }
             50% { filter: drop-shadow(0 0 20px #00f0ff) brightness(1.2); }
         }
 
-        .modal-menu {
-            display: flex; flex-direction: column; width: 100%; gap: 15px;
-        }
+        .modal-menu { display: flex; flex-direction: column; width: 100%; gap: 15px; }
 
         .modal-btn {
             background: rgba(10, 12, 16, 0.8);
@@ -160,20 +143,10 @@
             text-transform: uppercase;
         }
 
-        .modal-btn:hover {
-            border-color: #d4af37; color: #d4af37;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-            background: rgba(212, 175, 55, 0.05);
-        }
+        .modal-btn:hover { border-color: #d4af37; color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
 
-        .logout-btn:hover {
-            border-color: #ff3366; color: #ff3366;
-            box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
-            background: rgba(255, 51, 102, 0.05);
-        }
+        .logout-btn:hover { border-color: #ff3366; color: #ff3366; box-shadow: 0 0 15px rgba(255, 51, 102, 0.3); }
 
-
-        /* === СЕТКА ПАНТЕОНА === */
         .pantheon-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -194,8 +167,6 @@
             justify-content: flex-end;
             transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
             background: transparent;
-            box-shadow: none;
-            border: none;
         }
 
         .god-card img {
@@ -206,57 +177,34 @@
             z-index: 1;
         }
 
-        .card-content {
-            position: relative;
-            z-index: 4;
-            padding: 25px 10px;
-            text-align: center;
-            background: transparent;
-        }
+        .card-content { position: relative; z-index: 4; padding: 25px 10px; text-align: center; }
 
         .god-name {
             font-family: 'Cinzel Decorative', cursive;
-            color: #fff;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            transition: 0.3s;
+            color: #fff; font-size: 1.1rem; letter-spacing: 2px;
             text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
 
         .unlocked { cursor: pointer; }
         .unlocked:hover { transform: translateY(-12px) scale(1.02); }
         .unlocked:hover img { transform: scale(1.1); }
-        .unlocked:hover .god-name { color: #d4af37; text-shadow: 0 0 15px rgba(212,175,55,0.5), 0 0 5px rgba(0,0,0,0.8); }
+        .unlocked:hover .god-name { color: #d4af37; text-shadow: 0 0 15px rgba(212,175,55,0.5); }
 
         .locked { cursor: not-allowed; filter: grayscale(100%) contrast(1.1); }
         .locked .card-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: transparent;
-            backdrop-filter: blur(3px);
-            z-index: 3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            backdrop-filter: blur(3px); z-index: 3;
+            display: flex; justify-content: center; align-items: center;
         }
-        .lock-icon {
-            font-size: 2.2rem;
-            opacity: 0.5;
-            filter: drop-shadow(0 0 10px #000);
-        }
-        .locked .god-name { opacity: 0.6; }
+        .lock-icon { font-size: 2.2rem; opacity: 0.5; }
 
-        .sync-active { font-size: 0.9rem; color: #00f0ff; font-style: italic; animation: breathe 1.5s infinite; text-shadow: 0 0 10px #00f0ff;}
+        .sync-active { font-size: 0.9rem; color: #00f0ff; font-style: italic; animation: breathe 1.5s infinite; }
         @keyframes breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
         @media (max-width: 600px) {
             h1 { font-size: 2.4rem; letter-spacing: 4px; }
             .pantheon-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .god-card { border-radius: 15px; }
-            .auth-container { top: 10px; right: 10px; }
-            #user-profile-btn { padding: 3px 10px 3px 3px; }
-            .profile-avatar { width: 32px; height: 32px; }
-            .profile-name { font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -265,7 +213,6 @@
     <div class="divine-bg"></div>
     <div class="mystic-fog"></div>
 
-    <!-- ВСПЛЫВАЮЩЕЕ ОКНО ПРОФИЛЯ -->
     <div id="profile-modal">
         <div class="modal-box">
             <button class="close-modal" id="close-modal-btn">&times;</button>
@@ -286,7 +233,6 @@
                 <span id="profile-name" class="profile-name">Имя</span>
             </div>
         </div>
-        
         <h1>Пантеон</h1>
         <div class="subtitle">Святилище Великих Сил</div>
     </header>
@@ -297,7 +243,8 @@
             <div class="card-content"><div class="god-name">Аполлон</div></div>
         </div>
 
-        <div class="god-card unlocked" data-target="https://fatumalogy-ctrl.github.io/Fatum/terminal.html">
+        <!-- Кнопка Эфира с меткой продукта -->
+        <div class="god-card unlocked" data-target="https://fatumalogy-ctrl.github.io/Fatum/terminal.html" data-product="aether">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163397/1_t52wff.webp" alt="Aether">
             <div class="card-content"><div class="god-name">Эфир</div></div>
         </div>
@@ -425,101 +372,73 @@
         </div>
     </div>
 
-    <!-- ДОПОЛНИТЕЛЬНО ИМПОРТИРУЕМ ФУНКЦИЮ ВЫХОДА (signOut) ИЗ FIREBASE SDK НАПРЯМУЮ -->
     <script type="module">
-        import { auth, googleProvider, signInWithPopup, onAuthStateChanged, db, doc, setDoc } from './firebase-config.js';
+        import { auth, googleProvider, signInWithPopup, onAuthStateChanged, db, doc, setDoc, getDoc } from './firebase-config.js';
         import { signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const authStatusElement = document.getElementById('auth-status');
         const userProfileBtn = document.getElementById('user-profile-btn');
         const profileNameEl = document.getElementById('profile-name');
-        
         const profileModal = document.getElementById('profile-modal');
         const closeModalBtn = document.getElementById('close-modal-btn');
         const logoutBtn = document.getElementById('logout-btn');
 
         let currentUser = null;
 
-        // Открытие и закрытие модалки
-        userProfileBtn.addEventListener('click', () => {
-            profileModal.classList.add('active');
-        });
-        
-        closeModalBtn.addEventListener('click', () => {
-            profileModal.classList.remove('active');
-        });
+        // Модалка
+        userProfileBtn.onclick = () => profileModal.classList.add('active');
+        closeModalBtn.onclick = () => profileModal.classList.remove('active');
+        logoutBtn.onclick = async () => { await signOut(auth); window.location.reload(); };
 
-        // Закрытие модалки при клике на темный фон
-        profileModal.addEventListener('click', (e) => {
-            if (e.target === profileModal) profileModal.classList.remove('active');
-        });
-
-        // Логика ВЫХОДА (Logout)
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                profileModal.classList.remove('active');
-                // Перезагрузка страницы, чтобы сбросить состояния
-                window.location.reload();
-            } catch (error) {
-                console.error("Ошибка при выходе:", error);
-            }
-        });
-
-        // Слушатель состояния авторизации
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Скрываем старую надпись, показываем новую кнопку профиля
                 authStatusElement.style.display = "none";
                 userProfileBtn.style.display = "flex";
-                
-                // Ставим имя (берем до @, если имя не указано)
-                let displayName = user.displayName;
-                if (!displayName) {
-                    displayName = user.email.split('@')[0];
-                }
-                profileNameEl.innerText = displayName;
-                
-                // Запись в базу
-                await setDoc(doc(db, "users", user.uid), {
-                    name: displayName,
-                    email: user.email,
-                    lastLogin: new Date()
-                }, { merge: true });
-
+                profileNameEl.innerText = user.displayName || user.email.split('@')[0];
+                await setDoc(doc(db, "users", user.uid), { name: user.displayName, email: user.email, lastLogin: new Date() }, { merge: true });
             } else {
                 currentUser = null;
-                // Возвращаем старую надпись, скрываем кнопку
                 authStatusElement.style.display = "block";
                 userProfileBtn.style.display = "none";
-                authStatusElement.innerText = "Неопознанный разум";
-                authStatusElement.style.color = "#d4af37";
             }
         });
 
-        // Логика клика по карточкам богов
+        // Логика клика
         document.querySelectorAll('.god-card.unlocked').forEach(card => {
             card.addEventListener('click', async (e) => {
                 const targetUrl = card.getAttribute('data-target');
+                const productName = card.getAttribute('data-product');
                 const nameEl = card.querySelector('.god-name');
                 const originalName = nameEl.innerText;
 
-                if (currentUser) {
-                    window.location.href = targetUrl;
-                    return;
+                if (!currentUser) {
+                    try {
+                        const result = await signInWithPopup(auth, googleProvider);
+                        currentUser = result.user;
+                    } catch (err) { alert("Вход отменен"); return; }
                 }
 
-                nameEl.innerHTML = "<span class='sync-active'>Инициализация...</span>";
+                // ПРОВЕРКА ДОСТУПА ПРЯМО ЗДЕСЬ
+                if (productName === "aether") {
+                    nameEl.innerHTML = "<span class='sync-active'>Проверка доступа...</span>";
+                    try {
+                        // Лезем в твою подколлекцию
+                        const productRef = doc(db, "users", currentUser.uid, "products", "aether");
+                        const snap = await getDoc(productRef);
 
-                try {
-                    const result = await signInWithPopup(auth, googleProvider);
-                    currentUser = result.user;
+                        if (snap.exists() && snap.data().hasAccess === true) {
+                            window.location.href = targetUrl; // ПУСКАЕМ
+                        } else {
+                            // НЕТ ДОСТУПА -> НА ЛЕНДИНГ
+                            window.location.href = "https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html";
+                        }
+                    } catch (err) {
+                        console.error("Ошибка базы:", err);
+                        window.location.href = "https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html";
+                    }
+                } else {
                     window.location.href = targetUrl;
-                } catch (error) {
-                    console.error("Ошибка:", error);
-                    nameEl.innerText = originalName;
-                    alert("Требуется вход для доступа.");
                 }
             });
         });
