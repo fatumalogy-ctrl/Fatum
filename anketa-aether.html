@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ЭФИР: НЕЙРОМАТРИЦА (СКАНИРОВАНИЕ)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Rajdhani:wght@500;600;700;900&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --cyan-core: #00f0ff;
+            --cyan-glow: rgba(0, 240, 255, 0.6);
+            --cyan-dim: rgba(0, 240, 255, 0.1);
+            --metal-dark: #05070a;
+            --metal-panel: #0b0e14;
+            --metal-border: #2a3441;
+            --text-main: #e6f0ff;
+            --text-muted: #6a7c8f;
+            --alert: #ff0055;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            background-color: var(--metal-dark);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            width: 100vw; height: 100vh;
+            overflow: hidden; 
+            display: flex; flex-direction: column;
+            background: radial-gradient(circle at 50% 50%, #0d131c 0%, var(--metal-dark) 100%);
+        }
+
+        /* === БЭКГРАУНД И ЭФФЕКТЫ === */
+        .cyber-grid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 0; opacity: 0.8; pointer-events: none;
+        }
+        
+        .glow-orb {
+            position: absolute; top: -10vw; left: 50%; transform: translateX(-50%);
+            width: 50vw; height: 50vw; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,240,255,0.05) 0%, transparent 70%);
+            z-index: 0; pointer-events: none; filter: blur(40px);
+        }
+
+        /* === ОВЕРЛЕЙ БЕЗОПАСНОСТИ === */
+        #security-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--metal-dark); z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .security-text {
+            color: var(--cyan-core); font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem; letter-spacing: 5px; text-transform: uppercase;
+            animation: pulseText 1.5s infinite; text-shadow: 0 0 10px var(--cyan-glow);
+        }
+        @keyframes pulseText { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        /* === HUD ПРОГРЕСС-БАР (СИНХРОНИЗАЦИЯ) === */
+        .hud-container {
+            position: relative; z-index: 10; padding: 20px 20px 0;
+            display: flex; flex-direction: column; align-items: center; width: 100%;
+            max-width: 800px; margin: 0 auto;
+        }
+        
+        .hud-top { display: flex; justify-content: space-between; width: 100%; margin-bottom: 10px; align-items: flex-end;}
+        
+        .hud-title {
+            font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700;
+            color: var(--cyan-core); letter-spacing: 4px; text-transform: uppercase;
+            text-shadow: 0 0 10px var(--cyan-glow); display: flex; align-items: center; gap: 10px;
+        }
+        .hud-title::before { content: ''; display: inline-block; width: 10px; height: 10px; background: var(--cyan-core); border-radius: 50%; box-shadow: 0 0 10px var(--cyan-core); animation: blink 2s infinite;}
+        
+        .hud-percent {
+            font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; color: #fff;
+            text-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .hud-track {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.05);
+            border-radius: 3px; position: relative; overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+        }
+        .hud-fill {
+            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
+            background: var(--cyan-core); box-shadow: 0 0 15px var(--cyan-core);
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .hud-fill::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 20px; height: 100%;
+            background: #fff; filter: blur(2px);
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* === ГЛАВНЫЙ КОНТЕЙНЕР АНКЕТЫ === */
+        .scanner-viewport {
+            flex: 1; width: 100%; max-width: 800px; margin: 0 auto;
+            position: relative; z-index: 10; display: flex; flex-direction: column;
+            overflow: hidden; padding: 20px;
+        }
+
+        .question-card {
+            background: linear-gradient(145deg, rgba(11, 14, 20, 0.9) 0%, rgba(5, 7, 10, 0.95) 100%);
+            border: 1px solid var(--metal-border); border-radius: 15px;
+            padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0, 240, 255, 0.02);
+            display: flex; flex-direction: column; flex: 1;
+            position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+            opacity: 0; transform: translateX(50px); pointer-events: none;
+        }
+        .question-card.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+        .question-card.prev { opacity: 0; transform: translateX(-50px); pointer-events: none; }
+
+        /* Блок Инфо (Иконка + Название Блока) */
+        .block-header {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
+            padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .block-icon { width: 40px; height: 40px; filter: drop-shadow(0 0 8px var(--cyan-glow)); }
+        .block-name { font-family: 'Rajdhani', sans-serif; color: var(--text-muted); font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;}
+
+        /* Текст Вопроса */
+        .q-title {
+            font-size: 1.3rem; line-height: 1.5; font-weight: 500; color: #fff;
+            margin-bottom: 30px; text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        /* Варианты ответов */
+        .options-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; padding-right: 5px;}
+        .options-list::-webkit-scrollbar { width: 4px; }
+        .options-list::-webkit-scrollbar-thumb { background: var(--metal-border); border-radius: 2px; }
+
+        .option-lbl {
+            display: flex; align-items: flex-start; gap: 15px;
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+            padding: 18px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .option-lbl::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+            background: var(--cyan-core); opacity: 0; transition: 0.3s;
+        }
+        .option-lbl:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateX(5px);}
+        
+        .option-radio { display: none; }
+        
+        .radio-box {
+            width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+            transition: 0.3s; margin-top: 2px;
+        }
+        .radio-box::after {
+            content: ''; width: 10px; height: 10px; background: var(--cyan-core); border-radius: 50%;
+            opacity: 0; transform: scale(0); transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 10px var(--cyan-core);
+        }
+
+        .option-text { font-size: 1rem; color: #b0c0d0; line-height: 1.4; transition: 0.3s; }
+
+        /* Активное состояние ответа */
+        .option-radio:checked + .radio-box { border-color: var(--cyan-core); box-shadow: 0 0 10px var(--cyan-dim); }
+        .option-radio:checked + .radio-box::after { opacity: 1; transform: scale(1); }
+        .option-radio:checked ~ .option-text { color: #fff; font-weight: 500; }
+        .option-lbl.selected { background: rgba(0, 240, 255, 0.05); border-color: rgba(0, 240, 255, 0.3); }
+        .option-lbl.selected::before { opacity: 1; }
+
+        /* Поле "Свой вариант" и Ввод возраста */
+        .custom-input-wrapper {
+            margin-top: 10px; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .custom-input-wrapper.visible { display: block; opacity: 1; }
+        
+        .cyber-input {
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--metal-border);
+            border-bottom: 2px solid var(--cyan-core); color: var(--cyan-core);
+            padding: 15px 20px; font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;
+            border-radius: 8px 8px 0 0; outline: none; transition: 0.3s;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        .cyber-input:focus { background: rgba(0, 240, 255, 0.02); box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1); }
+        .cyber-input::placeholder { color: rgba(0, 240, 255, 0.3); }
+
+        /* Поле ввода для Возраста (Вопрос 0) */
+        .age-input {
+            font-size: 2rem; text-align: center; border-bottom: 3px solid var(--cyan-core);
+            padding: 20px; letter-spacing: 2px;
+        }
+
+        /* === НАВИГАЦИЯ НИЗ === */
+        .nav-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .btn {
+            background: transparent; border: 1px solid var(--metal-border); color: var(--text-muted);
+            padding: 12px 25px; border-radius: 30px; font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+            cursor: pointer; transition: 0.3s; outline: none;
+        }
+        .btn:hover:not(:disabled) { border-color: #fff; color: #fff; }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .btn-next {
+            background: rgba(0, 240, 255, 0.05); border-color: var(--cyan-core); color: var(--cyan-core);
+            box-shadow: 0 0 15px var(--cyan-dim);
+        }
+        .btn-next:hover:not(:disabled) {
+            background: rgba(0, 240, 255, 0.15); box-shadow: 0 0 25px var(--cyan-glow); color: #fff;
+        }
+
+        /* Финальная кнопка */
+        .btn-finish {
+            background: linear-gradient(135deg, var(--cyan-core) 0%, #0088ff 100%);
+            color: #000; border: none; box-shadow: 0 0 20px var(--cyan-glow);
+        }
+        .btn-finish:hover:not(:disabled) {
+            filter: brightness(1.2); box-shadow: 0 0 30px var(--cyan-core); color: #000;
+        }
+
+        /* Экран загрузки результатов */
+        #processing-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 7, 10, 0.95); z-index: 999999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease; backdrop-filter: blur(10px);
+        }
+        #processing-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .core-spinner {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 3px solid transparent; border-top-color: var(--cyan-core);
+            border-bottom-color: var(--cyan-core);
+            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin-bottom: 30px; box-shadow: 0 0 30px var(--cyan-dim);
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .process-text {
+            color: var(--cyan-core); font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2rem; text-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        /* === АДАПТИВ === */
+        @media (max-width: 600px) {
+            .hud-container { padding: 15px 15px 0; }
+            .hud-title { font-size: 1rem; letter-spacing: 2px; }
+            .hud-percent { font-size: 1.2rem; }
+            .scanner-viewport { padding: 15px; }
+            .question-card { padding: 20px; top: 15px; left: 15px; right: 15px; bottom: 15px; }
+            .q-title { font-size: 1.15rem; margin-bottom: 20px; }
+            .option-lbl { padding: 15px; gap: 10px; }
+            .option-text { font-size: 0.9rem; }
+            .btn { padding: 12px 20px; font-size: 0.9rem; }
+            .block-icon { width: 30px; height: 30px; }
+            .age-input { font-size: 1.5rem; padding: 15px;}
+        }
+    </style>
+</head>
+<body>
+
+    <div id="security-overlay">
+        <div class="security-text">ИДЕНТИФИКАЦИЯ...</div>
+    </div>
+
+    <div class="cyber-grid"></div>
+    <div class="glow-orb"></div>
+
+    <div class="hud-container">
+        <div class="hud-top">
+            <div class="hud-title">СИНХРОНИЗАЦИЯ</div>
+            <div class="hud-percent" id="hud-percent">0%</div>
+        </div>
+        <div class="hud-track">
+            <div class="hud-fill" id="hud-fill"></div>
+        </div>
+    </div>
+
+    <div class="scanner-viewport" id="viewport">
+        <!-- Карточки генерируются скриптом -->
+    </div>
+
+    <div id="processing-overlay">
+        <div class="core-spinner"></div>
+        <div class="process-text" id="process-log">КОМПИЛЯЦИЯ ДАННЫХ...</div>
+    </div>
+
+    <!-- Аудио эффекты -->
+    <audio id="sound-tick" src="https://actions.google.com/sounds/v1/ui/beep_short.ogg" preload="auto"></audio>
+    <audio id="sound-success" src="https://actions.google.com/sounds/v1/science_fiction/telemetry_fast.ogg" preload="auto"></audio>
+
+    <script>
+        const uiTick = document.getElementById('sound-tick');
+        const uiSuccess = document.getElementById('sound-success');
+        uiTick.volume = 0.2; uiSuccess.volume = 0.3;
+
+        function playTick() { uiTick.currentTime = 0; uiTick.play().catch(()=>{}); }
+
+        // === БАЗА ВОПРОСОВ (36 ШАГОВ: 1 ВВОДНЫЙ + 35 ОСНОВНЫХ) ===
+        // Сохраняем АБСОЛЮТНО ВСЕ ТЕКСТЫ без единого сокращения.
+        
+        const qData = [
+            {
+                id: 'q0',
+                block: 'КАЛИБРОВКА СИСТЕМЫ',
+                icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp',
+                title: 'Укажи свой возраст или дату рождения для точной калибровки нейро-профиля:',
+                type: 'input',
+                placeholder: 'Например: 28 или 15.04.1996'
+            },
+            // БЛОК 1
+            {
+                id: 'q1', block: 'БЛОК 1: БАТАРЕЯ ТЕЛА И ЭНЕРГИЯ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/1_w3qgzj.webp', type: 'radio',
+                title: '1. Как ты чувствуешь себя в первые 15 минут после того, как проснулся?',
+                options: [
+                    '[А] Моментальный подрыв с колотящимся сердцем и тревогой о делах.',
+                    '[Б] Тяжелый туман, тело ватное, без кофеина система не загружается.',
+                    '[В] Просыпаюсь разбитым, даже если спал 8+ часов.',
+                    '[Г] Просыпаюсь нормально, но через час-два энергия резко падает.',
+                    '[Д] Встаю легко, с ясной головой и ровным пульсом.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q2', block: 'БЛОК 1: БАТАРЕЯ ТЕЛА И ЭНЕРГИЯ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/1_w3qgzj.webp', type: 'radio',
+                title: '2. Как ты обычно засыпаешь?',
+                options: [
+                    '[А] Мозг включает "бетономешалку", крутит мысли и диалоги часами.',
+                    '[Б] Вырубаюсь от изнеможения, как только голова касается подушки.',
+                    '[В] Засыпаю легко, но просыпаюсь среди ночи (часто в 3-4 часа) в тревоге.',
+                    '[Г] Долго ворочаюсь, не могу найти удобную позу, тело дергается.',
+                    '[Д] Засыпаю плавно за 10-15 минут, сплю без пробуждений.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q3', block: 'БЛОК 1: БАТАРЕЯ ТЕЛА И ЭНЕРГИЯ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/1_w3qgzj.webp', type: 'radio',
+                title: '3. В какое время дня ты чувствуешь самый сильный упадок сил?',
+                options: [
+                    '[А] С 14:00 до 16:00 — глаза закрываются, мозг отказывается думать.',
+                    '[Б] Утром. До 12:00 я вообще не человек.',
+                    '[В] Вечером после работы — хватает сил только лежать и скроллить ленту.',
+                    '[Г] Ямы нет, есть постоянное, фоновое чувство легкой усталости 24/7.',
+                    '[Д] Энергия ровная весь день, ямы контролируемые.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q4', block: 'БЛОК 1: БАТАРЕЯ ТЕЛА И ЭНЕРГИЯ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/1_w3qgzj.webp', type: 'radio',
+                title: '4. Как на тебя действуют кофе или энергетики?',
+                options: [
+                    '[А] Дают резкий фокус на 30 минут, потом накрывает тревога и тремор рук.',
+                    '[Б] Вообще не действуют, могу выпить эспрессо и уснуть.',
+                    '[В] Дают ровную энергию, без них не могу начать работу.',
+                    '[Г] Вызывают потливость, тахикардию и панику.',
+                    '[Д] Не употребляю или пью редко ради вкуса, энергия от них не зависит.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q5', block: 'БЛОК 1: БАТАРЕЯ ТЕЛА И ЭНЕРГИЯ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/1_w3qgzj.webp', type: 'radio',
+                title: '5. Оцени свой средний уровень энергии за неделю (от 1 до 10):',
+                options: [
+                    '[А] 1-3 (Передвигаюсь на автопилоте).',
+                    '[Б] 4-5 (Хватает только на базовые функции выживания и работы).',
+                    '[В] 6-7 (Нормально, но на спорт или хобби сил уже не остается).',
+                    '[Г] 8-9 (Хватает на всё: работу, спорт, отношения).',
+                    '[Д] 10 (Энергия бьет ключом, не знаю куда ее девать).',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q6', block: 'БЛОК 1: БАТАРЕЯ ТЕЛА И ЭНЕРГИЯ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/1_w3qgzj.webp', type: 'radio',
+                title: '6. Как часто у тебя бывает «туман в голове» (когда трудно ясно мыслить и подбирать слова)?',
+                options: [
+                    '[А] Почти каждый день, мысли вязкие, сложно подобрать слова.',
+                    '[Б] Только после тяжелой еды или недосыпа.',
+                    '[В] Во время сильного стресса мозг "отключается" и тупит.',
+                    '[Г] Бывает редко, в основном во второй половине дня.',
+                    '[Д] Мой мозг всегда острый, как лезвие.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q7', block: 'БЛОК 1: БАТАРЕЯ ТЕЛА И ЭНЕРГИЯ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/1_w3qgzj.webp', type: 'radio',
+                title: '7. Обрати внимание на свое дыхание прямо сейчас. Как ты дышишь?',
+                options: [
+                    '[А] Коротко, неглубоко, в основном верхней частью груди.',
+                    '[Б] Часто задерживаю дыхание или "забываю" дышать, пока работаю.',
+                    '[В] Дышу ртом, нос часто заложен.',
+                    '[Г] Дышу неровно: то глубоко вздохну, то дышу мелко.',
+                    '[Д] Медленно, ровно, животом, через нос.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            // БЛОК 2
+            {
+                id: 'q8', block: 'БЛОК 2: ТЕЛО И ЗАЖИМЫ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/3_bodqjw.webp', type: 'radio',
+                title: '8. В какой части тела ты физически чувствуешь тревогу или страх?',
+                options: [
+                    '[А] Сдавливает грудную клетку, тяжело сделать глубокий вдох.',
+                    '[Б] Крутит живот, спазмы в солнечном сплетении, тошнота.',
+                    '[В] Сжимается горло, ком в горле, трудно глотать.',
+                    '[Г] Холодеют и потеют руки/ноги, мелкая дрожь.',
+                    '[Д] Тревога живет только в голове, тело не реагирует.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q9', block: 'БЛОК 2: ТЕЛО И ЗАЖИМЫ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/3_bodqjw.webp', type: 'radio',
+                title: '9. Где в теле возникает напряжение, когда ты злишься, но сдерживаешь себя?',
+                options: [
+                    '[А] Стискиваю челюсти, скриплю зубами во сне.',
+                    '[Б] Каменеют плечи и задняя часть шеи.',
+                    '[В] Сжимаются кулаки, напрягаются предплечья и бедра.',
+                    '[Г] Начинает болеть/пульсировать голова в висках или затылке.',
+                    '[Д] Я не подавляю гнев, он выходит свободно.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q10', block: 'БЛОК 2: ТЕЛО И ЗАЖИМЫ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/3_bodqjw.webp', type: 'radio',
+                title: '10. В какой позе ты обычно сидишь, когда долго работаешь за компьютером или в телефоне?',
+                options: [
+                    '[А] Скручиваюсь в позу креветки, плечи подняты к ушам.',
+                    '[Б] Постоянно качаю ногой, тереблю что-то в руках.',
+                    '[В] Застываю в одной позе до онемения, перестаю чувствовать тело.',
+                    '[Г] Наваливаюсь на стол, не держу спину.',
+                    '[Д] Сижу ровно, часто меняю позы, делаю микро-разминки.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q11', block: 'БЛОК 2: ТЕЛО И ЗАЖИМЫ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/3_bodqjw.webp', type: 'radio',
+                title: '11. Есть ли у тебя физические боли, причину которых врачи не могут найти?',
+                options: [
+                    '[А] Постоянные мигрени и головные боли напряжения.',
+                    '[Б] Тяжесть или ноющая боль в пояснице/нижней части спины.',
+                    '[В] Блуждающие боли в суставах или грудине (межреберная невралгия).',
+                    '[Г] Проблемы с желудком или кишечником, которые обостряются от нервов.',
+                    '[Д] Нет, тело чувствует себя отлично.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q12', block: 'БЛОК 2: ТЕЛО И ЗАЖИМЫ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/3_bodqjw.webp', type: 'radio',
+                title: '12. Что происходит с твоим телом, когда ты пытаешься полностью расслабиться (в отпуске, в выходной, на массаже)?',
+                options: [
+                    '[А] Не могу расслабиться, мозг ищет проблему, тело в напряжении.',
+                    '[Б] Как только расслабляюсь — сразу заболеваю (простуда и т.д.).',
+                    '[В] Тело начинает непроизвольно дергаться.',
+                    '[Г] Расслабляюсь только после алкоголя/экстремальных нагрузок.',
+                    '[Д] Умею расслабляться по щелчку, кайфую от покоя.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q13', block: 'БЛОК 2: ТЕЛО И ЗАЖИМЫ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/3_bodqjw.webp', type: 'radio',
+                title: '13. Насколько хорошо ты чувствуешь и контролируешь свое тело в пространстве?',
+                options: [
+                    '[А] Постоянно собираю косяки, бьюсь локтями, спотыкаюсь.',
+                    '[Б] Чувствую тело только когда оно болит или сильно устало.',
+                    '[В] Ощущаю сильную скованность, как будто надет тесный скафандр.',
+                    '[Г] Мое тело деревянное, гибкости ноль, мышцы как канаты.',
+                    '[Д] Чувствую каждый мускул, координация и гибкость отличные.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q14', block: 'БЛОК 2: ТЕЛО И ЗАЖИМЫ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/3_bodqjw.webp', type: 'radio',
+                title: '14. Как ты относишься к своему телу, когда смотришь в зеркало?',
+                options: [
+                    '[А] Раздражение, не принимаю свое тело, избегаю зеркал.',
+                    '[Б] Отношусь как к машине: кормлю, эксплуатирую, пока не сломается.',
+                    '[В] Одержим контролем: постоянно взвешиваюсь, критикую каждый изъян.',
+                    '[Г] Нейтрально. Оно есть и ладно.',
+                    '[Д] Тотальное принятие и любовь, я и мое тело — единая команда.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            // БЛОК 3
+            {
+                id: 'q15', block: 'БЛОК 3: ЭМОЦИИ И РЕАКЦИИ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/5_pzvaqu.webp', type: 'radio',
+                title: '15. Что ты делаешь в первую секунду, когда случается внезапная проблема или стресс?',
+                options: [
+                    '[А] Взрываюсь агрессией, пытаюсь подавить проблему и окружающих.',
+                    '[Б] Накатывает паника, хочется скрыться, избежать разговора или проблемы.',
+                    '[В] Впадаю в ступор, мозг пустеет, не могу вымолвить и слова.',
+                    '[Г] Сразу опускаются руки, накатывает апатия и слезы.',
+                    '[Д] Пульс ровный, эмоции отключаются, мозг ищет решение.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q16', block: 'БЛОК 3: ЭМОЦИИ И РЕАКЦИИ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/5_pzvaqu.webp', type: 'radio',
+                title: '16. Что больше всего фоново напрягает тебя в жизни прямо сейчас?',
+                options: [
+                    '[А] Страх потери контроля (в деньгах, бизнесе, будущем).',
+                    '[Б] Страх оценки и критики (что подумают, синдром самозванца).',
+                    '[В] Чувство вины (недостаточно делаю, плохой родитель/сотрудник).',
+                    '[Г] Чувство несправедливости и постоянной борьбы с миром.',
+                    '[Д] У меня нет сильных фоновых триггеров.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q17', block: 'БЛОК 3: ЭМОЦИИ И РЕАКЦИИ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/5_pzvaqu.webp', type: 'radio',
+                title: '17. Как ты обычно "выпускаешь пар" после тяжелого дня?',
+                options: [
+                    '[А] Заедаю сладким, фастфудом или залипаю в алкоголь/вейп.',
+                    '[Б] Скроллинг ленты, сериалы, игры (цифровой эскапизм).',
+                    '[В] Жесткие тренировки до изнеможения, экстрим.',
+                    '[Г] Срываюсь на близких, ищу повод для ссоры, чтобы выпустить пар.',
+                    '[Д] Медитация, дыхание, прогулки, искусство.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q18', block: 'БЛОК 3: ЭМОЦИИ И РЕАКЦИИ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/5_pzvaqu.webp', type: 'radio',
+                title: '18. Как ты реагируешь, когда планы рушатся и наступает полная неопределенность?',
+                options: [
+                    '[А] Неопределенность вызывает парализующий страх и бессонницу.',
+                    '[Б] Пытаюсь микроменеджерить всё вокруг, чтобы создать иллюзию контроля.',
+                    '[В] Просто игнорирую проблемы, надеясь, что они решатся сами.',
+                    '[Г] Хаос меня драйвит, но я быстро в нем выгораю.',
+                    '[Д] Спокойно адаптируюсь, неопределенность — это поле возможностей.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q19', block: 'БЛОК 3: ЭМОЦИИ И РЕАКЦИИ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/5_pzvaqu.webp', type: 'radio',
+                title: '19. Как долго ты крутишь в голове неприятный разговор после того, как он закончился?',
+                options: [
+                    '[А] Днями и неделями веду внутренние диалоги, придумывая идеальные ответы.',
+                    '[Б] Пару часов киплю, потом отпускает, но осадок остается.',
+                    '[В] Сразу забываю, блокирую эмоции, ухожу в работу.',
+                    '[Г] Впадаю в депрессию и занимаюсь самобичеванием.',
+                    '[Д] Отпускаю за 10 минут, делаю выводы и иду дальше.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q20', block: 'БЛОК 3: ЭМОЦИИ И РЕАКЦИИ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/5_pzvaqu.webp', type: 'radio',
+                title: '20. Насколько часто тебя преследует чувство, что ты ничего не успеваешь и тратишь время зря?',
+                options: [
+                    '[А] Внутри всегда тикает таймер, кажется, что я везде опаздываю и упускаю жизнь.',
+                    '[Б] Спешу только перед дедлайнами, в остальное время спокоен.',
+                    '[В] Живу в режиме ожидания, время тянется мучительно медленно.',
+                    '[Г] Чувствую вину, если просто отдыхаю и ничего не делаю.',
+                    '[Д] Живу в моменте, время — мой ресурс, а не враг.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q21', block: 'БЛОК 3: ЭМОЦИИ И РЕАКЦИИ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/5_pzvaqu.webp', type: 'radio',
+                title: '21. Как ты переносишь толпу, чужие эмоции и шумные места?',
+                options: [
+                    '[А] Я как губка — впитываю эмоции других, быстро устаю от толпы.',
+                    '[Б] Меня бесят резкие звуки, яркий свет, суета вокруг.',
+                    '[В] Я эмоционально глух, трудно сопереживать, чувствую отстраненность.',
+                    '[Г] Эмоции скачут от гиперчувствительности к полному равнодушию.',
+                    '[Д] Здоровые границы: сочувствую, но не разрушаюсь об чужие эмоции.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            // БЛОК 4
+            {
+                id: 'q22', block: 'БЛОК 4: ФОКУС И ВНИМАНИЕ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/7_1_hlxcgz.webp', type: 'radio',
+                title: '22. Как у тебя обстоят дела с глубокой концентрацией на одной задаче?',
+                options: [
+                    '[А] Не могу сфокусироваться дольше 10 минут, рука сама тянется к телефону.',
+                    '[Б] Могу сосредоточиться, только если горит дедлайн.',
+                    '[В] Вхожу в работу тяжело, но если разогнался — забываю поесть.',
+                    '[Г] Фокус есть, но любая мелочь (звук, уведомление) сбивает настрой на час.',
+                    '[Д] Легко управляю своим вниманием, вхожу в "поток" по желанию.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q23', block: 'БЛОК 4: ФОКУС И ВНИМАНИЕ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/7_1_hlxcgz.webp', type: 'radio',
+                title: '23. Как звучит твой внутренний голос, когда ты ошибаешься или сомневаешься?',
+                options: [
+                    '[А] Жестокий надзиратель. Постоянно обесценивает мои достижения.',
+                    '[Б] Суетливый паникер. Всегда генерирует худшие сценарии будущего.',
+                    '[В] Адвокат лени. Убеждает, что всё бессмысленно и лучше полежать.',
+                    '[Г] Голосов слишком много, в голове постоянный фоновый шум.',
+                    '[Д] Мой внутренний голос — мой лучший друг и коуч.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q24', block: 'БЛОК 4: ФОКУС И ВНИМАНИЕ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/7_1_hlxcgz.webp', type: 'radio',
+                title: '24. Как общение с людьми влияет на твой уровень энергии?',
+                options: [
+                    '[А] Люди высасывают энергию, после встреч нужно долго лежать в тишине.',
+                    '[Б] Заряжаюсь только от людей, в одиночестве начинаю затухать.',
+                    '[В] Играю роль "удобного" или "крутого", устаю от ношения маски.',
+                    '[Г] Становлюсь агрессивным в компаниях, хочу спорить и доминировать.',
+                    '[Д] Свободно переключаюсь между комфортным одиночеством и общением.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q25', block: 'БЛОК 4: ФОКУС И ВНИМАНИЕ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/7_1_hlxcgz.webp', type: 'radio',
+                title: '25. Как часто ты "залипаешь" в соцсети, фастфуд, сериалы или другие быстрые удовольствия?',
+                options: [
+                    '[А] Сильная зависимость. Рука сама открывает соцсети сотни раз в день.',
+                    '[Б] Замечаю, что использую это только когда нужно избежать сложной задачи.',
+                    '[В] Периодически срываюсь в "запои" (дни залипания), потом ненавижу себя.',
+                    '[Г] Мне скучно от этого, ничего из списка не вызывает радости.',
+                    '[Д] Контролирую потребление, использую гаджеты только как инструмент.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q26', block: 'БЛОК 4: ФОКУС И ВНИМАНИЕ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/7_1_hlxcgz.webp', type: 'radio',
+                title: '26. Как работает твоя память в последнее время?',
+                options: [
+                    '[А] Хуже золотой рыбки. Забываю, зачем зашел в комнату или открыл вкладку.',
+                    '[Б] Помню только тревожные детали и негатив, хорошее стирается.',
+                    '[В] Информации слишком много, мозг отказывается запоминать новое.',
+                    '[Г] Память работает только на автоматизмах, осознанности мало.',
+                    '[Д] Ясная и четкая память, легко структурирую новую информацию.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q27', block: 'БЛОК 4: ФОКУС И ВНИМАНИЕ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/7_1_hlxcgz.webp', type: 'radio',
+                title: '27. Почему ты обычно откладываешь важные дела на потом?',
+                options: [
+                    '[А] Паралич перфекциониста: не начинаю, потому что боюсь сделать не идеально.',
+                    '[Б] Бунт внутреннего ребенка: не делаю назло "надо", хочу свободы.',
+                    '[В] Страх успеха: подсознательно саботирую себя, когда близок к результату.',
+                    '[Г] Отсутствие ресурса: я не ленив, у меня физически нет сил на действие.',
+                    '[Д] Я делаю то, что нужно, тогда, когда нужно. Действие = Результат.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q28', block: 'БЛОК 4: ФОКУС И ВНИМАНИЕ', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/7_1_hlxcgz.webp', type: 'radio',
+                title: '28. Что приносит тебе самую искреннюю и сильную радость прямо сейчас?',
+                options: [
+                    '[А] Отсутствие боли и проблем (когда меня просто не трогают).',
+                    '[Б] Достижение сложной цели, победа в конкуренции.',
+                    '[В] Внешнее признание, лайки, восхищение других.',
+                    '[Г] Ничто не приносит яркой радости.',
+                    '[Д] Сам процесс жизни: творчество, созидание, глубокие связи с миром.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            // БЛОК 5
+            {
+                id: 'q29', block: 'БЛОК 5: ЦЕЛИ И ПРАКТИКА', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/9_1_wcnpr3.webp', type: 'radio',
+                title: '29. Какую главную "суперспособность" ты хочешь получить от этих практик?',
+                options: [
+                    '[А] Непробиваемая броня (Спокойствие Будды в эпицентре хаоса).',
+                    '[Б] Лазерный меч (Абсолютный, жесткий фокус на своих целях).',
+                    '[В] Бесконечный реактор (Чистая физическая энергия и выносливость с утра до ночи).',
+                    '[Г] Глаз Бури (Способность отключать боль и заживлять ментальные раны).',
+                    '[Д] Трансцендентность (Глубокие измененные состояния, осознанность, инсайты).',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q30', block: 'БЛОК 5: ЦЕЛИ И ПРАКТИКА', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/9_1_wcnpr3.webp', type: 'radio',
+                title: '30. Насколько ты готов терпеть физический дискомфорт во время дыхательных сессий ради мощного результата?',
+                options: [
+                    '[А] Я хочу только мягкие, расслабляющие техники.',
+                    '[Б] Готов потерпеть легкую нехватку воздуха, но без экстрима.',
+                    '[В] Готов к жестким задержкам и гипервентиляции, если это даст результат.',
+                    '[Г] Я хочу, чтобы практика ломала мои лимиты. Дайте мне максимальный вызов.',
+                    '[Д] Буду адаптироваться по состоянию.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q31', block: 'БЛОК 5: ЦЕЛИ И ПРАКТИКА', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/9_1_wcnpr3.webp', type: 'radio',
+                title: '31. Энергия какого персонажа (архетипа) тебе сейчас нужнее всего по жизни?',
+                options: [
+                    '[А] Воин/Кузнец (Разрушение препятствий, грубая сила, ковка характера).',
+                    '[Б] Архитектор/Ученый (Холодная логика, порядок, системность).',
+                    '[В] Тень/Ассасин (Скрытность, незаметность, сбережение энергии).',
+                    '[Г] Целитель (Мягкое восстановление, забота о себе и теле).',
+                    '[Д] Мистик/Шаман (Связь с подсознанием, поиск смыслов и ответов внутри).',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q32', block: 'БЛОК 5: ЦЕЛИ И ПРАКТИКА', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/9_1_wcnpr3.webp', type: 'radio',
+                title: '32. Как ты относишься к эзотерике, мистике и духовным практикам?',
+                options: [
+                    '[А] Я абсолютный прагматик. Верю только в нейробиологию, гормоны и факты.',
+                    '[Б] Люблю метафоры, но понимаю, что это просто работа мозга.',
+                    '[В] Верю, что дыхание может открыть двери к чему-то большему.',
+                    '[Г] Ищу именно духовное пробуждение через работу с телом.',
+                    '[Д] Нахожусь на стыке: наука — это просто язык, на котором с нами говорит Вселенная.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q33', block: 'БЛОК 5: ЦЕЛИ И ПРАКТИКА', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/9_1_wcnpr3.webp', type: 'radio',
+                title: '33. Сколько времени каждый день ты реально готов тратить на практики?',
+                options: [
+                    '[А] 3–5 минут максимум. Мне нужен быстрый инструмент, а не долгая медитация.',
+                    '[Б] 10–15 минут утром или вечером.',
+                    '[В] Готов уделять от 30 минут на глубокое погружение.',
+                    '[Г] Хочу встроить незаметные техники, чтобы применять их фоном в течение дня.',
+                    '[Д] Столько, сколько потребуется. Время не проблема.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q34', block: 'БЛОК 5: ЦЕЛИ И ПРАКТИКА', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/9_1_wcnpr3.webp', type: 'radio',
+                title: '34. Чего ты больше всего боишься, начиная работу со своей психикой и подсознанием?',
+                options: [
+                    '[А] Встретиться с тяжелыми эмоциями и потерять контроль над тревогой.',
+                    '[Б] Понять, что я живу не своей жизнью, и придется всё менять.',
+                    '[В] Навредить себе на физическом уровне (страх задохнуться, умереть во время задержек).',
+                    '[Г] Что это очередная игрушка, которая не сработает, и я брошу на полпути.',
+                    '[Д] У меня нет страха. Я готов ко всему, что найду внутри.',
+                    '[Е] Свой вариант...'
+                ]
+            },
+            {
+                id: 'q35', block: 'БЛОК 5: ЦЕЛИ И ПРАКТИКА', icon: 'https://res.cloudinary.com/dmirmbjtj/image/upload/v1778112833/9_1_wcnpr3.webp', type: 'radio',
+                title: '35. По какому главному изменению ты поймешь, что приложение реально сработало через месяц?',
+                options: [
+                    '[А] Я перестану срываться на близких и буду спать как камень.',
+                    '[Б] Я пробью финансовый или карьерный потолок за счет сильного фокуса.',
+                    '[В] Уйдут хронические боли, шея и спина перестанут быть "деревянными".',
+                    '[Г] Я начну чувствовать радость от простых вещей, слезу с дофаминовой иглы.',
+                    '[Д] Я обрету полный контроль над пульсом, гормонами и мыслями.',
+                    '[Е] Свой вариант...'
+                ]
+            }
+        ];
+
+        // === ДВИЖОК АНКЕТЫ ===
+        let currentStep = 0;
+        const totalSteps = qData.length;
+        const answers = {}; 
+
+        const viewport = document.getElementById('viewport');
+        const hudPercent = document.getElementById('hud-percent');
+        const hudFill = document.getElementById('hud-fill');
+
+        function updateProgress() {
+            const pct = Math.round((currentStep / totalSteps) * 100);
+            
+            // Эффект скремблинга цифр
+            let scramble = 0;
+            const scrambleInterval = setInterval(() => {
+                hudPercent.innerText = Math.floor(Math.random() * 100) + '%';
+                scramble++;
+                if(scramble > 5) {
+                    clearInterval(scrambleInterval);
+                    hudPercent.innerText = pct + '%';
+                }
+            }, 30);
+
+            hudFill.style.width = pct + '%';
+        }
+
+        function createCard(data, index) {
+            const card = document.createElement('div');
+            card.className = `question-card ${index === 0 ? 'active' : ''}`;
+            card.id = `card-${index}`;
+
+            let html = `
+                <div class="block-header">
+                    <img src="${data.icon}" class="block-icon" alt="icon">
+                    <span class="block-name">${data.block}</span>
+                </div>
+                <div class="q-title">${data.title}</div>
+            `;
+
+            if (data.type === 'input') {
+                html += `
+                    <input type="text" class="cyber-input age-input" id="input-${index}" placeholder="${data.placeholder}" autocomplete="off">
+                `;
+            } else {
+                html += `<div class="options-list">`;
+                data.options.forEach((opt, optIndex) => {
+                    const isCustom = opt.includes('[Е]');
+                    html += `
+                        <label class="option-lbl" onclick="selectOption(${index}, this, ${isCustom})">
+                            <input type="radio" name="q${index}" value="${opt}" class="option-radio">
+                            <div class="radio-box"></div>
+                            <div class="option-text">${opt}</div>
+                        </label>
+                    `;
+                });
+                html += `</div>
+                <div class="custom-input-wrapper" id="custom-wrap-${index}">
+                    <input type="text" class="cyber-input" id="custom-input-${index}" placeholder="Опиши свой вариант кратко..." autocomplete="off">
+                </div>`;
+            }
+
+            const btnText = index === totalSteps - 1 ? 'ИНИЦИИРОВАТЬ АНАЛИЗ' : 'ДАЛЕЕ';
+            const btnClass = index === totalSteps - 1 ? 'btn btn-next btn-finish' : 'btn btn-next';
+
+            html += `
+                <div class="nav-footer">
+                    <button class="btn" onclick="prevStep()" ${index === 0 ? 'disabled' : ''}>НАЗАД</button>
+                    <button class="${btnClass}" id="next-btn-${index}" onclick="nextStep()" disabled>${btnText}</button>
+                </div>
+            `;
+
+            card.innerHTML = html;
+            return card;
+        }
+
+        function renderAll() {
+            qData.forEach((q, i) => {
+                viewport.appendChild(createCard(q, i));
+                
+                // Слушатель для текстовых инпутов, чтобы включать кнопку ДАЛЕЕ
+                if(q.type === 'input') {
+                    const inp = document.getElementById(`input-${i}`);
+                    inp.addEventListener('input', () => {
+                        const btn = document.getElementById(`next-btn-${i}`);
+                        btn.disabled = inp.value.trim().length < 2;
+                    });
+                }
+            });
+        }
+
+        window.selectOption = function(qIndex, labelEl, isCustom) {
+            playTick();
+            
+            // Сбрасываем выделение
+            const allLabels = labelEl.parentElement.querySelectorAll('.option-lbl');
+            allLabels.forEach(lbl => lbl.classList.remove('selected'));
+            
+            // Выделяем текущий
+            labelEl.classList.add('selected');
+
+            // Показываем/скрываем инпут для своего варианта
+            const customWrap = document.getElementById(`custom-wrap-${qIndex}`);
+            const nextBtn = document.getElementById(`next-btn-${qIndex}`);
+
+            if (isCustom) {
+                customWrap.classList.add('visible');
+                const customInp = document.getElementById(`custom-input-${qIndex}`);
+                nextBtn.disabled = customInp.value.trim().length < 2;
+                
+                customInp.oninput = () => { nextBtn.disabled = customInp.value.trim().length < 2; };
+                customInp.focus();
+            } else {
+                customWrap.classList.remove('visible');
+                nextBtn.disabled = false;
+            }
+        };
+
+        window.prevStep = function() {
+            if (currentStep > 0) {
+                playTick();
+                const currentCard = document.getElementById(`card-${currentStep}`);
+                currentCard.classList.remove('active');
+                currentCard.style.transform = 'translateX(50px)';
+                currentCard.style.opacity = '0';
+                
+                currentStep--;
+                
+                const prevCard = document.getElementById(`card-${currentStep}`);
+                prevCard.classList.add('active');
+                prevCard.classList.remove('prev');
+                prevCard.style.transform = 'translateX(0)';
+                prevCard.style.opacity = '1';
+                
+                updateProgress();
+            }
+        };
+
+        window.nextStep = function() {
+            // Сохраняем ответ
+            const q = qData[currentStep];
+            if (q.type === 'input') {
+                answers[q.id] = document.getElementById(`input-${currentStep}`).value.trim();
+            } else {
+                const selectedInput = document.querySelector(`input[name="q${currentStep}"]:checked`);
+                if(selectedInput.value.includes('[Е]')) {
+                    answers[q.id] = "CUSTOM: " + document.getElementById(`custom-input-${currentStep}`).value.trim();
+                } else {
+                    answers[q.id] = selectedInput.value;
+                }
+            }
+
+            if (currentStep < totalSteps - 1) {
+                playTick();
+                const currentCard = document.getElementById(`card-${currentStep}`);
+                currentCard.classList.remove('active');
+                currentCard.classList.add('prev');
+                currentCard.style.transform = 'translateX(-50px)';
+                currentCard.style.opacity = '0';
+                
+                currentStep++;
+                
+                const nextCard = document.getElementById(`card-${currentStep}`);
+                nextCard.classList.add('active');
+                nextCard.style.transform = 'translateX(0)';
+                nextCard.style.opacity = '1';
+                
+                updateProgress();
+            } else {
+                // ФИНАЛ: Запуск сохранения в базу
+                initiateAnalysis();
+            }
+        };
+
+        // Запуск
+        renderAll();
+        updateProgress();
+
+    </script>
+
+    <!-- === СКРИПТ БЕЗОПАСНОСТИ И СОХРАНЕНИЯ В БАЗУ === -->
+    <script type="module">
+        import { auth, onAuthStateChanged, db, doc, getDoc, setDoc } from './firebase-config.js';
+
+        const securityOverlay = document.getElementById('security-overlay');
+        let currentUser = null;
+
+        // 1. Блокируем доступ левым юзерам
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/index.html");
+                return;
+            }
+
+            currentUser = user;
+
+            try {
+                // Проверяем, есть ли оплата Эфира (чтобы чужие не лезли в анкету)
+                const productDocRef = doc(db, "users", user.uid, "products", "aether");
+                const productDocSnap = await getDoc(productDocRef);
+
+                if (productDocSnap.exists() && productDocSnap.data().hasAccess === true) {
+                    securityOverlay.style.opacity = '0';
+                    setTimeout(() => securityOverlay.style.display = 'none', 500);
+                } else {
+                    window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html"); 
+                }
+            } catch (error) {
+                window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/index.html");
+            }
+        });
+
+        // 2. Функция сохранения (вызывается на последнем шаге)
+        window.initiateAnalysis = async function() {
+            if (!currentUser) return;
+            
+            uiSuccess.currentTime = 0; uiSuccess.play().catch(()=>{});
+
+            // Показываем экран загрузки
+            const procOverlay = document.getElementById('processing-overlay');
+            const procText = document.getElementById('process-log');
+            procOverlay.classList.add('active');
+
+            // Анимация текста
+            const logs = [
+                "СТРУКТУРИРОВАНИЕ ДАННЫХ...",
+                "ВЫГРУЗКА В НЕЙРОМАТРИЦУ...",
+                "ЗАПИСЬ В БАЗУ ДАННЫХ...",
+                "ИНТЕГРАЦИЯ УСПЕШНА."
+            ];
+            
+            let logIdx = 0;
+            const logInterval = setInterval(() => {
+                logIdx++;
+                if(logIdx < logs.length) procText.innerText = logs[logIdx];
+            }, 800);
+
+            try {
+                // Сохраняем ответы по ПРАВИЛЬНОМУ пути: users/{uid}/aether_data/anketa
+                const anketaRef = doc(db, "users", currentUser.uid, "aether_data", "anketa");
+                
+                // Добавляем timestamp
+                answers.submittedAt = new Date().toISOString();
+
+                await setDoc(anketaRef, answers);
+
+                // После успешного сохранения перекидываем обратно в Терминал
+                setTimeout(() => {
+                    clearInterval(logInterval);
+                    window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/terminal.html");
+                }, 3500);
+
+            } catch (error) {
+                console.error("Ошибка записи:", error);
+                procText.innerText = "ОШИБКА СИНХРОНИЗАЦИИ. ПОВТОРИТЕ.";
+                procText.style.color = "var(--alert)";
+                setTimeout(() => {
+                    procOverlay.classList.remove('active');
+                }, 3000);
+            }
+        };
+    </script>
+</body>
+</html>
