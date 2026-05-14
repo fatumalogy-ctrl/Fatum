@@ -233,6 +233,19 @@
             opacity: 0.7;
         }
 
+        /* Экран загрузки проверки безопасности */
+        #security-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--metal-bg); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .security-text {
+            color: var(--aether-cyan); font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem; letter-spacing: 5px; text-transform: uppercase;
+            animation: breathe 1.5s infinite;
+        }
+
         /* === АДАПТИВНОСТЬ (МОБИЛЬНЫЕ УСТРОЙСТВА И TELEGRAM MINI APP) === */
         @media (max-width: 768px) {
             .terminal-title { font-size: 1.3rem; letter-spacing: 5px; }
@@ -266,16 +279,21 @@
 </head>
 <body>
 
+    <!-- Оверлей проверки безопасности при загрузке -->
+    <div id="security-overlay">
+        <div class="security-text">Проверка допусков...</div>
+    </div>
+
     <div class="cyber-grid"></div>
     <div id="particles-container"></div>
 
     <header class="terminal-header">
-        <a href="https://fatumalogy-ctrl.github.io/Fatum/" class="back-btn">
+        <a href="https://fatumalogy-ctrl.github.io/Fatum/index.html" class="back-btn">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" alt="Назад">
         </a>
         <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="logo-small" alt="Fatum Logo">
         <div class="terminal-title">AETHER TERMINAL</div>
-        <div class="terminal-subtitle">Neural Synchronization: Active</div>
+        <div id="auth-status" class="terminal-subtitle">Neural Synchronization: Pending...</div>
     </header>
 
     <main class="nexus-container">
@@ -328,11 +346,11 @@
         [ PROTOCOL OMEGA INITIATED ]
     </footer>
 
+    <!-- ВИЗУАЛЬНЫЕ СКРИПТЫ (АНИМАЦИИ И ЛИНИИ) -->
     <script>
-        // === ГЕНЕРАЦИЯ ЧАСТИЦ ЭФИРА ===
         function initParticles() {
             const container = document.getElementById('particles-container');
-            const count = window.innerWidth > 768 ? 50 : 25; // На мобилках меньше частиц для оптимизации
+            const count = window.innerWidth > 768 ? 50 : 25;
             for (let i = 0; i < count; i++) {
                 let p = document.createElement('div');
                 p.className = 'particle';
@@ -347,7 +365,6 @@
         }
         initParticles();
 
-        // === ПАРАЛЛАКС ЭФФЕКТ ДЛЯ ПК ===
         const orbitSystem = document.getElementById('orbit-system');
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
@@ -357,60 +374,81 @@
                 const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
                 orbitSystem.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
             });
-            // Возврат в центр при уходе мыши
             document.addEventListener('mouseleave', () => {
                 orbitSystem.style.transform = `rotateY(0deg) rotateX(0deg)`;
             });
         }
 
-        // === ОТРИСОВКА ЛИНИЙ СВЯЗИ ===
         function drawLines() {
             const linesContainer = document.getElementById('lines-container');
-            linesContainer.innerHTML = ''; // Очищаем старые
+            linesContainer.innerHTML = ''; 
 
-            // Получаем координаты центра (относительно окна)
             const core = document.getElementById('core');
             const coreRect = core.getBoundingClientRect();
             const centerX = coreRect.left + coreRect.width / 2;
             const centerY = coreRect.top + coreRect.height / 2;
 
-            // Находим все 4 узла
             for (let i = 1; i <= 4; i++) {
                 const node = document.getElementById(`node-${i}`);
                 if (!node) continue;
 
-                // Получаем позицию узла
                 const nodeRect = node.getBoundingClientRect();
                 const nodeX = nodeRect.left + nodeRect.width / 2;
                 const nodeY = nodeRect.top + nodeRect.height / 2;
 
-                // Вычисляем длину и угол линии
                 const deltaX = nodeX - centerX;
                 const deltaY = nodeY - centerY;
                 const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
 
-                // Создаем линию
                 const line = document.createElement('div');
                 line.className = 'energy-line';
                 
-                // Центрируем линию в контейнере orbit-system (так как top:50% left:50% задано в CSS)
                 line.style.width = `${length}px`;
                 line.style.transform = `translateY(-50%) rotate(${angle}deg)`;
-                
-                // Делаем задержку анимации для красоты
                 line.style.animationDelay = `${i * 0.5}s`;
 
                 linesContainer.appendChild(line);
             }
         }
 
-        // Рисуем линии после загрузки и при изменении размера экрана
         window.addEventListener('load', () => {
-            setTimeout(drawLines, 100); // Ждем рендеринга
+            setTimeout(drawLines, 100); 
         });
         window.addEventListener('resize', drawLines);
+    </script>
 
+    <!-- СКРИПТ БЕЗОПАСНОСТИ FIREBASE (НОВЫЙ БЛОК) -->
+    <script type="module">
+        import { auth, onAuthStateChanged, db, doc, getDoc } from './firebase-config.js';
+
+        const overlay = document.getElementById('security-overlay');
+        const authStatus = document.getElementById('auth-status');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                // ПИНЧОК ПОД ЗАД: ЕСЛИ ЧЕЛОВЕК НЕ ЗАЛОГИНИЛСЯ, КИДАЕМ ЕГО НАЗАД В ПАНТЕОН
+                window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/index.html");
+            } else {
+                // ДОПУСК РАЗРЕШЕН: Убираем черный экран
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 500);
+
+                // Опционально: берем данные юзера из базы
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    authStatus.innerText = "Neural Synchronization: Active (" + userData.name + ")";
+                } else {
+                    authStatus.innerText = "Neural Synchronization: Active";
+                }
+
+                // В БУДУЩЕМ МЫ ДОБАВИМ СЮДА ПРОВЕРКУ userData.hasLifetimeAccess
+                // И если человек не оплатил, мы выведем ему сообщение о покупке
+            }
+        });
     </script>
 </body>
 </html>
