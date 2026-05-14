@@ -418,7 +418,7 @@
         window.addEventListener('resize', drawLines);
     </script>
 
-    <!-- СКРИПТ БЕЗОПАСНОСТИ FIREBASE (НОВЫЙ БЛОК) -->
+    <!-- === СКРИПТ БЕЗОПАСНОСТИ: ДВОЙНОЙ ЩИТ (АВТОРИЗАЦИЯ + ПРОДУКТ) === -->
     <script type="module">
         import { auth, onAuthStateChanged, db, doc, getDoc } from './firebase-config.js';
 
@@ -427,26 +427,38 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                // ПИНЧОК ПОД ЗАД: ЕСЛИ ЧЕЛОВЕК НЕ ЗАЛОГИНИЛСЯ, КИДАЕМ ЕГО НАЗАД В ПАНТЕОН
+                // ШАГ 1: Если не залогинен вообще -> выкидываем в Пантеон
                 window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/index.html");
-            } else {
-                // ДОПУСК РАЗРЕШЕН: Убираем черный экран
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 500);
+                return;
+            }
 
-                // Опционально: берем данные юзера из базы
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    authStatus.innerText = "Neural Synchronization: Active (" + userData.name + ")";
+            try {
+                // ШАГ 2: Идем в конкретный документ продукта "Эфир"
+                const productDocRef = doc(db, "users", user.uid, "products", "aether");
+                const productDocSnap = await getDoc(productDocRef);
+
+                if (productDocSnap.exists() && productDocSnap.data().hasAccess === true) {
+                    // ДОПУСК РАЗРЕШЕН: Убираем черный экран
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.style.display = 'none', 500);
+
+                    // Опционально: показываем имя в терминале
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+                    if (userDocSnap.exists()) {
+                        authStatus.innerText = "Neural Synchronization: Active (" + userDocSnap.data().name + ")";
+                    } else {
+                        authStatus.innerText = "Neural Synchronization: Active";
+                    }
                 } else {
-                    authStatus.innerText = "Neural Synchronization: Active";
+                    // ШАГ 3: Если документа Эфира нет или hasAccess != true -> на лендинг
+                    // ЗАМЕТКА: Укажи здесь реальную ссылку на лендинг Эфира
+                    window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/aether-landing.html"); 
                 }
-
-                // В БУДУЩЕМ МЫ ДОБАВИМ СЮДА ПРОВЕРКУ userData.hasLifetimeAccess
-                // И если человек не оплатил, мы выведем ему сообщение о покупке
+            } catch (error) {
+                console.error("Ошибка проверки доступа:", error);
+                // При сбое базы на всякий случай выкидываем в Пантеон
+                window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/index.html");
             }
         });
     </script>
