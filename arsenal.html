@@ -497,5 +497,43 @@
             window.location.href = currentTargetLink;
         }
     </script>
+
+    <!-- === СКРИПТ БЕЗОПАСНОСТИ: ДИНАМИЧЕСКАЯ РАЗБЛОКИРОВКА === -->
+    <script type="module">
+        import { auth, onAuthStateChanged, db, doc, getDoc } from './firebase-config.js';
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const productDocRef = doc(db, "users", user.uid, "products", "aether");
+                    const productDocSnap = await getDoc(productDocRef);
+
+                    if (productDocSnap.exists() && productDocSnap.data().hasAccess === true) {
+                        // Если доступ есть (true), открываем все карточки
+                        godsData.forEach(god => {
+                            god.locked = false;
+                        });
+                        
+                        // Перерисовываем сетку заново с открытыми замками
+                        let updatedHtmlBuilder = '';
+                        godsData.forEach((god, index) => {
+                            updatedHtmlBuilder += `
+                                <div class="god-item ${god.locked ? 'locked' : ''}" onclick="handleGodClick(${index}, this)">
+                                    <div class="avatar-wrap">
+                                        <img src="${god.img}" class="god-avatar" alt="${god.name}">
+                                        ${god.locked ? '<div class="locked-overlay">🔒</div>' : ''}
+                                    </div>
+                                    <div class="god-name">${god.name}</div>
+                                </div>
+                            `;
+                        });
+                        document.getElementById('gods-container').innerHTML = updatedHtmlBuilder;
+                    }
+                } catch (error) {
+                    console.error("Ошибка проверки доступа:", error);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
