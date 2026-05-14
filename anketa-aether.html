@@ -129,8 +129,8 @@
             display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
             padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .block-icon { width: 40px; height: 40px; filter: drop-shadow(0 0 8px var(--cyan-glow)); }
-        .block-name { font-family: 'Rajdhani', sans-serif; color: var(--text-muted); font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;}
+        .block-icon { width: 55px; height: 55px; filter: drop-shadow(0 0 8px var(--cyan-glow)); object-fit: contain; }
+        .block-name { font-family: 'Rajdhani', sans-serif; color: var(--text-muted); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;}
 
         /* Текст Вопроса */
         .q-title {
@@ -139,7 +139,10 @@
         }
 
         /* Варианты ответов */
-        .options-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; padding-right: 5px;}
+        .options-list { 
+            display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; 
+            padding-right: 5px; margin-bottom: 10px;
+        }
         .options-list::-webkit-scrollbar { width: 4px; }
         .options-list::-webkit-scrollbar-thumb { background: var(--metal-border); border-radius: 2px; }
 
@@ -148,6 +151,7 @@
             background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
             padding: 18px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s;
             position: relative; overflow: hidden;
+            flex-shrink: 0; /* ИСПРАВЛЕНИЕ: варианты больше не будут налезать друг на друга */
         }
         .option-lbl::before {
             content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
@@ -179,7 +183,7 @@
 
         /* Поле "Свой вариант" и Ввод возраста */
         .custom-input-wrapper {
-            margin-top: 10px; display: none; opacity: 0; transition: opacity 0.3s;
+            margin-top: 10px; display: none; opacity: 0; transition: opacity 0.3s; flex-shrink: 0;
         }
         .custom-input-wrapper.visible { display: block; opacity: 1; }
         
@@ -202,7 +206,7 @@
         /* === НАВИГАЦИЯ НИЗ === */
         .nav-footer {
             display: flex; justify-content: space-between; align-items: center;
-            margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 10px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         .btn {
@@ -262,10 +266,10 @@
             .scanner-viewport { padding: 15px; }
             .question-card { padding: 20px; top: 15px; left: 15px; right: 15px; bottom: 15px; }
             .q-title { font-size: 1.15rem; margin-bottom: 20px; }
-            .option-lbl { padding: 15px; gap: 10px; }
+            .option-lbl { padding: 12px 15px; gap: 10px; } /* Чуть уменьшен паддинг для мобильных */
             .option-text { font-size: 0.9rem; }
             .btn { padding: 12px 20px; font-size: 0.9rem; }
-            .block-icon { width: 30px; height: 30px; }
+            .block-icon { width: 45px; height: 45px; } /* Иконки увеличены на мобильных */
             .age-input { font-size: 1.5rem; padding: 15px;}
         }
     </style>
