@@ -53,12 +53,127 @@
             font-weight: 400;
         }
 
-        #auth-status {
+        /* === БЛОК АВТОРИЗАЦИИ В ШАПКЕ === */
+        .auth-container {
             position: absolute; top: 20px; right: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        
+        #auth-status {
             font-size: 0.9rem; color: #d4af37; letter-spacing: 1px;
             opacity: 0.7; font-family: 'Cinzel Decorative', cursive;
         }
 
+        #user-profile-btn {
+            display: none; /* Скрыто по умолчанию, пока не залогинится */
+            align-items: center; gap: 10px;
+            cursor: pointer;
+            padding: 5px 15px 5px 5px;
+            background: rgba(10, 12, 16, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        #user-profile-btn:hover {
+            border-color: #00f0ff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .profile-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            transition: 0.4s;
+        }
+
+        #user-profile-btn:hover .profile-avatar {
+            border-color: #00f0ff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+        }
+
+        .profile-name {
+            font-family: 'Cinzel Decorative', cursive;
+            color: #fff; font-size: 0.9rem; letter-spacing: 1px;
+        }
+
+        /* === ВСПЛЫВАЮЩЕЕ МЕНЮ ПРОФИЛЯ === */
+        #profile-modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 7, 10, 0.8); backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #profile-modal.active {
+            opacity: 1; pointer-events: all;
+        }
+
+        .modal-box {
+            background: radial-gradient(circle at center, #12161e 0%, #05070a 100%);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 20px;
+            padding: 40px; width: 320px;
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(212, 175, 55, 0.1);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        #profile-modal.active .modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .close-modal {
+            position: absolute; top: 15px; right: 20px;
+            background: none; border: none; color: #8a9ba8;
+            font-size: 1.5rem; cursor: pointer; transition: 0.3s;
+        }
+        .close-modal:hover { color: #d4af37; text-shadow: 0 0 10px #d4af37; }
+
+        .modal-logo {
+            width: 80px; filter: drop-shadow(0 0 10px #00f0ff);
+            animation: pulseLogo 3s infinite;
+        }
+
+        @keyframes pulseLogo {
+            0%, 100% { filter: drop-shadow(0 0 5px #00f0ff); }
+            50% { filter: drop-shadow(0 0 20px #00f0ff) brightness(1.2); }
+        }
+
+        .modal-menu {
+            display: flex; flex-direction: column; width: 100%; gap: 15px;
+        }
+
+        .modal-btn {
+            background: rgba(10, 12, 16, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e0e0e0; font-family: 'Cinzel Decorative', cursive;
+            font-size: 1rem; letter-spacing: 2px; padding: 12px;
+            border-radius: 10px; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .modal-btn:hover {
+            border-color: #d4af37; color: #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .logout-btn:hover {
+            border-color: #ff3366; color: #ff3366;
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+            background: rgba(255, 51, 102, 0.05);
+        }
+
+
+        /* === СЕТКА ПАНТЕОНА === */
         .pantheon-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -138,6 +253,10 @@
             h1 { font-size: 2.4rem; letter-spacing: 4px; }
             .pantheon-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .god-card { border-radius: 15px; }
+            .auth-container { top: 10px; right: 10px; }
+            #user-profile-btn { padding: 3px 10px 3px 3px; }
+            .profile-avatar { width: 32px; height: 32px; }
+            .profile-name { font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -146,8 +265,28 @@
     <div class="divine-bg"></div>
     <div class="mystic-fog"></div>
 
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО ПРОФИЛЯ -->
+    <div id="profile-modal">
+        <div class="modal-box">
+            <button class="close-modal" id="close-modal-btn">&times;</button>
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" alt="Fatum Logo" class="modal-logo">
+            <div class="modal-menu">
+                <button class="modal-btn">Мои профиль</button>
+                <button class="modal-btn">Настройки</button>
+                <button class="modal-btn logout-btn" id="logout-btn">Выйти</button>
+            </div>
+        </div>
+    </div>
+
     <header>
-        <div id="auth-status">Неопознанный разум</div>
+        <div class="auth-container">
+            <div id="auth-status">Неопознанный разум</div>
+            <div id="user-profile-btn">
+                <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776047362/11_mq6tyo.webp" alt="Avatar" class="profile-avatar">
+                <span id="profile-name" class="profile-name">Имя</span>
+            </div>
+        </div>
+        
         <h1>Пантеон</h1>
         <div class="subtitle">Святилище Великих Сил</div>
     </header>
@@ -286,32 +425,80 @@
         </div>
     </div>
 
+    <!-- ДОПОЛНИТЕЛЬНО ИМПОРТИРУЕМ ФУНКЦИЮ ВЫХОДА (signOut) ИЗ FIREBASE SDK НАПРЯМУЮ -->
     <script type="module">
         import { auth, googleProvider, signInWithPopup, onAuthStateChanged, db, doc, setDoc } from './firebase-config.js';
+        import { signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const authStatusElement = document.getElementById('auth-status');
+        const userProfileBtn = document.getElementById('user-profile-btn');
+        const profileNameEl = document.getElementById('profile-name');
+        
+        const profileModal = document.getElementById('profile-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
         let currentUser = null;
 
+        // Открытие и закрытие модалки
+        userProfileBtn.addEventListener('click', () => {
+            profileModal.classList.add('active');
+        });
+        
+        closeModalBtn.addEventListener('click', () => {
+            profileModal.classList.remove('active');
+        });
+
+        // Закрытие модалки при клике на темный фон
+        profileModal.addEventListener('click', (e) => {
+            if (e.target === profileModal) profileModal.classList.remove('active');
+        });
+
+        // Логика ВЫХОДА (Logout)
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                profileModal.classList.remove('active');
+                // Перезагрузка страницы, чтобы сбросить состояния
+                window.location.reload();
+            } catch (error) {
+                console.error("Ошибка при выходе:", error);
+            }
+        });
+
+        // Слушатель состояния авторизации
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                authStatusElement.innerText = "Разум синхронизирован: " + (user.displayName || "Пользователь");
-                authStatusElement.style.color = "#00f0ff";
+                // Скрываем старую надпись, показываем новую кнопку профиля
+                authStatusElement.style.display = "none";
+                userProfileBtn.style.display = "flex";
                 
-                // Автоматически создаем запись о юзере в базе, если её нет
+                // Ставим имя (берем до @, если имя не указано)
+                let displayName = user.displayName;
+                if (!displayName) {
+                    displayName = user.email.split('@')[0];
+                }
+                profileNameEl.innerText = displayName;
+                
+                // Запись в базу
                 await setDoc(doc(db, "users", user.uid), {
-                    name: user.displayName,
+                    name: displayName,
                     email: user.email,
                     lastLogin: new Date()
                 }, { merge: true });
 
             } else {
                 currentUser = null;
+                // Возвращаем старую надпись, скрываем кнопку
+                authStatusElement.style.display = "block";
+                userProfileBtn.style.display = "none";
                 authStatusElement.innerText = "Неопознанный разум";
                 authStatusElement.style.color = "#d4af37";
             }
         });
 
+        // Логика клика по карточкам богов
         document.querySelectorAll('.god-card.unlocked').forEach(card => {
             card.addEventListener('click', async (e) => {
                 const targetUrl = card.getAttribute('data-target');
