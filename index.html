@@ -18,7 +18,6 @@
             min-height: 100vh;
         }
 
-        /* === БОЖЕСТВЕННЫЙ ФОН: ТУМАН И ЗОЛОТАЯ ПЫЛЬЦА === */
         .divine-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle at 50% -20%, #1e1b2e 0%, #05070a 80%);
@@ -54,7 +53,12 @@
             font-weight: 400;
         }
 
-        /* === СЕТКА ПАНТЕОНА === */
+        #auth-status {
+            position: absolute; top: 20px; right: 20px;
+            font-size: 0.9rem; color: #d4af37; letter-spacing: 1px;
+            opacity: 0.7; font-family: 'Cinzel Decorative', cursive;
+        }
+
         .pantheon-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -64,7 +68,6 @@
             margin: 0 auto 80px;
         }
 
-        /* === КАРТОЧКА БОГА === */
         .god-card {
             position: relative;
             border-radius: 20px;
@@ -105,21 +108,12 @@
             text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
 
-        /* === АКТИВНЫЙ (АПОЛЛОН И ДР.) === */
-        .unlocked {
-            cursor: pointer;
-        }
-        .unlocked:hover {
-            transform: translateY(-12px) scale(1.02);
-        }
+        .unlocked { cursor: pointer; }
+        .unlocked:hover { transform: translateY(-12px) scale(1.02); }
         .unlocked:hover img { transform: scale(1.1); }
-        .unlocked .god-name { color: #d4af37; text-shadow: 0 0 15px rgba(212,175,55,0.5), 0 0 5px rgba(0,0,0,0.8); }
+        .unlocked:hover .god-name { color: #d4af37; text-shadow: 0 0 15px rgba(212,175,55,0.5), 0 0 5px rgba(0,0,0,0.8); }
 
-        /* === ЗАКРЫТЫЕ БОГИ === */
-        .locked {
-            cursor: not-allowed;
-            filter: grayscale(100%) contrast(1.1);
-        }
+        .locked { cursor: not-allowed; filter: grayscale(100%) contrast(1.1); }
         .locked .card-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -137,9 +131,8 @@
         }
         .locked .god-name { opacity: 0.6; }
 
-        /* Текст синхронизации */
-        .sync-active { font-size: 0.9rem; color: #d4af37; font-style: italic; animation: breathe 2s infinite; }
-        @keyframes breathe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        .sync-active { font-size: 0.9rem; color: #00f0ff; font-style: italic; animation: breathe 1.5s infinite; text-shadow: 0 0 10px #00f0ff;}
+        @keyframes breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
         @media (max-width: 600px) {
             h1 { font-size: 2.4rem; letter-spacing: 4px; }
@@ -154,192 +147,195 @@
     <div class="mystic-fog"></div>
 
     <header>
+        <div id="auth-status">Неопознанный разум</div>
         <h1>Пантеон</h1>
         <div class="subtitle">Святилище Великих Сил</div>
     </header>
 
     <div class="pantheon-grid">
-        
-        <a href="#" class="god-card unlocked" onclick="runFacecontrol(event, this)">
+        <div class="god-card unlocked" data-target="apollo.html">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776086148/Apollo_1_1_1_rv0njc.webp" alt="Apollo">
-            <div class="card-content">
-                <div class="god-name">Аполлон</div>
-            </div>
-        </a>
+            <div class="card-content"><div class="god-name">Аполлон</div></div>
+        </div>
 
-        <a href="https://fatumalogy-ctrl.github.io/Fatum/terminal.html" class="god-card unlocked">
+        <div class="god-card unlocked" data-target="https://fatumalogy-ctrl.github.io/Fatum/terminal.html">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163397/1_t52wff.webp" alt="Aether">
-            <div class="card-content">
-                <div class="god-name">Эфир</div>
-            </div>
-        </a>
+            <div class="card-content"><div class="god-name">Эфир</div></div>
+        </div>
 
-        <a href="https://fatumalogy-ctrl.github.io/Fatum/orpheus.html" class="god-card unlocked">
+        <div class="god-card unlocked" data-target="orpheus.html">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777850204/ultra_realistic_high-detail_CGI_futuristic_mythological_arrow_of_intellect_and_precision_designed_as_a_weapon_of_Apollo_sleek_and_perfectly_symmetrical_arrow_made_of_polished_metallic_silver_an_1_1_sihuis.webp" alt="Orpheus">
-            <div class="card-content">
-                <div class="god-name">Орфей</div>
-            </div>
-        </a>
+            <div class="card-content"><div class="god-name">Орфей</div></div>
+        </div>
 
-        <a href="https://fatumalogy-ctrl.github.io/Fatum/mengpo.html" class="god-card unlocked">
+        <div class="god-card unlocked" data-target="mengpo.html">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777890682/%D0%BF%D1%80%D0%B0%D0%B2_1_1_1_m5pmdy.webp" alt="Mengpo">
-            <div class="card-content">
-                <div class="god-name">Мэн По</div>
-            </div>
-        </a>
+            <div class="card-content"><div class="god-name">Мэн По</div></div>
+        </div>
 
-        <a href="https://fatumalogy-ctrl.github.io/Fatum/chronos.html" class="god-card unlocked">
+        <div class="god-card unlocked" data-target="chronos.html">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777854770/ultra_realistic_high-detail_CGI_futuristic_mythological_arrow_of_intellect_and_precision_designed_as_a_weapon_of_Apollo_sleek_and_%D1%81symmetrical_arrow_made_of_polished_metallic_silver_an_1_1_1_1_pg3f4u.webp" alt="Chronos">
-            <div class="card-content">
-                <div class="god-name">Хронос</div>
-            </div>
-        </a>
+            <div class="card-content"><div class="god-name">Хронос</div></div>
+        </div>
 
-        <a href="https://fatumalogy-ctrl.github.io/Fatum/themis.html" class="god-card unlocked">
+        <div class="god-card unlocked" data-target="themis.html">
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1777892519/ultra_realistic_high-detail_CGI_futuristic_mythological_arrow_of_intellect_and_precision_designed_as_a_weapon_of_Apollo_sleek_and_perfectly_symmetrical_arrow_made_of_polished_m%D0%B0%D1%80%D0%BB%D1%8Cetallic_silver_an_1_1_1_pfbwpl.webp" alt="Themis">
-            <div class="card-content">
-                <div class="god-name">Фемида</div>
-            </div>
-        </a>
+            <div class="card-content"><div class="god-name">Фемида</div></div>
+        </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530916/1_1_dpg7sz.webp" alt="Zeus">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530916/1_1_dpg7sz.webp" alt="Zeus">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Зевс</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530916/2_1_wzc1oc.webp" alt="Odin">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530916/2_1_wzc1oc.webp" alt="Odin">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Один</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530916/3_1_pszd8b.webp" alt="Quetzalcoatl">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530916/3_1_pszd8b.webp" alt="Quetzalcoatl">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Кетцалькоатль</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530916/4_1_v3mcki.webp" alt="Amaterasu">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530916/4_1_v3mcki.webp" alt="Amaterasu">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Аматерасу</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530917/7_1_bv88la.webp" alt="Moirai">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530917/7_1_bv88la.webp" alt="Moirai">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Мойры</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530917/8_1_lxu8vp.webp" alt="Hermes">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530917/8_1_lxu8vp.webp" alt="Hermes">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Гермес</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530916/9_1_p1um0j.webp" alt="Astraea">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530916/9_1_p1um0j.webp" alt="Astraea">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Астрея</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530916/10_1_tnghht.webp" alt="Tyche">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530916/10_1_tnghht.webp" alt="Tyche">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Тюхе</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530940/12_telxu5.webp" alt="Hades">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530940/12_telxu5.webp" alt="Hades">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Аид</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530941/14_vqstdh.webp" alt="Maui">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530941/14_vqstdh.webp" alt="Maui">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Мауи</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530941/15_uuvowz.webp" alt="Marduk">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530941/15_uuvowz.webp" alt="Marduk">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Мардук</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530940/13_mdchww.webp" alt="Shiva">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530940/13_mdchww.webp" alt="Shiva">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Шива</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530917/5_1_mvms8d.webp" alt="Anubis">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530917/5_1_mvms8d.webp" alt="Anubis">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Анубис</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530942/16_ramxld.webp" alt="Ahura Mazda">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530942/16_ramxld.webp" alt="Ahura Mazda">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Ахура Мазда</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530944/17_zddo1x.webp" alt="Viracocha">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530944/17_zddo1x.webp" alt="Viracocha">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Виракоча</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530947/18_h1uxs3.webp" alt="Ogun">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530947/18_h1uxs3.webp" alt="Ogun">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Огун</div></div>
         </div>
 
         <div class="god-card locked">
-            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/q_auto/f_auto/v1776530940/11_1_biezzj.webp" alt="Medusa">
+            <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776530940/11_1_biezzj.webp" alt="Medusa">
             <div class="card-overlay"><div class="lock-icon">🔒</div></div>
             <div class="card-content"><div class="god-name">Медуза</div></div>
         </div>
-
     </div>
 
-    <script>
-        function runFacecontrol(event, element) {
-            event.preventDefault();
-            
-            // Твоя ссылка на Вебхук
-            const WEBHOOK_URL = "https://hook.eu1.make.com/ipn1avyoehbtuvy9fhhektpxxh6vv9fb";
+    <script type="module">
+        import { auth, googleProvider, signInWithPopup, onAuthStateChanged, db, doc, setDoc } from './firebase-config.js';
 
-            const nameEl = element.querySelector('.god-name');
-            const originalName = nameEl.innerText;
-            nameEl.innerHTML = "<span class='sync-active'>Синхронизация...</span>";
+        const authStatusElement = document.getElementById('auth-status');
+        let currentUser = null;
 
-            const tg = window.Telegram.WebApp;
-            let userId = tg.initDataUnsafe?.user?.id;
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                authStatusElement.innerText = "Разум синхронизирован: " + (user.displayName || "Пользователь");
+                authStatusElement.style.color = "#00f0ff";
+                
+                // Автоматически создаем запись о юзере в базе, если её нет
+                await setDoc(doc(db, "users", user.uid), {
+                    name: user.displayName,
+                    email: user.email,
+                    lastLogin: new Date()
+                }, { merge: true });
 
-            // Если не в ТГ — на лендинг
-            if (!userId) {
-                window.location.href = "apollo-landing.html";
-                return;
+            } else {
+                currentUser = null;
+                authStatusElement.innerText = "Неопознанный разум";
+                authStatusElement.style.color = "#d4af37";
             }
+        });
 
-            fetch(WEBHOOK_URL + "?tg_id=" + userId)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.access === "YES") {
-                        // ВОТ ОНО. ТЕПЕРЬ ПРИ ПЕРЕХОДЕ ID ЕДЕТ СЛЕДОМ НА GITHUB PAGES:
-                        window.location.href = "https://fatumalogy-ctrl.github.io/Fatum/apollo.html?tg_id=" + userId;
-                    } else {
-                        window.location.href = "apollo-landing.html";
-                    }
-                })
-                .catch(err => {
-                    window.location.href = "apollo-landing.html";
-                });
-        }
+        document.querySelectorAll('.god-card.unlocked').forEach(card => {
+            card.addEventListener('click', async (e) => {
+                const targetUrl = card.getAttribute('data-target');
+                const nameEl = card.querySelector('.god-name');
+                const originalName = nameEl.innerText;
+
+                if (currentUser) {
+                    window.location.href = targetUrl;
+                    return;
+                }
+
+                nameEl.innerHTML = "<span class='sync-active'>Инициализация...</span>";
+
+                try {
+                    const result = await signInWithPopup(auth, googleProvider);
+                    currentUser = result.user;
+                    window.location.href = targetUrl;
+                } catch (error) {
+                    console.error("Ошибка:", error);
+                    nameEl.innerText = originalName;
+                    alert("Требуется вход для доступа.");
+                }
+            });
+        });
     </script>
 </body>
 </html>
