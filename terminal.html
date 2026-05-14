@@ -1,466 +1,931 @@
 <!DOCTYPE html>
+
 <html lang="ru">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <title>TERMINAL: AETHER</title>
+
     <style>
+
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Rajdhani:wght@500;600;700;900&display=swap');
 
+
+
         :root {
+
             /* Палитра под новые золотые/кибернетические иконки */
+
             --aether-cyan: #00f0ff;
+
             --aether-glow: rgba(0, 240, 255, 0.6);
+
             --aether-gold: #d4af37;
+
             --aether-gold-glow: rgba(212, 175, 55, 0.5);
+
             --metal-bg: #05070a;
+
             --metal-panel: #12161e;
+
             --text-main: #e6f0ff;
+
         }
+
+
 
         * { 
+
             box-sizing: border-box; margin: 0; padding: 0; 
+
             -webkit-tap-highlight-color: transparent; 
+
             user-select: none; -webkit-user-select: none;
+
         }
+
+
 
         body {
+
             background-color: var(--metal-bg);
+
             color: var(--text-main);
+
             font-family: 'Montserrat', sans-serif;
+
             width: 100vw; height: 100vh;
+
             overflow: hidden; /* Запрет скролла для терминала */
+
             display: flex; flex-direction: column;
+
             background: radial-gradient(circle at center, #101520 0%, #020305 100%);
+
         }
+
+
 
         /* === ФОНОВАЯ МАТРИЦА И СКАНЕР === */
+
         .cyber-grid {
+
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+
             background-image: 
+
                 linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+
                 linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+
             background-size: 40px 40px;
+
             z-index: 0;
+
             transform: perspective(1000px) rotateX(20deg) scale(1.2);
+
             transform-origin: center top;
+
             opacity: 0.6;
+
         }
+
+
 
         /* Частицы Эфира */
+
         #particles-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
         .particle {
+
             position: absolute; border-radius: 50%;
+
             background: var(--aether-cyan); box-shadow: 0 0 10px var(--aether-cyan);
+
             animation: floatUp linear infinite; opacity: 0;
+
         }
+
         @keyframes floatUp {
+
             0% { transform: translateY(100vh) scale(0.2); opacity: 0; }
+
             20% { opacity: 0.8; }
+
             80% { opacity: 0.8; }
+
             100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+
         }
+
+
 
         /* === ШАПКА === */
+
         .terminal-header {
+
             position: relative; z-index: 10;
+
             padding: 20px 0; display: flex; flex-direction: column; align-items: center;
+
             background: linear-gradient(180deg, rgba(5,7,10,0.9) 0%, transparent 100%);
+
         }
+
         .logo-small { width: 50px; margin-bottom: 5px; filter: drop-shadow(0 0 10px var(--aether-cyan)); animation: pulseLogo 3s infinite;}
+
         .terminal-title {
+
             font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; font-weight: 700;
+
             letter-spacing: 8px; color: var(--aether-cyan); text-transform: uppercase;
+
             text-shadow: 0 0 15px var(--aether-glow);
+
         }
+
         .terminal-subtitle {
+
             font-size: 0.75rem; letter-spacing: 4px; color: var(--aether-gold);
+
             text-transform: uppercase; opacity: 0.8; margin-top: 5px;
+
         }
+
+
 
         @keyframes pulseLogo {
+
             0%, 100% { filter: drop-shadow(0 0 5px var(--aether-cyan)); }
+
             50% { filter: drop-shadow(0 0 15px var(--aether-cyan)) brightness(1.2); }
+
         }
+
+
 
         /* === КНОПКА НАЗАД === */
+
         .back-btn {
+
             position: absolute; left: 20px; top: 30px;
+
             width: 35px; height: 35px; z-index: 110;
+
             display: flex; align-items: center; justify-content: center;
+
             text-decoration: none;
+
         }
+
         .back-btn img {
+
             width: 100%; height: auto; opacity: 0.6; transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+
         }
+
         .back-btn:hover img {
+
             opacity: 1; filter: drop-shadow(0 0 8px var(--aether-cyan)); transform: translateX(-3px);
+
         }
+
+
 
         /* === ЦЕНТРАЛЬНЫЙ УЗЕЛ И ОРБИТА === */
+
         .nexus-container {
+
             flex: 1; position: relative; z-index: 10;
+
             display: flex; align-items: center; justify-content: center;
+
             perspective: 1200px;
+
         }
+
+
 
         /* Анимация вращения системы */
+
         .orbit-system {
+
             position: relative; width: 100%; height: 100%;
+
             display: flex; align-items: center; justify-content: center;
+
             transition: transform 0.1s linear;
+
         }
+
+
 
         /* === ЭНЕРГЕТИЧЕСКИЕ ЛИНИИ (СВЯЗЬ С ЭФИРОМ) === */
+
         .energy-line {
+
             position: absolute; top: 50%; left: 50%;
+
             width: 2px; background: linear-gradient(90deg, transparent, var(--aether-cyan), transparent);
+
             transform-origin: 0 50%; z-index: 5; opacity: 0.4;
+
             box-shadow: 0 0 10px var(--aether-cyan);
+
         }
+
         .energy-line::after {
+
             content: ''; position: absolute; top: -1px; left: 0; width: 30px; height: 4px;
+
             background: #fff; border-radius: 50%; box-shadow: 0 0 15px #fff, 0 0 30px var(--aether-cyan);
+
             animation: shootEnergy 2s infinite linear;
+
         }
+
         @keyframes shootEnergy {
+
             0% { left: 0; opacity: 0; }
+
             10% { opacity: 1; }
+
             90% { opacity: 1; }
+
             100% { left: 100%; opacity: 0; }
+
         }
+
+
 
         /* === БОГ ЭФИР (ЦЕНТР) === */
+
         .aether-core {
+
             position: absolute; z-index: 20;
+
             width: 240px; height: 240px; border-radius: 50%;
+
             display: flex; align-items: center; justify-content: center;
+
             box-shadow: 0 0 50px rgba(0, 240, 255, 0.3), inset 0 0 30px rgba(0,0,0,0.8);
+
             border: 2px solid rgba(0, 240, 255, 0.4);
+
             background: #000;
+
             animation: coreBreath 4s ease-in-out infinite;
+
         }
+
         .aether-core::before {
+
             content: ''; position: absolute; top: -15px; left: -15px; right: -15px; bottom: -15px;
+
             border-radius: 50%; border: 1px dashed var(--aether-gold);
+
             animation: spinSlow 20s linear infinite; opacity: 0.5;
+
         }
+
         .aether-core::after {
+
             content: ''; position: absolute; top: -30px; left: -30px; right: -30px; bottom: -30px;
+
             border-radius: 50%; border: 1px dotted var(--aether-cyan);
+
             animation: spinSlowReverse 30s linear infinite; opacity: 0.3;
+
         }
+
         .aether-avatar {
+
             width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+
             filter: contrast(1.1) brightness(1.1);
+
         }
+
+
 
         @keyframes coreBreath {
+
             0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(0, 240, 255, 0.2); }
+
             50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(0, 240, 255, 0.6), 0 0 20px var(--aether-gold-glow); }
+
         }
+
         @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+
         @keyframes spinSlowReverse { 100% { transform: rotate(-360deg); } }
 
+
+
         /* === МОДУЛИ (КНОПКИ) === */
+
         .module-node {
+
             position: absolute; z-index: 25;
+
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+
             text-decoration: none; cursor: pointer;
+
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
             /* Переменные для позиционирования задаются ниже */
+
             transform: translate(var(--x), var(--y));
+
         }
+
+
 
         .module-art {
+
             width: 140px; height: 140px; border-radius: 50%;
+
             position: relative;
+
             display: flex; align-items: center; justify-content: center;
+
             transition: 0.4s;
+
             animation: floatNode 6s ease-in-out infinite;
+
             animation-delay: var(--delay);
+
         }
+
         
+
         /* Иконки без обводки, чтобы арты выглядели как артефакты */
+
         .module-art img {
+
             width: 100%; height: 100%; object-fit: contain;
+
             filter: drop-shadow(0 15px 15px rgba(0,0,0,0.8)) brightness(0.9);
+
             transition: 0.4s;
+
         }
+
+
 
         /* Светящаяся подложка при наведении */
+
         .module-art::after {
+
             content: ''; position: absolute; top: 10%; left: 10%; right: 10%; bottom: 10%;
+
             border-radius: 50%; background: radial-gradient(circle, var(--aether-cyan) 0%, transparent 70%);
+
             opacity: 0; z-index: -1; transition: 0.4s; filter: blur(20px);
+
         }
+
+
 
         .module-label {
+
             margin-top: 15px; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700;
+
             color: var(--text-main); letter-spacing: 3px; text-transform: uppercase;
+
             text-shadow: 0 5px 10px rgba(0,0,0,0.9);
+
             background: rgba(10,12,16,0.6); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+
             transition: 0.4s; backdrop-filter: blur(5px);
+
         }
+
+
 
         /* === ЭФФЕКТЫ НАВЕДЕНИЯ === */
+
         .module-node:hover { transform: translate(calc(var(--x) * 1.1), calc(var(--y) * 1.1)) scale(1.1); z-index: 30; }
+
         .module-node:hover .module-art img { filter: drop-shadow(0 20px 25px rgba(0,240,255,0.4)) brightness(1.2); }
+
         .module-node:hover .module-art::after { opacity: 0.6; }
+
         .module-node:hover .module-label { 
+
             color: var(--aether-cyan); border-color: var(--aether-cyan); 
+
             box-shadow: 0 0 15px var(--aether-glow); background: rgba(0, 240, 255, 0.1);
+
         }
+
+
 
         @keyframes floatNode {
+
             0%, 100% { transform: translateY(0); }
+
             50% { transform: translateY(-15px); }
+
         }
+
+
 
         /* === ПОЗИЦИОНИРОВАНИЕ НА ПК === */
+
         /* Радиус орбиты: 280px */
+
         .node-1 { --x: -280px; --y: -180px; --delay: 0s; }    /* Genesis: Верх-Лево */
+
         .node-2 { --x: 280px; --y: -180px; --delay: 1.5s; }   /* Arsenal: Верх-Право */
+
         .node-3 { --x: -280px; --y: 180px; --delay: 0.7s; }   /* Masters: Низ-Лево */
+
         .node-4 { --x: 280px; --y: 180px; --delay: 2.2s; }    /* Evolution: Низ-Право */
 
+
+
         /* === НИЖНЯЯ ПАНЕЛЬ === */
+
         .terminal-footer {
+
             position: relative; z-index: 10; padding: 15px;
+
             text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem;
+
             color: var(--aether-cyan); letter-spacing: 4px; text-transform: uppercase;
+
             background: linear-gradient(0deg, rgba(5,7,10,0.9) 0%, transparent 100%);
+
             opacity: 0.7;
+
         }
+
+
 
         /* Экран загрузки проверки безопасности */
+
         #security-overlay {
+
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+
             background: var(--metal-bg); z-index: 9999;
+
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+
             transition: opacity 0.5s ease;
+
         }
+
         .security-text {
+
             color: var(--aether-cyan); font-family: 'Rajdhani', sans-serif;
+
             font-size: 1.5rem; letter-spacing: 5px; text-transform: uppercase;
+
             animation: breathe 1.5s infinite;
+
         }
+
+
 
         /* === АДАПТИВНОСТЬ (МОБИЛЬНЫЕ УСТРОЙСТВА И TELEGRAM MINI APP) === */
+
         @media (max-width: 768px) {
+
             .terminal-title { font-size: 1.3rem; letter-spacing: 5px; }
+
             .back-btn { left: 15px; top: 20px; width: 30px; height: 30px; }
+
             .aether-core { width: 150px; height: 150px; }
+
             .aether-core::before { top: -10px; left: -10px; right: -10px; bottom: -10px; }
+
             .aether-core::after { top: -20px; left: -20px; right: -20px; bottom: -20px; }
+
             
+
             .module-art { width: 100px; height: 100px; }
+
             .module-label { font-size: 0.8rem; padding: 4px 10px; letter-spacing: 1px; margin-top: 5px;}
+
             
+
             /* Сжимаем орбиту для мобилок (Крест/Ромб) */
+
             .node-1 { --x: -120px; --y: -150px; } 
+
             .node-2 { --x: 120px; --y: -150px; }  
+
             .node-3 { --x: -120px; --y: 160px; } 
+
             .node-4 { --x: 120px; --y: 160px; }  
+
             
+
             /* Чуть уменьшаем hover эффект для тач-скринов */
+
             .module-node:hover { transform: translate(calc(var(--x) * 1.05), calc(var(--y) * 1.05)) scale(1.05); }
+
         }
+
+
 
         @media (max-width: 400px) {
+
             /* Для очень узких экранов */
+
             .node-1 { --x: -100px; --y: -140px; } 
+
             .node-2 { --x: 100px; --y: -140px; }  
+
             .node-3 { --x: -100px; --y: 140px; } 
+
             .node-4 { --x: 100px; --y: 140px; }
+
             .module-art { width: 85px; height: 85px; }
+
         }
+
     </style>
+
 </head>
+
 <body>
 
+
+
     <!-- Оверлей проверки безопасности при загрузке -->
+
     <div id="security-overlay">
+
         <div class="security-text">Проверка допусков...</div>
+
     </div>
 
+
+
     <div class="cyber-grid"></div>
+
     <div id="particles-container"></div>
 
+
+
     <header class="terminal-header">
+
         <a href="https://fatumalogy-ctrl.github.io/Fatum/index.html" class="back-btn">
+
             <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1776726460/%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B0_1_1_1_gw0pyv.webp" alt="Назад">
+
         </a>
+
         <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1775843225/logo.webp" class="logo-small" alt="Fatum Logo">
+
         <div class="terminal-title">AETHER TERMINAL</div>
+
         <div id="auth-status" class="terminal-subtitle">Neural Synchronization: Pending...</div>
+
     </header>
 
+
+
     <main class="nexus-container">
+
         <div class="orbit-system" id="orbit-system">
+
             
+
             <!-- Центральный Источник -->
+
             <div class="aether-core" id="core">
+
                 <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778163397/1_t52wff.webp" class="aether-avatar" alt="Aether God">
+
             </div>
 
-            <!-- Линии энергии генериர்த்துются через JS -->
+
+
+            <!-- Линии энергии генерируются через JS -->
+
             <div id="lines-container"></div>
 
+
+
             <!-- Модуль 1: ГЕНЕЗИС -->
+
             <a href="https://fatumalogy-ctrl.github.io/Fatum/baza.html" class="module-node node-1" id="node-1">
+
                 <div class="module-art">
+
                     <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778635457/1_hgkqlk.webp" alt="Genesis">
+
                 </div>
+
                 <div class="module-label">Генезис</div>
+
             </a>
+
+
 
             <!-- Модуль 2: АРСЕНАЛ -->
+
             <a href="https://fatumalogy-ctrl.github.io/Fatum/arsenal.html" class="module-node node-2" id="node-2">
+
                 <div class="module-art">
+
                     <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778635467/2_old3ny.webp" alt="Arsenal">
+
                 </div>
+
                 <div class="module-label">Арсенал</div>
+
             </a>
+
+
 
             <!-- Модуль 3: МАСТЕРА -->
+
             <a href="https://fatumalogy-ctrl.github.io/Fatum/mastera.html" class="module-node node-3" id="node-3">
+
                 <div class="module-art">
+
                     <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778635468/3_mmbstm.webp" alt="Masters">
+
                 </div>
+
                 <div class="module-label">Мастера</div>
+
             </a>
+
+
 
             <!-- Модуль 4: ЭВОЛЮЦИЯ -->
+
             <a href="https://fatumalogy-ctrl.github.io/Fatum/evolution.html" class="module-node node-4" id="node-4">
+
                 <div class="module-art">
+
                     <img src="https://res.cloudinary.com/dmirmbjtj/image/upload/v1778635468/4_n9bmnz.webp" alt="Evolution">
+
                 </div>
+
                 <div class="module-label">Эволюция</div>
+
             </a>
 
+
+
         </div>
+
     </main>
 
+
+
     <footer class="terminal-footer">
+
         [ PROTOCOL OMEGA INITIATED ]
+
     </footer>
 
+
+
     <!-- ВИЗУАЛЬНЫЕ СКРИПТЫ (АНИМАЦИИ И ЛИНИИ) -->
+
     <script>
+
         function initParticles() {
+
             const container = document.getElementById('particles-container');
+
             const count = window.innerWidth > 768 ? 50 : 25;
+
             for (let i = 0; i < count; i++) {
+
                 let p = document.createElement('div');
+
                 p.className = 'particle';
+
                 let size = Math.random() * 3 + 1;
+
                 p.style.width = `${size}px`;
+
                 p.style.height = `${size}px`;
+
                 p.style.left = `${Math.random() * 100}vw`;
+
                 p.style.animationDuration = `${Math.random() * 10 + 5}s`;
+
                 p.style.animationDelay = `${Math.random() * 5}s`;
+
                 container.appendChild(p);
+
             }
+
         }
+
         initParticles();
 
+
+
         const orbitSystem = document.getElementById('orbit-system');
+
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
+
+
         if (!isTouchDevice) {
+
             document.addEventListener('mousemove', (e) => {
+
                 const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
+
                 const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
+
                 orbitSystem.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+
             });
+
             document.addEventListener('mouseleave', () => {
+
                 orbitSystem.style.transform = `rotateY(0deg) rotateX(0deg)`;
+
             });
+
         }
+
+
 
         function drawLines() {
+
             const linesContainer = document.getElementById('lines-container');
+
             linesContainer.innerHTML = ''; 
 
+
+
             const core = document.getElementById('core');
+
             const coreRect = core.getBoundingClientRect();
+
             const centerX = coreRect.left + coreRect.width / 2;
+
             const centerY = coreRect.top + coreRect.height / 2;
 
+
+
             for (let i = 1; i <= 4; i++) {
+
                 const node = document.getElementById(`node-${i}`);
+
                 if (!node) continue;
 
+
+
                 const nodeRect = node.getBoundingClientRect();
+
                 const nodeX = nodeRect.left + nodeRect.width / 2;
+
                 const nodeY = nodeRect.top + nodeRect.height / 2;
 
+
+
                 const deltaX = nodeX - centerX;
+
                 const deltaY = nodeY - centerY;
+
                 const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
                 const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
 
+
+
                 const line = document.createElement('div');
+
                 line.className = 'energy-line';
+
                 
+
                 line.style.width = `${length}px`;
+
                 line.style.transform = `translateY(-50%) rotate(${angle}deg)`;
+
                 line.style.animationDelay = `${i * 0.5}s`;
 
+
+
                 linesContainer.appendChild(line);
+
             }
+
         }
 
+
+
         window.addEventListener('load', () => {
+
             setTimeout(drawLines, 100); 
+
         });
+
         window.addEventListener('resize', drawLines);
+
     </script>
+
+
 
     <!-- === СКРИПТ БЕЗОПАСНОСТИ: ДВОЙНОЙ ЩИТ (АВТОРИЗАЦИЯ + ПРОДУКТ) === -->
+
     <script type="module">
+
         import { auth, onAuthStateChanged, db, doc, getDoc } from './firebase-config.js';
 
+
+
         const overlay = document.getElementById('security-overlay');
+
         const authStatus = document.getElementById('auth-status');
 
+
+
         onAuthStateChanged(auth, async (user) => {
+
             if (!user) {
+
                 // ШАГ 1: Если не залогинен вообще -> выкидываем в Пантеон
+
                 window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/index.html");
+
                 return;
+
             }
+
+
 
             try {
+
                 // ШАГ 2: Идем в конкретный документ продукта "Эфир"
+
                 const productDocRef = doc(db, "users", user.uid, "products", "aether");
+
                 const productDocSnap = await getDoc(productDocRef);
 
+
+
                 if (productDocSnap.exists() && productDocSnap.data().hasAccess === true) {
+
                     // ДОПУСК РАЗРЕШЕН: Убираем черный экран
+
                     overlay.style.opacity = '0';
+
                     setTimeout(() => overlay.style.display = 'none', 500);
 
+
+
                     // Опционально: показываем имя в терминале
+
                     const userDocRef = doc(db, "users", user.uid);
+
                     const userDocSnap = await getDoc(userDocRef);
+
                     if (userDocSnap.exists()) {
+
                         authStatus.innerText = "Neural Synchronization: Active (" + userDocSnap.data().name + ")";
+
                     } else {
+
                         authStatus.innerText = "Neural Synchronization: Active";
+
                     }
+
                 } else {
+
                     // ШАГ 3: Если документа Эфира нет или hasAccess != true -> на лендинг
+
                     // ЗАМЕТКА: Укажи здесь реальную ссылку на лендинг Эфира
-                    window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html"); 
+
+                    window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html"); 
+
                 }
+
             } catch (error) {
+
                 console.error("Ошибка проверки доступа:", error);
+
                 // При сбое базы на всякий случай выкидываем в Пантеон
+
                 window.location.replace("https://fatumalogy-ctrl.github.io/Fatum/index.html");
+
             }
+
         });
+
     </script>
+
 </body>
+
 </html>
