@@ -515,5 +515,103 @@
             }, 500);
         }
     </script>
+
+    <!-- === СКРИПТ БЕЗОПАСНОСТИ: ДИНАМИЧЕСКАЯ РАЗБЛОКИРОВКА === -->
+    <script type="module">
+        import { auth, onAuthStateChanged, db, doc, getDoc } from './firebase-config.js';
+
+        // 1. Внедряем стили для замков (не трогая твой оригинальный CSS)
+        const lockStyles = document.createElement('style');
+        lockStyles.innerHTML = `
+            .evo-item.locked .evo-title { color: #6a7482; }
+            .evo-item.locked:hover .evo-card { border-color: #cca300; box-shadow: 0 25px 50px rgba(0,0,0,1), 0 0 30px rgba(204,163,0,0.3); }
+            .evo-item.locked:hover .card-logo { filter: drop-shadow(0 0 8px #cca300); }
+            .evo-item.locked:hover .evo-avatar { border-color: #cca300; box-shadow: 0 0 30px rgba(204,163,0,0.5); }
+            .evo-item.locked:hover .evo-title { color: #cca300; text-shadow: 0 0 10px rgba(204,163,0,0.5); }
+            .evo-item.locked:hover .evo-btn { background: rgba(204,163,0,0.2) !important; color: #fff !important; border-color: #cca300 !important; box-shadow: 0 0 20px rgba(204,163,0,0.4) !important; }
+            
+            .quick-god-item.locked .quick-god-name { color: #6a7482; }
+            .quick-god-item.locked:hover .quick-avatar-wrap { border-color: #cca300; box-shadow: 0 0 20px rgba(204,163,0,0.5); }
+        `;
+        document.head.appendChild(lockStyles);
+
+        // 2. Блокируем все уроки начиная с 4-го (индекс > 2) по умолчанию
+        const evoItems = document.querySelectorAll('.evo-item');
+        const quickItems = document.querySelectorAll('.quick-god-item');
+
+        evoItems.forEach((item, index) => {
+            if (index > 2) {
+                item.classList.add('locked');
+                
+                // Накладываем замок на аватар
+                const avatar = item.querySelector('.evo-avatar');
+                const overlay = document.createElement('div');
+                overlay.className = 'locked-overlay';
+                overlay.innerText = '🔒';
+                overlay.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(10,12,16,0.75);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:2.5rem;backdrop-filter:blur(3px);z-index:5;";
+                avatar.appendChild(overlay);
+
+                // Меняем кнопку и ссылку на лендинг
+                const btn = item.querySelector('.evo-btn');
+                btn.innerText = 'ВРАТА ЗАКРЫТЫ';
+                btn.href = 'https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html';
+                btn.style.cssText = "background:rgba(204,163,0,0.1); border:1px solid #cca300; color:#cca300; box-shadow:none;";
+            }
+        });
+
+        quickItems.forEach((item, index) => {
+            if (index > 2) {
+                item.classList.add('locked');
+                
+                const wrap = item.querySelector('.quick-avatar-wrap');
+                const overlay = document.createElement('div');
+                overlay.className = 'locked-overlay';
+                overlay.innerText = '🔒';
+                overlay.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(10,12,16,0.75);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:1.5rem;backdrop-filter:blur(2px);z-index:5;";
+                wrap.appendChild(overlay);
+                
+                // Перенаправляем клик из быстрой матрицы на лендинг
+                item.setAttribute('onclick', `triggerQuickLink(${index}, this, 'https://fatumalogy-ctrl.github.io/Fatum/aetherdoor.html')`);
+            }
+        });
+
+        // 3. Скрипт проверяет доступы. Если оплачено — срывает замки
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const productDocRef = doc(db, "users", user.uid, "products", "aether");
+                    const productDocSnap = await getDoc(productDocRef);
+
+                    if (productDocSnap.exists() && productDocSnap.data().hasAccess === true) {
+                        // Снимаем блокировку
+                        evoItems.forEach((item, index) => {
+                            if (index > 2) {
+                                item.classList.remove('locked');
+                                const overlay = item.querySelector('.locked-overlay');
+                                if (overlay) overlay.remove();
+                                
+                                const btn = item.querySelector('.evo-btn');
+                                btn.innerText = index === 29 ? 'ДОСТИЧЬ СИНГУЛЯРНОСТИ' : 'ПЕРЕЙТИ НА УРОК';
+                                btn.href = evolutionData[index].link;
+                                btn.style.cssText = ""; // сброс стилей кнопки к оригиналу
+                            }
+                        });
+
+                        quickItems.forEach((item, index) => {
+                            if (index > 2) {
+                                item.classList.remove('locked');
+                                const overlay = item.querySelector('.locked-overlay');
+                                if (overlay) overlay.remove();
+                                
+                                item.setAttribute('onclick', `triggerQuickLink(${index}, this, '${evolutionData[index].link}')`);
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Ошибка проверки доступа:", error);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
